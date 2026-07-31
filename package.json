@@ -1,0 +1,28 @@
+{
+  "name": "frontend-ai-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "前端AI实验室：前端资讯、搜索趋势洞察与数据工具工作台",
+  "type": "module",
+  "scripts": {
+    "search": "node serper-search.js",
+    "report": "node generate-report.js",
+    "mock-history": "node generate-demo-history.js",
+    "mock-quarter": "node generate-three-month-history.js",
+    "build:pages": "node prepare-pages.js",
+    "check": "node --check serper-search.js && node --check generate-report.js && node --check generate-demo-history.js && node --check generate-three-month-history.js && node --check prepare-pages.js && node --check check-pages.js",
+    "check:pages": "node check-pages.js",
+    "check:pages:dist": "node check-pages.js .pages-dist"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "echarts": "^6.1.0",
+    "flatpickr": "^4.6.13",
+    "tldts": "^7.4.10"
+  },
+  "devDependencies": {
+    "html-minifier-terser": "^7.2.0"
+  }
+}

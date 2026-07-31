@@ -1,0 +1,102 @@
+{
+  "searchCondition": {
+    "keyword": "video chat with strangers",
+    "country": "us",
+    "language": "en",
+    "resultCount": 30
+  },
+  "searchedAt": "2026-07-31T09:43:11.031Z",
+  "data": {
+    "searchParameters": {
+      "q": "video chat with strangers",
+      "gl": "us",
+      "hl": "en",
+      "type": "search",
+      "num": 30,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Who - Live Random Video Chat",
+        "link": "https://whoapp.live/",
+        "snippet": "WHO is a random video chat platform connecting you with verified real strangers by live video, instantly, without requiring a signup or registration.",
+        "position": 1
+      },
+      {
+        "title": "Yap.Chat — Best Omegle Alternative for Random Video Chat",
+        "link": "https://yap.chat/",
+        "snippet": "Yap.chat is a popular Omegle alternative for random video and text chat. Meet new people worldwide in seconds. Meet strangers with your interests!",
+        "position": 2
+      },
+      {
+        "title": "Hay - Talk to Strangers & Random Video Chat",
+        "link": "https://www.hay.fun/",
+        "snippet": "With Hay, you can instantly connect with people worldwide through random video chat, text chat, and real-time translation.",
+        "position": 3
+      },
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text Chat",
+        "link": "https://opentalk.club/",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 4
+      },
+      {
+        "title": "Meetchi: Free Random Video Chat with Strangers Like Omegle",
+        "link": "https://meetchi.com/",
+        "snippet": "Enjoy free random video chat with strangers. Connect instantly with people worldwide. Discover the ultimate chat platform for secure, fun video connections!",
+        "position": 5
+      },
+      {
+        "title": "Chatspin: Free Random Video Chat App",
+        "link": "https://chatspin.com/",
+        "snippet": "Chatspin is a free random video chat app to meet new friends and cam chat with cool people. Try our random chat and talk with strangers all over the world.",
+        "position": 6
+      },
+      {
+        "title": "Chatroulette - Video Chat with the World",
+        "link": "https://chatroulette.com/",
+        "snippet": "Chatroulette is the original free random video chat. It pairs you with strangers from around the world for one-on-one online video chat - no sign-up required.",
+        "position": 7
+      },
+      {
+        "title": "Azar: Video Chat with New People",
+        "link": "https://azarlive.com/",
+        "snippet": "Azar is a global video chat platform for meeting new people. ... Connect with interest-based matches around the world. Discover people who share your interests!",
+        "position": 8
+      },
+      {
+        "title": "Thundr: Best Random Video Chat App",
+        "link": "https://thundr.com/",
+        "snippet": "Thundr is the best free video random chat app. Free one-on-one video or text chat, zero sign-up, AI-safe. Hit chat, meet strangers, vibe instantly.",
+        "position": 9
+      },
+      {
+        "title": "Camgo: Talk to Strangers - Free Random Video Chat",
+        "link": "https://www.camgo.com/",
+        "snippet": "Camgo lets you meet friends and chat with strangers online. Our platform uses the latest in random chat technology, so you can have live chats with people ...",
+        "position": 10
+      }
+    ],
+    "relatedSearches": [
+      {
+        "query": "Omegle video call free"
+      },
+      {
+        "query": "Video call random girl"
+      },
+      {
+        "query": "Random video call free live"
+      },
+      {
+        "query": "Indian random video call free"
+      },
+      {
+        "query": "Free video chat with strangers"
+      },
+      {
+        "query": "Single girl chat video call"
+      }
+    ],
+    "credits": 1
+  }
+}

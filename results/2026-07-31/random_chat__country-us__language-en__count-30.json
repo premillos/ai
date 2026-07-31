@@ -1,0 +1,103 @@
+{
+  "searchCondition": {
+    "keyword": "random chat",
+    "country": "us",
+    "language": "en",
+    "resultCount": 30
+  },
+  "searchedAt": "2026-07-31T09:43:06.348Z",
+  "data": {
+    "searchParameters": {
+      "q": "random chat",
+      "gl": "us",
+      "hl": "en",
+      "type": "search",
+      "num": 30,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "StrangerLine: Talk to Strangers Online - Free Anonymous Random Chat",
+        "link": "https://strangerline.io/",
+        "snippet": "Talk to strangers free on StrangerLine - anonymous text chat, random chat, voice chat, and video chat with real people worldwide.",
+        "position": 1
+      },
+      {
+        "title": "Random Chat - no login - no B.S.",
+        "link": "https://y99.in/articles/random-chat/?amp",
+        "snippet": "Y99 is a free random chat service website that allows people to chat with others without having to register. Y99 algorithms randomly connect ...",
+        "date": "Mar 2, 2026",
+        "position": 2
+      },
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text Chat",
+        "link": "https://opentalk.club/",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 3
+      },
+      {
+        "title": "Free Chat Rooms,Free Online Chat With No Registration 2026",
+        "link": "https://www.chatib.us/",
+        "snippet": "Chatib.us is an online free chat rooms. Here you can meet new friends from all over the world. No download, no setup & no registration needed.",
+        "position": 4
+      },
+      {
+        "title": "Chitchat: Random Chat & Talk to Strangers Online",
+        "link": "https://www.chitchat.gg/",
+        "snippet": "Chat with strangers by text or video. Our random chat is free, one-on-one, ad-free and moderated. Meet new people and make friends online.",
+        "position": 5
+      },
+      {
+        "title": "Yapping: Talk to Strangers Online — Free Random Text & Video Chat",
+        "link": "https://yapping.me/",
+        "snippet": "Yapping is the free way to talk to strangers online — anonymous text chat or random video chat, instant matching, moderated, no signup.",
+        "position": 6
+      },
+      {
+        "title": "Chat.TalkWithStranger.com – Talk To Strangers",
+        "link": "https://chat.talkwithstranger.com/",
+        "snippet": "TalkWithStranger is the #1 anonymous chat platform to meet new people in free chatrooms. Enjoy live random chat, group chats, voice and video calls—no ...",
+        "position": 7
+      },
+      {
+        "title": "Talk to Strangers Online Free — Random Video & Text Chat | Knotchat",
+        "link": "https://knot.chat/",
+        "snippet": "Talk to strangers online free on Knotchat. Start anonymous random text or video chat with real people worldwide in seconds. No app download, fast matching, ...",
+        "position": 8
+      },
+      {
+        "title": "Hay - Talk to Strangers & Random Video Chat",
+        "link": "https://www.hay.fun/",
+        "snippet": "Talk to strangers and make friends on Hay! Experience a secure, random video chat alternative to connect with people worldwide.",
+        "position": 9
+      },
+      {
+        "title": "Random Chat - One vs one conversations: Meetyou.me",
+        "link": "https://random.meetyou.me/",
+        "snippet": "Random Chat and meet strangers with our random chat app for chatting online, making new friends by chatting with strangers randomly.",
+        "position": 10
+      }
+    ],
+    "relatedSearches": [
+      {
+        "query": "Random chat Omegle"
+      },
+      {
+        "query": "Random chat video call"
+      },
+      {
+        "query": "Text random chat"
+      },
+      {
+        "query": "Random Chat manhwa"
+      },
+      {
+        "query": "Random chat with girls"
+      },
+      {
+        "query": "Random chat meaning"
+      }
+    ],
+    "credits": 1
+  }
+}

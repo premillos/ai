@@ -1,0 +1,68 @@
+name: 每日更新真实搜索数据
+
+on:
+  schedule:
+    # GitHub Actions 使用 UTC，18:00 UTC 对应次日北京时间 02:00。
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: daily-search
+  cancel-in-progress: false
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - name: 获取 main 分支
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: 配置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: 安装项目依赖
+        run: npm ci
+
+      - name: 拉取当日真实数据
+        env:
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+        run: npm run search
+
+      - name: 生成站点与数据简报
+        run: npm run report
+
+      - name: 检查源静态站点
+        run: npm run check:pages
+
+      - name: 提交真实数据到 main
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results static
+          if git diff --cached --quiet; then
+            echo "当日数据没有变化，跳过提交"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            SEARCH_DATE="$(date +%F)"
+            git commit -m "[数据] 自动更新 ${SEARCH_DATE} 搜索数据"
+            git push origin HEAD:main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 触发统一 Pages 部署
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main

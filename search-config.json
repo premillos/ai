@@ -1,0 +1,30 @@
+{
+  "keywords": [
+    "random video chat",
+    "free random video chat",
+    "chat with strangers",
+    "random chat",
+    "video chat with strangers",
+    "Omegle alternative",
+    "free Omegle alternative",
+    "random cam chat"
+  ],
+  "countries": [
+    {
+      "code": "in",
+      "language": "en"
+    },
+    {
+      "code": "us",
+      "language": "en"
+    },
+    {
+      "code": "gb",
+      "language": "en"
+    }
+  ],
+  "page": 1,
+  "outputDirectory": "results",
+  "requestIntervalMs": 500,
+  "timeoutMs": 30000
+}

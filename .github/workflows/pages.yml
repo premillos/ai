@@ -1,0 +1,58 @@
+name: 部署前端AI实验室
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 获取代码
+        uses: actions/checkout@v4
+
+      - name: 配置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: 安装构建依赖
+        run: npm ci
+
+      - name: 检查源静态站点
+        run: npm run check:pages
+
+      - name: 压缩 Pages 发布产物
+        run: npm run build:pages
+
+      - name: 检查压缩产物
+        run: npm run check:pages:dist
+
+      - name: 配置 GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: 上传静态站点
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./.pages-dist
+
+      - name: 部署 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

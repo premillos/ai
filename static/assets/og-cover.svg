@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">前端AI实验室</title>
+  <desc id="description">关键词排名趋势与前端数据工具</desc>
+  <!-- 社交分享封面延续站点的专业数据产品视觉。 -->
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08111f"/>
+      <stop offset="0.58" stop-color="#14213d"/>
+      <stop offset="1" stop-color="#19324d"/>
+    </linearGradient>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#67e8f9"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#ffffff" stroke-opacity="0.055"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="1040" cy="90" r="260" fill="#22d3ee" opacity="0.08"/>
+  <circle cx="160" cy="620" r="300" fill="#8b5cf6" opacity="0.08"/>
+  <g transform="translate(72 70)">
+    <rect width="68" height="68" rx="18" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.16"/>
+    <path d="M28 20 16 34l12 14M40 20l12 14-12 14M38 15 30 53" fill="none" stroke="#67e8f9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="88" y="29" fill="#ffffff" font-size="26" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="700">前端AI实验室</text>
+    <text x="88" y="57" fill="#a8b7cc" font-size="16" font-family="Arial, sans-serif" letter-spacing="3">FRONTEND INTELLIGENCE</text>
+  </g>
+  <text x="72" y="260" fill="#ffffff" font-size="64" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="750">关键词排名趋势</text>
+  <text x="72" y="330" fill="#ffffff" font-size="64" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="750">与前端数据工具</text>
+  <text x="76" y="388" fill="#a8b7cc" font-size="24" font-family="PingFang SC, Microsoft YaHei, sans-serif">从搜索排名变化中，看见网站增长信号</text>
+  <g transform="translate(692 190)">
+    <rect width="430" height="300" rx="30" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.12"/>
+    <path d="M38 76H392M38 142H392M38 208H392" stroke="#ffffff" stroke-opacity="0.1"/>
+    <path d="M42 220C92 194 118 202 158 155s83-25 118-72 73 5 112-35" fill="none" stroke="url(#line)" stroke-width="8" stroke-linecap="round"/>
+    <g fill="#67e8f9">
+      <circle cx="42" cy="220" r="7"/><circle cx="158" cy="155" r="7"/><circle cx="276" cy="83" r="7"/><circle cx="388" cy="48" r="7"/>
+    </g>
+    <text x="38" y="270" fill="#a8b7cc" font-size="18" font-family="Arial, sans-serif" letter-spacing="2">RANKING TREND / DATA LAB</text>
+  </g>
+  <text x="76" y="560" fill="#67e8f9" font-size="20" font-family="Arial, sans-serif">premillos.github.io/ai</text>
+</svg>

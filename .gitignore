@@ -1,0 +1,6 @@
+.DS_Store
+.env
+node_modules/
+.pages-dist/
+results_archive/
+vibe_docs/

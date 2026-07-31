@@ -1,0 +1,3387 @@
+import { createHash } from 'node:crypto';
+import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import process from 'node:process';
+import { getDomain as getRegistrableDomain } from 'tldts';
+
+const RESULTS_DIRECTORY = path.resolve(process.cwd(), 'results');
+const OUTPUT_DIRECTORY = path.resolve(process.cwd(), 'static');
+const INDEX_FILE = path.join(OUTPUT_DIRECTORY, 'index.html');
+const ARCHIVE_FILE = path.join(OUTPUT_DIRECTORY, 'archive.html');
+const SITEMAP_FILE = path.join(OUTPUT_DIRECTORY, 'sitemap.xml');
+const ROBOTS_FILE = path.join(OUTPUT_DIRECTORY, 'robots.txt');
+const REPORTS_DIRECTORY = path.join(OUTPUT_DIRECTORY, 'reports');
+const DATA_DIRECTORY = path.join(OUTPUT_DIRECTORY, 'data');
+const REPORT_DATA_DIRECTORY = path.join(DATA_DIRECTORY, 'reports');
+const RANK_TRENDS_DATA_FILE = path.join(DATA_DIRECTORY, 'rank-trends.json');
+const VENDOR_DIRECTORY = path.join(OUTPUT_DIRECTORY, 'vendor');
+const SITE_URL = 'https://premillos.github.io/ai';
+const SITE_NAME = '前端AI实验室';
+const SOCIAL_IMAGE_URL = `${SITE_URL}/assets/og-cover.png`;
+
+// 首页和日报共用的数据加载动效，使用纯 CSS 避免增加运行时依赖。
+const DATA_LOADER_STYLES = `
+    .data-loader {
+      position: relative;
+      display: grid;
+      width: 100%;
+      min-height: 360px;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(222, 215, 200, 0.76);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(42, 157, 143, 0.13), transparent 33%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(248, 246, 240, 0.48));
+    }
+
+    .data-loader::before {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(61, 90, 128, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(61, 90, 128, 0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+      content: '';
+      mask-image: linear-gradient(to bottom, #000, transparent 94%);
+    }
+
+    .data-loader::after {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -34%;
+      width: 30%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.82), transparent);
+      content: '';
+      transform: skewX(-14deg);
+      animation: loader-scan 1.8s ease-in-out infinite;
+    }
+
+    .loader-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .loader-orbit {
+      position: relative;
+      width: 62px;
+      height: 62px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(61, 90, 128, 0.18);
+      border-radius: 50%;
+      animation: loader-spin 1.4s linear infinite;
+    }
+
+    .loader-orbit::before,
+    .loader-orbit::after {
+      position: absolute;
+      border-radius: 50%;
+      content: '';
+    }
+
+    .loader-orbit::before {
+      top: -4px;
+      left: 25px;
+      width: 10px;
+      height: 10px;
+      background: var(--orange);
+      box-shadow: 0 0 20px rgba(238, 108, 77, 0.65);
+    }
+
+    .loader-orbit::after {
+      inset: 14px;
+      border: 2px solid var(--teal);
+      animation: loader-pulse 1.4s ease-in-out infinite;
+    }
+
+    .loader-kicker {
+      margin-bottom: 8px;
+      color: var(--teal);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .loader-title {
+      color: var(--navy);
+      font-family: Georgia, "Songti SC", serif;
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .loader-detail {
+      margin-top: 9px;
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .loader-progress {
+      width: 150px;
+      height: 3px;
+      margin-top: 22px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: rgba(61, 90, 128, 0.1);
+    }
+
+    .loader-progress::after {
+      display: block;
+      width: 46%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--orange), var(--teal));
+      content: '';
+      animation: loader-progress 1.25s ease-in-out infinite;
+    }
+
+    @keyframes loader-spin { to { transform: rotate(360deg); } }
+    @keyframes loader-pulse { 50% { opacity: 0.35; transform: scale(0.72); } }
+    @keyframes loader-scan { 55%, 100% { left: 112%; } }
+    @keyframes loader-progress {
+      from { transform: translateX(-110%); }
+      to { transform: translateX(325%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .data-loader::after,
+      .loader-orbit,
+      .loader-orbit::after,
+      .loader-progress::after { animation: none; }
+    }
+`;
+
+/**
+ * 递归查找目录中的 JSON 文件。
+ * @param {string} directory 当前目录
+ * @returns {Promise<string[]>} JSON 文件路径列表
+ */
+async function findJsonFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = await Promise.all(
+    entries.map(async (entry) => {
+      const entryPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        return findJsonFiles(entryPath);
+      }
+      return entry.isFile() && entry.name.endsWith('.json') ? [entryPath] : [];
+    }),
+  );
+
+  return files.flat().sort();
+}
+
+/**
+ * 从网址中提取可注册主域名，将同一站点的不同子域名归并展示。
+ * @param {string} link 搜索结果网址
+ * @returns {string} 域名
+ */
+function getDomain(link) {
+  try {
+    const hostname = new URL(link).hostname.toLowerCase().replace(/\.$/, '');
+    return (
+      getRegistrableDomain(hostname, { allowPrivateDomains: true }) ??
+      hostname.replace(/^www\./, '')
+    );
+  } catch {
+    return '未知域名';
+  }
+}
+
+/**
+ * 根据数据内容生成稳定的短版本号，用于刷新浏览器中的动态 JSON 缓存。
+ * @param {string} content JSON 字符串
+ * @returns {string} 内容指纹
+ */
+function createContentVersion(content) {
+  return createHash('sha256').update(content).digest('hex').slice(0, 12);
+}
+
+/**
+ * 读取搜索结果并转换为报告所需的数据。
+ * @param {string[]} files 结果文件列表
+ * @param {string} snapshotDate 数据日期
+ * @returns {Promise<object>} 报告数据
+ */
+async function buildReportData(files, snapshotDate) {
+  const records = [];
+
+  for (const file of files) {
+    const raw = JSON.parse(await readFile(file, 'utf8'));
+    const condition = raw.searchCondition ?? {};
+    const organic = Array.isArray(raw.data?.organic) ? raw.data.organic : [];
+
+    if (!condition.keyword) {
+      continue;
+    }
+
+    records.push({
+      keyword: String(condition.keyword),
+      country: String(condition.country ?? 'default').toLowerCase(),
+      language: String(condition.language ?? 'default').toLowerCase(),
+      page: Number(condition.page ?? 1),
+      searchedAt: raw.searchedAt ?? null,
+      sourceFile: path.relative(process.cwd(), file),
+      results: organic.map((item, index) => ({
+        position: Number(item.position ?? index + 1),
+        title: String(item.title ?? '无标题'),
+        link: String(item.link ?? ''),
+        snippet: String(item.snippet ?? ''),
+        date: item.date ? String(item.date) : '',
+        rating: Number.isFinite(Number(item.rating)) ? Number(item.rating) : null,
+        ratingCount: Number.isFinite(Number(item.ratingCount))
+          ? Number(item.ratingCount)
+          : null,
+        domain: getDomain(item.link),
+      })),
+    });
+  }
+
+  const keywordGroups = new Map();
+  for (const record of records) {
+    if (!keywordGroups.has(record.keyword)) {
+      keywordGroups.set(record.keyword, []);
+    }
+    keywordGroups.get(record.keyword).push(record);
+  }
+
+  const keywords = [...keywordGroups.entries()]
+    .map(([name, queries]) => {
+      const sortedQueries = queries.sort((left, right) => {
+        const countryOrder = left.country.localeCompare(right.country);
+        if (countryOrder !== 0) {
+          return countryOrder;
+        }
+        return String(right.searchedAt).localeCompare(String(left.searchedAt));
+      });
+      const domainCounts = new Map();
+
+      for (const query of sortedQueries) {
+        for (const result of query.results) {
+          domainCounts.set(result.domain, (domainCounts.get(result.domain) ?? 0) + 1);
+        }
+      }
+
+      const countryDomains = new Map();
+      for (const query of sortedQueries) {
+        if (!countryDomains.has(query.country)) {
+          countryDomains.set(query.country, new Set());
+        }
+        for (const result of query.results) {
+          countryDomains.get(query.country).add(result.domain);
+        }
+      }
+
+      const countries = [...countryDomains.keys()].sort();
+      const overlaps = [];
+      for (let leftIndex = 0; leftIndex < countries.length; leftIndex += 1) {
+        for (
+          let rightIndex = leftIndex + 1;
+          rightIndex < countries.length;
+          rightIndex += 1
+        ) {
+          const leftCountry = countries[leftIndex];
+          const rightCountry = countries[rightIndex];
+          const leftDomains = countryDomains.get(leftCountry);
+          const rightDomains = countryDomains.get(rightCountry);
+          const common = [...leftDomains].filter((domain) =>
+            rightDomains.has(domain),
+          ).length;
+          const union = new Set([...leftDomains, ...rightDomains]).size;
+
+          overlaps.push({
+            leftCountry,
+            rightCountry,
+            common,
+            union,
+            rate: union === 0 ? 0 : Math.round((common / union) * 100),
+          });
+        }
+      }
+
+      return {
+        name,
+        queries: sortedQueries,
+        resultCount: sortedQueries.reduce(
+          (total, query) => total + query.results.length,
+          0,
+        ),
+        uniqueDomainCount: domainCounts.size,
+        domainCounts: [...domainCounts.entries()]
+          .map(([domain, count]) => ({ domain, count }))
+          .sort(
+            (left, right) =>
+              right.count - left.count || left.domain.localeCompare(right.domain),
+          ),
+        overlaps,
+      };
+    })
+    .sort((left, right) => left.name.localeCompare(right.name));
+
+  return {
+    snapshotDate,
+    generatedAt: new Date().toISOString(),
+    keywordCount: keywords.length,
+    queryCount: records.length,
+    resultCount: records.reduce(
+      (total, record) => total + record.results.length,
+      0,
+    ),
+    keywords,
+  };
+}
+
+/**
+ * 按 results 下的第一层日期目录分组文件。
+ * @param {string[]} files 结果文件列表
+ * @returns {Map<string, string[]>} 日期与文件列表
+ */
+function groupFilesByDate(files) {
+  const groups = new Map();
+
+  for (const file of files) {
+    const relativeParts = path.relative(RESULTS_DIRECTORY, file).split(path.sep);
+    const directoryName = relativeParts.length > 1 ? relativeParts[0] : '未分类';
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(directoryName)
+      ? directoryName
+      : '未分类';
+
+    if (!groups.has(date)) {
+      groups.set(date, []);
+    }
+    groups.get(date).push(file);
+  }
+
+  return groups;
+}
+
+/**
+ * 将数据安全嵌入 HTML，避免搜索文本提前结束脚本标签。
+ * @param {object} data 报告数据
+ * @returns {string} JSON 文本
+ */
+function serializeForHtml(data) {
+  return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+
+/**
+ * 转义写入静态标签的文本。
+ * @param {string} value 原始文本
+ * @returns {string} 安全 HTML 文本
+ */
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
+ * 转义写入 XML 文档的文本。
+ * @param {string} value 原始文本
+ * @returns {string} 安全 XML 文本
+ */
+function escapeXml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+/**
+ * 生成页面共用的搜索与社交分享元信息。
+ * @param {object} options 元信息配置
+ * @returns {string} HTML 元信息
+ */
+function renderSeoMeta({ title, description, pathname, type = 'website' }) {
+  const canonicalUrl = `${SITE_URL}/${pathname}`;
+
+  return `
+  <meta name="description" content="${escapeHtml(description)}">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="${escapeHtml(type)}">
+  <meta property="og:site_name" content="${SITE_NAME}">
+  <meta property="og:title" content="${escapeHtml(title)}">
+  <meta property="og:description" content="${escapeHtml(description)}">
+  <meta property="og:url" content="${escapeHtml(canonicalUrl)}">
+  <meta property="og:image" content="${SOCIAL_IMAGE_URL}">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="前端AI实验室·关键词排名趋势与数据工具">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${escapeHtml(title)}">
+  <meta name="twitter:description" content="${escapeHtml(description)}">
+  <meta name="twitter:image" content="${SOCIAL_IMAGE_URL}">`;
+}
+
+/**
+ * 将结构化数据安全写入 JSON-LD 脚本。
+ * @param {object} data 结构化数据
+ * @returns {string} JSON-LD 脚本
+ */
+function renderStructuredData(data) {
+  return `<script type="application/ld+json">${serializeForHtml(data)}</script>`;
+}
+
+/**
+ * 根据每日报告计算全部域名的平均排名趋势。
+ * 同一日期同一域名在多个国家出现时，使用其自然排名平均值。
+ * @param {object[]} reports 按日期生成的完整报告
+ * @returns {object[]} 关键词排名趋势
+ */
+function buildRankTrendData(reports) {
+  const dates = reports
+    .map((report) => report.snapshotDate)
+    .sort((left, right) => left.localeCompare(right));
+  const keywordNames = [
+    ...new Set(
+      reports.flatMap((report) => report.keywords.map((keyword) => keyword.name)),
+    ),
+  ].sort((left, right) => left.localeCompare(right));
+  const countryNames = [
+    ...new Set(
+      reports.flatMap((report) =>
+        report.keywords.flatMap((keyword) =>
+          keyword.queries.map((query) => query.country),
+        ),
+      ),
+    ),
+  ].sort((left, right) => left.localeCompare(right));
+
+  // 按关键词和国家组合计算单个趋势，All 会聚合该维度的全部数据。
+  const buildTrend = (keywordFilter, countryFilter) => {
+    const dailyRanks = new Map();
+    const domainAppearances = new Map();
+
+    for (const report of reports) {
+      const positionsByDomain = new Map();
+
+      const visibleKeywords = report.keywords.filter(
+        (keyword) => keywordFilter === 'all' || keyword.name === keywordFilter,
+      );
+      for (const keyword of visibleKeywords) {
+        const visibleQueries = keyword.queries.filter(
+          (query) =>
+            countryFilter === 'all' || query.country === countryFilter,
+        );
+        for (const query of visibleQueries) {
+          for (const result of query.results) {
+            if (!positionsByDomain.has(result.domain)) {
+              positionsByDomain.set(result.domain, []);
+            }
+            positionsByDomain.get(result.domain).push(result.position);
+          }
+        }
+      }
+
+      const ranks = new Map();
+      for (const [domain, positions] of positionsByDomain.entries()) {
+        const average =
+          positions.reduce((total, position) => total + position, 0) /
+          positions.length;
+        // 具体关键词与国家展示网站最靠前的真实名次，All 聚合视图保留平均值。
+        const rank =
+          keywordFilter !== 'all' && countryFilter !== 'all'
+            ? Math.min(...positions)
+            : Math.round(average * 10) / 10;
+        ranks.set(domain, rank);
+        domainAppearances.set(
+          domain,
+          (domainAppearances.get(domain) ?? 0) + positions.length,
+        );
+      }
+      dailyRanks.set(report.snapshotDate, ranks);
+    }
+
+    const latestDate = dates.at(-1);
+    const domains = [...domainAppearances.keys()]
+      .sort((left, right) => {
+        const appearanceOrder =
+          domainAppearances.get(right) - domainAppearances.get(left);
+        if (appearanceOrder !== 0) {
+          return appearanceOrder;
+        }
+        const leftRank = dailyRanks.get(latestDate)?.get(left) ?? Infinity;
+        const rightRank = dailyRanks.get(latestDate)?.get(right) ?? Infinity;
+        return leftRank - rightRank || left.localeCompare(right);
+      });
+
+    const series = domains.map((domain) => ({
+      domain,
+      points: dates.map((date) => ({
+        date,
+        rank: dailyRanks.get(date)?.get(domain) ?? null,
+      })),
+    }));
+    const observedRanks = series.flatMap((item) =>
+      item.points
+        .filter((point) => point.rank !== null)
+        .map((point) => point.rank),
+    );
+
+    return {
+      key: `${keywordFilter}::${countryFilter}`,
+      keyword: keywordFilter,
+      country: countryFilter,
+      name: `${keywordFilter} / ${countryFilter}`,
+      dates,
+      maximumRank: Math.max(10, Math.ceil(Math.max(...observedRanks, 10))),
+      series,
+    };
+  };
+
+  const trends = ['all', ...keywordNames].flatMap((keyword) =>
+    ['all', ...countryNames].map((country) => buildTrend(keyword, country)),
+  );
+
+  return {
+    keywords: keywordNames,
+    countries: countryNames,
+    trends,
+  };
+}
+
+/**
+ * 生成按需加载 JSON 数据的 HTML 报告。
+ * @param {object} reportData 报告数据
+ * @param {string} dataFileName 报告数据文件名
+ * @param {string} dataVersion 报告数据内容版本号
+ * @returns {string} HTML 内容
+ */
+function renderHtml(reportData, dataFileName, dataVersion) {
+  const snapshotDate = escapeHtml(reportData.snapshotDate);
+  const reportDataUrl = `../data/reports/${encodeURIComponent(dataFileName)}?v=${encodeURIComponent(dataVersion)}`;
+  const reportTitle = `${reportData.snapshotDate} 搜索排名数据简报 · ${SITE_NAME}`;
+  const reportDescription = `${reportData.snapshotDate} 关键词自然搜索排名简报，包含 ${reportData.keywordCount} 个关键词、${reportData.queryCount} 个搜索条件和 ${reportData.resultCount} 条排名记录。`;
+  const reportPath = `reports/${reportData.snapshotDate}.html`;
+  const reportUrl = `${SITE_URL}/${reportPath}`;
+  const reportStructuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Dataset',
+        '@id': `${reportUrl}#dataset`,
+        name: reportTitle,
+        description: reportDescription,
+        url: reportUrl,
+        inLanguage: 'zh-CN',
+        dateModified: reportData.generatedAt,
+        temporalCoverage: reportData.snapshotDate,
+        keywords: reportData.keywords.map((keyword) => keyword.name),
+        creator: {
+          '@type': 'Organization',
+          name: 'pzl',
+        },
+        isAccessibleForFree: true,
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: SITE_NAME,
+            item: `${SITE_URL}/`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: '数据档案',
+            item: `${SITE_URL}/archive.html`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: `${reportData.snapshotDate} 数据简报`,
+            item: reportUrl,
+          },
+        ],
+      },
+    ],
+  };
+
+  return `<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${escapeHtml(reportTitle)}</title>${renderSeoMeta({
+    title: reportTitle,
+    description: reportDescription,
+    pathname: reportPath,
+    type: 'article',
+  })}
+  <meta name="theme-color" content="#0b1220">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  ${renderStructuredData(reportStructuredData)}
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #111827;
+      --ink-soft: #64748b;
+      --paper: #f3f6fa;
+      --surface: #ffffff;
+      --line: #dfe6ee;
+      --orange: #7c3aed;
+      --orange-soft: #ede9fe;
+      --teal: #0891b2;
+      --teal-soft: #cffafe;
+      --navy: #0b1220;
+      --gold: #67e8f9;
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 3%, rgba(34, 211, 238, 0.1), transparent 27rem),
+        radial-gradient(circle at 95% 18%, rgba(124, 58, 237, 0.08), transparent 30rem),
+        var(--paper);
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+
+    a { color: inherit; }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 72px;
+    }
+
+    .site-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: center;
+      min-height: 64px;
+      margin-bottom: 18px;
+    }
+
+    .site-brand {
+      display: inline-flex;
+      gap: 11px;
+      align-items: center;
+      color: var(--ink);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .site-brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 12px;
+      color: #67e8f9;
+      background: #0d1b2a;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 14px;
+    }
+
+    .site-nav-meta {
+      color: var(--ink-soft);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 46px;
+      border-radius: 28px;
+      color: #fff;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        radial-gradient(circle at 88% 10%, rgba(34, 211, 238, 0.28), transparent 25rem),
+        linear-gradient(135deg, #0b1220, #14283d 70%, #153e53);
+      background-size: 32px 32px, 32px 32px, auto, auto;
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 290px;
+      height: 290px;
+      right: -96px;
+      top: -126px;
+      border: 52px solid rgba(103, 232, 249, 0.12);
+      border-radius: 50%;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      font-size: clamp(34px, 6vw, 64px);
+      font-weight: 700;
+      line-height: 1.06;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-copy {
+      max-width: 680px;
+      margin: 20px 0 0;
+      color: rgba(255, 250, 240, 0.74);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .back-link {
+      position: relative;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 24px;
+      color: rgba(255, 250, 240, 0.76);
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: #fff; }
+
+    .summary-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 720px;
+      margin-top: 34px;
+    }
+
+    .summary {
+      padding: 18px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .summary strong {
+      display: block;
+      font-family: Georgia, serif;
+      font-size: 30px;
+      font-weight: 500;
+    }
+
+    .summary span {
+      color: rgba(255, 250, 240, 0.66);
+      font-size: 13px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin: 38px 0 24px;
+      padding-bottom: 4px;
+    }
+
+    .toolbar-label {
+      flex: 0 0 auto;
+      margin-right: 4px;
+      color: var(--ink-soft);
+      font-size: 13px;
+      line-height: 40px;
+    }
+
+    .keyword-tabs {
+      display: flex;
+      min-width: 0;
+      flex: 1 1 auto;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .keyword-button,
+    .country-button {
+      flex: 0 0 auto;
+      max-width: 100%;
+      appearance: none;
+      padding: 10px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: rgba(255, 253, 248, 0.72);
+      font: inherit;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      white-space: normal;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+    }
+
+    .keyword-button:hover,
+    .country-button:hover { transform: translateY(-1px); }
+
+    .keyword-button[aria-selected="true"],
+    .country-button[aria-pressed="true"] {
+      border-color: var(--navy);
+      color: #fff;
+      background: var(--navy);
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      margin: 34px 0 16px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-family: Georgia, "Songti SC", serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 500;
+      letter-spacing: -0.025em;
+    }
+
+    .section-heading p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr 0.8fr;
+      gap: 16px;
+    }
+
+    .panel {
+      min-width: 0;
+      padding: 24px;
+      border: 1px solid rgba(222, 215, 200, 0.9);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 12px 30px rgba(20, 33, 61, 0.05);
+    }
+
+    .panel h3 {
+      margin: 0 0 4px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .panel-subtitle {
+      margin: 0 0 24px;
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(68px, 0.65fr) minmax(120px, 1.7fr) 28px;
+      gap: 10px;
+      align-items: center;
+      margin: 12px 0;
+    }
+
+    .bar-label {
+      overflow: hidden;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bar-track {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #e8edf3;
+    }
+
+    .bar-fill {
+      height: 100%;
+      min-width: 5px;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--orange), #a78bfa);
+    }
+
+    .bar-fill.teal {
+      background: linear-gradient(90deg, var(--teal), #67e8f9);
+    }
+
+    .bar-value {
+      font-family: Georgia, serif;
+      font-size: 16px;
+      text-align: right;
+    }
+
+    .donut-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 170px;
+    }
+
+    .donut {
+      position: relative;
+      display: grid;
+      width: 142px;
+      height: 142px;
+      place-items: center;
+      border-radius: 50%;
+      background: conic-gradient(var(--teal) calc(var(--value) * 1%), #e8edf3 0);
+    }
+
+    .donut::before {
+      content: "";
+      position: absolute;
+      width: 98px;
+      height: 98px;
+      border-radius: 50%;
+      background: var(--surface);
+    }
+
+    .donut-value {
+      position: relative;
+      font-family: Georgia, serif;
+      font-size: 31px;
+    }
+
+    .overlap-caption {
+      margin: 8px 0 0;
+      color: var(--ink-soft);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .country-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .result-card {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 14px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .result-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(20, 33, 61, 0.08);
+    }
+
+    .position {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 13px;
+      color: var(--navy);
+      background: var(--orange-soft);
+      font-family: Georgia, serif;
+      font-size: 18px;
+    }
+
+    .result-title {
+      display: inline;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.45;
+      text-decoration: none;
+    }
+
+    .result-title:hover { color: var(--orange); }
+
+    .result-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      margin: 7px 0 9px;
+      color: var(--teal);
+      font-size: 11px;
+    }
+
+    .result-snippet {
+      display: -webkit-box;
+      overflow: hidden;
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 12px;
+      line-height: 1.65;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+    }
+
+    .empty {
+      padding: 36px;
+      color: var(--ink-soft);
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: 34px;
+      color: var(--ink-soft);
+      font-size: 12px;
+      text-align: center;
+    }
+
+${DATA_LOADER_STYLES}
+
+    @media (max-width: 900px) {
+      .insight-grid { grid-template-columns: 1fr 1fr; }
+      .insight-grid .panel:last-child { grid-column: 1 / -1; }
+      .results-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .page { width: min(100% - 20px, 1180px); padding-top: 10px; }
+      .hero { padding: 30px 22px; border-radius: 20px; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .toolbar { display: block; }
+      .toolbar-label { display: block; margin: 0 0 10px; line-height: 1.4; }
+      .insight-grid { grid-template-columns: 1fr; }
+      .insight-grid .panel:last-child { grid-column: auto; }
+      .section-heading { display: block; }
+      .section-heading p { margin-top: 8px; }
+      .panel { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="site-nav">
+      <a class="site-brand" href="../index.html" aria-label="返回前端AI实验室首页">
+        <span class="site-brand-mark">&lt;/&gt;</span>
+        <span>前端AI实验室</span>
+      </a>
+      <span class="site-nav-meta">DATA BRIEF / ${snapshotDate}</span>
+    </div>
+    <header class="hero">
+      <a class="back-link" href="../archive.html">← 返回数据档案</a>
+      <p class="eyebrow">Frontend AI Lab · Daily Intelligence</p>
+      <h1>${snapshotDate}<br>数据简报</h1>
+      <p class="hero-copy">聚合关键词在全球市场中的自然搜索表现，提供域名分布、排名位置和跨市场重合度工具。</p>
+      <div class="summary-grid" aria-label="报告概览">
+        <div class="summary"><strong id="keyword-count"></strong><span>关键词</span></div>
+        <div class="summary"><strong id="query-count"></strong><span>搜索条件</span></div>
+        <div class="summary"><strong id="result-count"></strong><span>自然搜索结果</span></div>
+      </div>
+    </header>
+
+    <nav class="toolbar" aria-label="选择关键词">
+      <span class="toolbar-label">关键词</span>
+      <div class="keyword-tabs" id="keyword-tabs" role="tablist"></div>
+    </nav>
+
+    <section id="report" aria-live="polite">
+      <!-- Fetch 完成前展示可访问的轻量加载状态。 -->
+      <div class="data-loader" role="status" aria-label="正在加载日报数据">
+        <div class="loader-content">
+          <span class="loader-orbit" aria-hidden="true"></span>
+          <span class="loader-kicker">DATA PIPELINE / SYNCING</span>
+          <strong class="loader-title">正在构建数据视图</strong>
+          <span class="loader-detail">加载排名、域名分布与跨市场洞察</span>
+          <span class="loader-progress" aria-hidden="true"></span>
+        </div>
+      </div>
+    </section>
+    <footer class="footer" id="generated-time"></footer>
+  </main>
+
+  <script>
+    (async () => {
+    // 按需加载当前日期的报告数据，避免把大体积 JSON 嵌入 HTML。
+    const reportResponse = await fetch('${reportDataUrl}');
+    if (!reportResponse.ok) {
+      throw new Error('报告数据请求失败：HTTP ' + reportResponse.status);
+    }
+    const reportData = await reportResponse.json();
+    const countryNames = {
+      cn: '中国',
+      us: '美国',
+      gb: '英国',
+      jp: '日本',
+      de: '德国',
+      fr: '法国',
+      ca: '加拿大',
+      au: '澳大利亚',
+      in: '印度',
+      br: '巴西',
+      ph: '菲律宾',
+      mx: '墨西哥',
+      default: '默认地区'
+    };
+    let activeKeywordIndex = 0;
+    let activeCountry = 'all';
+
+    // 创建带文本内容的元素，避免把搜索结果作为 HTML 直接插入。
+    function createElement(tag, className, text) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      if (text !== undefined) element.textContent = text;
+      return element;
+    }
+
+    // 将国家代码转换为中文名称，同时保留未知国家代码。
+    function formatCountry(country) {
+      return countryNames[country] || country.toUpperCase();
+    }
+
+    // 格式化报告生成时间。
+    function formatDate(value) {
+      if (!value) return '未知时间';
+      return new Intl.DateTimeFormat('zh-CN', {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      }).format(new Date(value));
+    }
+
+    // 创建横向条形图。
+    function buildBarChart(items, valueKey, labelKey, colorClass) {
+      const fragment = document.createDocumentFragment();
+      const maximum = Math.max(1, ...items.map((item) => item[valueKey]));
+
+      items.forEach((item) => {
+        const row = createElement('div', 'bar-row');
+        const label = createElement('span', 'bar-label', item[labelKey]);
+        label.title = item[labelKey];
+        const track = createElement('div', 'bar-track');
+        const fill = createElement('div', 'bar-fill' + (colorClass ? ' ' + colorClass : ''));
+        fill.style.width = Math.max(4, (item[valueKey] / maximum) * 100) + '%';
+        track.appendChild(fill);
+        row.append(label, track, createElement('span', 'bar-value', item[valueKey]));
+        fragment.appendChild(row);
+      });
+
+      return fragment;
+    }
+
+    // 创建单个结果卡片。
+    function buildResultCard(result, query) {
+      const card = createElement('article', 'result-card');
+      card.dataset.country = query.country;
+      const position = createElement('div', 'position', String(result.position));
+      const body = createElement('div');
+      const title = createElement('a', 'result-title', result.title);
+
+      try {
+        const url = new URL(result.link);
+        if (url.protocol === 'http:' || url.protocol === 'https:') {
+          title.href = url.href;
+          title.target = '_blank';
+          title.rel = 'noopener noreferrer';
+        }
+      } catch {
+        title.removeAttribute('href');
+      }
+
+      const meta = createElement('div', 'result-meta');
+      meta.append(
+        createElement('span', '', result.domain),
+        createElement('span', '', formatCountry(query.country)),
+        createElement('span', '', query.language)
+      );
+      if (result.date) meta.appendChild(createElement('span', '', result.date));
+      if (result.rating !== null) {
+        const ratingText = result.ratingCount === null
+          ? '评分 ' + result.rating
+          : '评分 ' + result.rating + ' · ' + result.ratingCount.toLocaleString('zh-CN') + ' 条';
+        meta.appendChild(createElement('span', '', ratingText));
+      }
+
+      body.append(title, meta, createElement('p', 'result-snippet', result.snippet || '暂无摘要'));
+      card.append(position, body);
+      return card;
+    }
+
+    // 根据当前关键词和国家筛选状态刷新报告。
+    function renderReport() {
+      const keyword = reportData.keywords[activeKeywordIndex];
+      const report = document.getElementById('report');
+      report.replaceChildren();
+
+      if (!keyword) {
+        report.appendChild(createElement('div', 'empty', '暂无可展示的搜索结果'));
+        return;
+      }
+
+      document.querySelectorAll('.keyword-button').forEach((button, index) => {
+        button.setAttribute('aria-selected', String(index === activeKeywordIndex));
+      });
+
+      const heading = createElement('div', 'section-heading');
+      heading.append(
+        createElement('h2', '', keyword.name),
+        createElement(
+          'p',
+          '',
+          keyword.resultCount + ' 条结果 · ' + keyword.uniqueDomainCount + ' 个独立域名'
+        )
+      );
+      report.appendChild(heading);
+
+      const insightGrid = createElement('div', 'insight-grid');
+      const countryPanel = createElement('section', 'panel');
+      countryPanel.append(
+        createElement('h3', '', '国家结果量'),
+        createElement('p', 'panel-subtitle', '每份搜索数据中的实际自然结果数量')
+      );
+      const countryItems = keyword.queries.map((query) => ({
+        label: formatCountry(query.country),
+        count: query.results.length
+      }));
+      countryPanel.appendChild(buildBarChart(countryItems, 'count', 'label', ''));
+
+      const domainPanel = createElement('section', 'panel');
+      domainPanel.append(
+        createElement('h3', '', '热门域名'),
+        createElement('p', 'panel-subtitle', '同一域名在不同国家结果中出现的总次数')
+      );
+      domainPanel.appendChild(
+        buildBarChart(keyword.domainCounts.slice(0, 8), 'count', 'domain', 'teal')
+      );
+
+      const overlapPanel = createElement('section', 'panel');
+      overlapPanel.append(
+        createElement('h3', '', '跨国家重合度'),
+        createElement('p', 'panel-subtitle', '共同域名占全部独立域名的比例')
+      );
+      const overlap = keyword.overlaps[0];
+      if (overlap) {
+        const donutWrap = createElement('div', 'donut-wrap');
+        const donut = createElement('div', 'donut');
+        donut.style.setProperty('--value', overlap.rate);
+        donut.setAttribute('role', 'img');
+        donut.setAttribute('aria-label', '域名重合度 ' + overlap.rate + '%');
+        donut.appendChild(createElement('span', 'donut-value', overlap.rate + '%'));
+        donutWrap.appendChild(donut);
+        overlapPanel.append(
+          donutWrap,
+          createElement(
+            'p',
+            'overlap-caption',
+            formatCountry(overlap.leftCountry) + ' 与 ' +
+              formatCountry(overlap.rightCountry) + ' 共有 ' +
+              overlap.common + ' 个域名'
+          )
+        );
+      } else {
+        overlapPanel.appendChild(createElement('div', 'empty', '至少需要两个国家的数据'));
+      }
+
+      insightGrid.append(countryPanel, domainPanel, overlapPanel);
+      report.appendChild(insightGrid);
+
+      const resultHeading = createElement('div', 'section-heading');
+      resultHeading.append(
+        createElement('h2', '', '搜索明细'),
+        createElement('p', '', '点击标题可打开原始页面')
+      );
+      report.appendChild(resultHeading);
+
+      const countryToolbar = createElement('div', 'country-toolbar');
+      const countries = ['all', ...new Set(keyword.queries.map((query) => query.country))];
+      countries.forEach((country) => {
+        const button = createElement(
+          'button',
+          'country-button',
+          country === 'all' ? '全部国家' : formatCountry(country)
+        );
+        button.type = 'button';
+        button.setAttribute('aria-pressed', String(activeCountry === country));
+        button.addEventListener('click', () => {
+          activeCountry = country;
+          renderReport();
+        });
+        countryToolbar.appendChild(button);
+      });
+      report.appendChild(countryToolbar);
+
+      const resultsGrid = createElement('div', 'results-grid');
+      keyword.queries
+        .filter((query) => activeCountry === 'all' || query.country === activeCountry)
+        .forEach((query) => {
+          query.results.forEach((result) => {
+            resultsGrid.appendChild(buildResultCard(result, query));
+          });
+        });
+      report.appendChild(resultsGrid);
+    }
+
+    // 初始化报告概览和关键词切换。
+    document.getElementById('keyword-count').textContent = reportData.keywordCount;
+    document.getElementById('query-count').textContent = reportData.queryCount;
+    document.getElementById('result-count').textContent = reportData.resultCount;
+    document.getElementById('generated-time').textContent =
+      '前端AI实验室 · 报告生成于 ' + formatDate(reportData.generatedAt) + ' · Copyright © pzl';
+
+    const tabs = document.getElementById('keyword-tabs');
+    reportData.keywords.forEach((keyword, index) => {
+      const button = createElement('button', 'keyword-button', keyword.name);
+      button.type = 'button';
+      button.setAttribute('role', 'tab');
+      button.setAttribute('aria-selected', String(index === activeKeywordIndex));
+      button.addEventListener('click', () => {
+        activeKeywordIndex = index;
+        activeCountry = 'all';
+        renderReport();
+      });
+      tabs.appendChild(button);
+    });
+
+    renderReport();
+    })().catch((error) => {
+      console.error(error);
+      document.getElementById('report').textContent =
+        '报告数据加载失败，请刷新页面后重试。';
+    });
+  </script>
+</body>
+</html>
+`;
+}
+
+/**
+ * 生成历史报告列表页。
+ * @param {object[]} reports 历史报告摘要
+ * @param {string} dataVersion 首页趋势数据内容版本号
+ * @returns {string} HTML 内容
+ */
+function renderIndexHtml(reports, dataVersion) {
+  const totalResults = reports.reduce(
+    (total, report) => total + report.resultCount,
+    0,
+  );
+  const pageTitle = `${SITE_NAME} · 关键词排名趋势与前端数据工具`;
+  const pageDescription = '前端AI实验室提供关键词自然搜索排名趋势、全球市场观察与前端数据工具，支持网站、关键词和日期筛选。';
+  const pageStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${SITE_URL}/#website`,
+    url: `${SITE_URL}/`,
+    name: SITE_NAME,
+    alternateName: 'Frontend AI Lab',
+    description: pageDescription,
+    inLanguage: 'zh-CN',
+    publisher: {
+      '@type': 'Organization',
+      name: 'pzl',
+    },
+  };
+
+  return `<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${escapeHtml(pageTitle)}</title>${renderSeoMeta({
+    title: pageTitle,
+    description: pageDescription,
+    pathname: '',
+  })}
+  <meta name="theme-color" content="#19324d">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  ${renderStructuredData(pageStructuredData)}
+  <link rel="stylesheet" href="vendor/flatpickr.min.css">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #14213d;
+      --ink-soft: #5d687c;
+      --paper: #f3f6fa;
+      --surface: #ffffff;
+      --line: #dfe6ee;
+      --orange: #ee6c4d;
+      --orange-soft: #f9ddd4;
+      --teal: #2a9d8f;
+      --navy: #19324d;
+      --gold: #e9c46a;
+      --shadow: 0 18px 46px rgba(20, 33, 61, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(82, 129, 181, 0.12), transparent 28rem),
+        radial-gradient(circle at 94% 24%, rgba(42, 157, 143, 0.1), transparent 28rem),
+        var(--paper);
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+
+    .page {
+      width: min(1440px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 24px 0 76px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: center;
+      min-height: 64px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      gap: 11px;
+      align-items: center;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 12px;
+      color: #67e8f9;
+      background: #0d1b2a;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 14px;
+      box-shadow: 0 8px 20px rgba(13, 27, 42, 0.18);
+    }
+
+    .main-nav {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+    }
+
+    .main-nav a {
+      color: var(--ink-soft);
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .main-nav a:hover { color: var(--teal); }
+
+    .nav-badge {
+      padding: 7px 11px;
+      border: 1px solid #d8e0e9;
+      border-radius: 999px;
+      background: #fff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 36px;
+      align-items: end;
+      overflow: hidden;
+      padding: 34px 38px;
+      border-radius: 24px;
+      color: #fff;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        radial-gradient(circle at 88% 12%, rgba(34, 211, 238, 0.3), transparent 24rem),
+        linear-gradient(135deg, #0b1220, #14283d 65%, #153e53);
+      background-size: 32px 32px, 32px 32px, auto, auto;
+      box-shadow: 0 24px 60px rgba(20, 33, 61, 0.16);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: #67e8f9;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .intro {
+      max-width: 760px;
+      margin: 16px 0 0;
+      color: rgba(255, 255, 255, 0.68);
+      line-height: 1.8;
+    }
+
+    .total {
+      min-width: 180px;
+      padding: 22px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .total strong {
+      display: block;
+      font-family: Georgia, serif;
+      font-size: 38px;
+      font-weight: 500;
+    }
+
+    .total span {
+      color: rgba(255, 250, 240, 0.68);
+      font-size: 12px;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .tool-card {
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 10px 28px rgba(20, 33, 61, 0.045);
+    }
+
+    .tool-card::after {
+      content: "";
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      right: -35px;
+      bottom: -45px;
+      border-radius: 50%;
+      background: var(--tool-glow, rgba(34, 211, 238, 0.12));
+    }
+
+    .tool-index {
+      color: var(--teal);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+    }
+
+    .tool-card strong {
+      display: block;
+      margin: 10px 0 4px;
+      font-size: 22px;
+    }
+
+    .tool-card h2 {
+      margin: 0 0 7px;
+      font-size: 14px;
+    }
+
+    .tool-card p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .trend-section {
+      margin-top: 24px;
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .trend-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: start;
+      margin-bottom: 20px;
+    }
+
+    .trend-heading h2 {
+      margin: 0 0 6px;
+      font-family: Georgia, "Songti SC", serif;
+      font-size: 28px;
+      font-weight: 500;
+    }
+
+    .trend-heading p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .trend-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .trend-filter-panel {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border: 1px solid #e5ebf1;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fbfcfe, #f7f9fc);
+    }
+
+    .trend-filter-row {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .trend-filter-label {
+      padding-top: 8px;
+      color: var(--ink-soft);
+      font-size: 11px;
+    }
+
+    .trend-button {
+      appearance: none;
+      max-width: 100%;
+      padding: 8px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--surface);
+      font: inherit;
+      font-size: 12px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      white-space: normal;
+      cursor: pointer;
+    }
+
+    .trend-button[aria-pressed="true"] {
+      border-color: var(--navy);
+      color: #fff;
+      background: var(--navy);
+    }
+
+    .range-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border: 1px solid #e5ebf1;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #f9fbfd, #f5f8fb);
+    }
+
+    .range-presets,
+    .custom-range {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .range-label {
+      margin-right: 3px;
+      color: var(--ink-soft);
+      font-size: 11px;
+    }
+
+    .range-button {
+      appearance: none;
+      padding: 8px 13px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: var(--ink-soft);
+      background: transparent;
+      font: inherit;
+      font-size: 11px;
+      cursor: pointer;
+      transition: color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+
+    .range-button:hover {
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .range-button[aria-pressed="true"] {
+      color: #fff;
+      background: linear-gradient(135deg, #173955, #24627a);
+      box-shadow: 0 6px 16px rgba(25, 50, 77, 0.18);
+    }
+
+    .date-picker-shell {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .calendar-icon {
+      position: absolute;
+      z-index: 1;
+      left: 12px;
+      width: 16px;
+      height: 16px;
+      color: var(--teal);
+      pointer-events: none;
+    }
+
+    .date-input {
+      width: 238px;
+      max-width: 100%;
+      padding: 9px 12px 9px 38px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--ink);
+      background: var(--surface);
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(20, 33, 61, 0.04);
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .date-input:hover,
+    .date-input:focus {
+      outline: none;
+      border-color: rgba(42, 157, 143, 0.65);
+      box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
+    }
+
+    .flatpickr-calendar {
+      width: auto;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      box-shadow: 0 28px 70px rgba(20, 33, 61, 0.2);
+    }
+
+    .flatpickr-calendar.arrowTop::before,
+    .flatpickr-calendar.arrowTop::after {
+      display: none;
+    }
+
+    .flatpickr-months {
+      align-items: center;
+      padding: 4px 6px 8px;
+    }
+
+    .flatpickr-months .flatpickr-month {
+      height: 44px;
+      color: var(--ink);
+      background: transparent;
+    }
+
+    .flatpickr-current-month {
+      padding-top: 8px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .flatpickr-current-month .flatpickr-monthDropdown-months,
+    .flatpickr-current-month input.cur-year {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .flatpickr-months .flatpickr-prev-month,
+    .flatpickr-months .flatpickr-next-month {
+      top: 14px;
+      display: grid;
+      width: 32px;
+      height: 32px;
+      padding: 8px;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--ink-soft);
+    }
+
+    .flatpickr-months .flatpickr-prev-month:hover,
+    .flatpickr-months .flatpickr-next-month:hover {
+      color: var(--teal);
+      background: rgba(42, 157, 143, 0.1);
+    }
+
+    .flatpickr-weekdays {
+      height: 34px;
+      border-radius: 10px;
+      background: #f5f8fb;
+    }
+
+    span.flatpickr-weekday {
+      color: #8490a2;
+      font-size: 11px;
+      font-weight: 500;
+      background: transparent;
+    }
+
+    .flatpickr-days {
+      border: 0;
+    }
+
+    .dayContainer {
+      padding: 6px;
+    }
+
+    .flatpickr-day {
+      border-radius: 10px;
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .flatpickr-day:hover {
+      border-color: rgba(42, 157, 143, 0.12);
+      background: rgba(42, 157, 143, 0.1);
+    }
+
+    .flatpickr-day.today {
+      border-color: rgba(42, 157, 143, 0.6);
+      color: var(--teal);
+    }
+
+    .flatpickr-day.selected,
+    .flatpickr-day.startRange,
+    .flatpickr-day.endRange {
+      border-color: var(--teal);
+      color: #fff;
+      background: var(--teal);
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(20, 33, 61, 0.24);
+      box-shadow: 0 5px 12px rgba(42, 157, 143, 0.25);
+    }
+
+    .flatpickr-day.inRange {
+      border-color: rgba(42, 157, 143, 0.1);
+      background: rgba(42, 157, 143, 0.12);
+      box-shadow: -5px 0 0 rgba(42, 157, 143, 0.12), 5px 0 0 rgba(42, 157, 143, 0.12);
+    }
+
+    .flatpickr-day.prevMonthDay,
+    .flatpickr-day.nextMonthDay {
+      color: #bdc5d0;
+    }
+
+    .chart-frame {
+      width: 100%;
+      height: 520px;
+    }
+
+    .chart-frame > .data-loader {
+      height: 100%;
+      min-height: 0;
+    }
+
+${DATA_LOADER_STYLES}
+
+    .rank-chart {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-grid {
+      stroke: #ddd6c9;
+      stroke-width: 1;
+    }
+
+    .chart-axis-label {
+      fill: var(--ink-soft);
+      font-size: 11px;
+    }
+
+    .chart-line {
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .chart-point {
+      stroke: var(--surface);
+      stroke-width: 2;
+    }
+
+    .legend-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-top: 17px;
+    }
+
+    .trend-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px 18px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      gap: 7px;
+      align-items: center;
+      appearance: none;
+      padding: 7px 10px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: var(--ink-soft);
+      background: transparent;
+      font: inherit;
+      font-size: 11px;
+      cursor: pointer;
+      opacity: 0.48;
+      transition: opacity 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .legend-item:hover { opacity: 0.8; }
+
+    .legend-item[aria-pressed="true"] {
+      border-color: var(--line);
+      color: var(--ink);
+      background: var(--surface);
+      opacity: 1;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .legend-actions {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 7px;
+    }
+
+    .legend-action {
+      appearance: none;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink-soft);
+      background: transparent;
+      font: inherit;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .legend-action:hover {
+      color: var(--ink);
+      background: var(--surface);
+    }
+
+    .trend-note {
+      margin: 14px 0 0;
+      color: var(--ink-soft);
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .list-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 38px 0 18px;
+    }
+
+    .list-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .list-heading span {
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .report-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .report-card {
+      display: grid;
+      grid-template-columns: 124px minmax(0, 1fr);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 12px 30px rgba(20, 33, 61, 0.045);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .report-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .date-block {
+      display: grid;
+      align-content: center;
+      padding: 24px;
+      color: #fff;
+      background: linear-gradient(150deg, #19324d, #28516f);
+    }
+
+    .date-block span {
+      color: var(--gold);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+    }
+
+    .date-block strong {
+      margin-top: 3px;
+      font-family: Georgia, serif;
+      font-size: 30px;
+      font-weight: 500;
+    }
+
+    .report-content { padding: 25px 28px; }
+
+    .report-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .label {
+      margin: 0 0 3px;
+      color: var(--teal);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+
+    .report-heading h2 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+    .open-link {
+      flex: 0 0 auto;
+      padding: 10px 15px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--orange);
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .open-link:hover { background: #d95e41; }
+
+    .metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 24px;
+      margin: 20px 0 14px;
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .metrics strong {
+      margin-right: 3px;
+      color: var(--ink);
+      font-family: Georgia, serif;
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    .keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .keyword {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: var(--navy);
+      background: var(--orange-soft);
+      font-size: 12px;
+    }
+
+    .keyword small {
+      color: var(--ink-soft);
+      font-size: 10px;
+    }
+
+    .footer {
+      margin-top: 34px;
+      color: var(--ink-soft);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      .page { width: min(100% - 20px, 1440px); padding-top: 18px; }
+      .topbar { align-items: flex-start; }
+      .main-nav { gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+      .main-nav a:not(.nav-badge) { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 30px 24px; }
+      .total { width: 100%; }
+      .tool-grid { grid-template-columns: 1fr; }
+      .trend-section { padding: 22px 18px; }
+      .trend-heading { display: block; }
+      .trend-filter-row { grid-template-columns: 1fr; gap: 6px; }
+      .trend-filter-label { padding-top: 0; }
+      .range-toolbar { display: block; }
+      .custom-range { margin-top: 10px; }
+      .legend-toolbar { display: block; }
+      .legend-actions { margin-top: 12px; }
+      .report-card { grid-template-columns: 1fr; }
+      .date-block { display: flex; gap: 8px; align-items: baseline; padding: 14px 20px; }
+      .date-block strong { font-size: 22px; }
+      .report-content { padding: 21px 20px; }
+      .report-heading { align-items: flex-start; }
+    }
+
+    @media (max-width: 430px) {
+      .report-heading { display: block; }
+      .open-link { display: inline-block; margin-top: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a class="brand" href="index.html" aria-label="前端AI实验室首页">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>前端AI实验室</span>
+      </a>
+      <nav class="main-nav" aria-label="主导航">
+        <a href="#trends">排名趋势</a>
+        <a href="archive.html">数据档案</a>
+        <a class="nav-badge" href="#trends">AI × Frontend</a>
+      </nav>
+    </div>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Frontend Intelligence Workspace</p>
+        <h1>前端 AI 实验室</h1>
+        <p class="intro">面向前端与增长团队的资讯和工具工作台，从关键词排名趋势开始，持续接入更多可操作的 AI 与前端内容。</p>
+      </div>
+      <div class="total">
+        <strong>${totalResults}</strong>
+        <span>累计排名记录 · 持续更新</span>
+      </div>
+    </header>
+
+    <section class="trend-section" id="trends" aria-labelledby="trend-title">
+      <div class="trend-heading">
+        <div>
+          <h2 id="trend-title">排名趋势</h2>
+          <p>主要域名在不同日期、不同国家结果中的平均自然排名，越靠上代表表现越好。</p>
+        </div>
+      </div>
+      <div class="trend-filter-panel" aria-label="趋势筛选条件">
+        <div class="trend-filter-row">
+          <span class="trend-filter-label">关键词</span>
+          <div class="trend-tabs" id="keyword-trend-tabs" role="group" aria-label="选择趋势关键词"></div>
+        </div>
+        <div class="trend-filter-row">
+          <span class="trend-filter-label">国家</span>
+          <div class="trend-tabs" id="country-trend-tabs" role="group" aria-label="选择趋势国家"></div>
+        </div>
+      </div>
+      <div class="range-toolbar" aria-label="趋势时间范围">
+        <div class="range-presets">
+          <span class="range-label">时间范围</span>
+          <button class="range-button" type="button" data-range="3">最近 3 天</button>
+          <button class="range-button" type="button" data-range="7">最近一周</button>
+          <button class="range-button" type="button" data-range="30">最近一个月</button>
+          <button class="range-button" type="button" data-range="all">全部数据</button>
+        </div>
+        <div class="custom-range">
+          <label class="range-label" for="date-range">自定义日期</label>
+          <div class="date-picker-shell">
+            <svg class="calendar-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 3v3m10-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <input class="date-input" id="date-range" type="text" placeholder="选择日期范围" aria-label="自定义日期范围">
+          </div>
+        </div>
+      </div>
+      <div class="chart-frame" id="rank-chart">
+        <!-- Fetch 完成前展示趋势数据管线状态。 -->
+        <div class="data-loader" role="status" aria-label="正在加载趋势数据">
+          <div class="loader-content">
+            <span class="loader-orbit" aria-hidden="true"></span>
+            <span class="loader-kicker">RANK ENGINE / INITIALIZING</span>
+            <strong class="loader-title">正在同步排名趋势</strong>
+            <span class="loader-detail">准备关键词、国家与网站序列</span>
+            <span class="loader-progress" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+      <p class="trend-note" id="trend-note"></p>
+    </section>
+
+    <footer class="footer">前端AI实验室 · Copyright © pzl</footer>
+  </main>
+  <script src="vendor/echarts.min.js"></script>
+  <script src="vendor/flatpickr.min.js"></script>
+  <script src="vendor/flatpickr-zh.js"></script>
+  <script>
+    (async () => {
+    // 按需加载趋势数据，减少首页 HTML 体积并允许数据独立缓存。
+    const trendResponse = await fetch('data/rank-trends.json?v=${encodeURIComponent(dataVersion)}');
+    if (!trendResponse.ok) {
+      throw new Error('趋势数据请求失败：HTTP ' + trendResponse.status);
+    }
+    const rankTrendData = await trendResponse.json();
+    const rankTrends = rankTrendData.trends;
+    // 趋势图首次进入时默认展示排名靠前的网站数量。
+    const defaultVisibleDomainCount = 10;
+    const chartColors = ['#ee6c4d', '#2a9d8f', '#3d5a80', '#e9a23b', '#8b6bb1', '#577590'];
+    let activeTrendIndex = 0;
+    let activeKeyword = 'all';
+    let activeCountry = 'all';
+    let activeDateRange = '7';
+    const trendSelections = new Map();
+
+    // 创建安全的普通页面元素。
+    function createElement(tag, className, text) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      if (text !== undefined) element.textContent = text;
+      return element;
+    }
+
+    // 根据当前关键词和国家筛选获取趋势数据。
+    function getActiveTrend() {
+      return rankTrends.find(
+        (trend) =>
+          trend.keyword === activeKeyword && trend.country === activeCountry
+      );
+    }
+
+    // 将国家代码转换为筛选按钮文本。
+    function formatCountry(country) {
+      const countryNames = {
+        in: '印度',
+        us: '美国',
+        gb: '英国',
+        ca: '加拿大',
+        br: '巴西',
+        fr: '法国',
+        ph: '菲律宾',
+        mx: '墨西哥',
+        cn: '中国'
+      };
+      return countryNames[country] || country.toUpperCase();
+    }
+
+    // 创建 SVG 元素并设置属性。
+    function createSvgElement(tag, attributes) {
+      const element = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      Object.entries(attributes).forEach(([name, value]) => {
+        element.setAttribute(name, String(value));
+      });
+      return element;
+    }
+
+    // 获取当前关键词选中的网站，首次进入时默认显示排序靠前的十个网站。
+    function getSelectedDomains(trend) {
+      if (!trendSelections.has(trend.name)) {
+        trendSelections.set(
+          trend.name,
+          new Set(
+            trend.series
+              .slice(0, defaultVisibleDomainCount)
+              .map((series) => series.domain)
+          )
+        );
+      }
+      return trendSelections.get(trend.name);
+    }
+
+    // 按快捷模式更新当前关键词的网站筛选。
+    function setDomainSelection(mode) {
+      const trend = rankTrends[activeTrendIndex];
+      if (!trend) return;
+      const domains = mode === 'all'
+        ? trend.series.map((series) => series.domain)
+        : [];
+      trendSelections.set(trend.name, new Set(domains));
+      renderRankTrend();
+    }
+
+    // 根据预设或自定义日期计算当前可见日期。
+    function getVisibleDates(trend) {
+      if (activeDateRange === 'custom') {
+        const start = document.getElementById('range-start').value;
+        const end = document.getElementById('range-end').value;
+        return trend.dates.filter((date) => date >= start && date <= end);
+      }
+
+      if (activeDateRange === 'all') {
+        return trend.dates;
+      }
+
+      return trend.dates.slice(-Number(activeDateRange));
+    }
+
+    // 同步时间按钮和日期输入框状态。
+    function syncDateControls(trend, visibleDates) {
+      const startInput = document.getElementById('range-start');
+      const endInput = document.getElementById('range-end');
+      const minimum = trend.dates[0] || '';
+      const maximum = trend.dates[trend.dates.length - 1] || '';
+      startInput.min = minimum;
+      startInput.max = maximum;
+      endInput.min = minimum;
+      endInput.max = maximum;
+
+      if (activeDateRange !== 'custom' && visibleDates.length > 0) {
+        startInput.value = visibleDates[0];
+        endInput.value = visibleDates[visibleDates.length - 1];
+      }
+
+      document.querySelectorAll('.range-button').forEach((button) => {
+        button.setAttribute(
+          'aria-pressed',
+          String(button.dataset.range === activeDateRange)
+        );
+      });
+    }
+
+    // 绘制当前关键词的域名排名趋势。
+    function renderRankTrend() {
+      const trend = rankTrends[activeTrendIndex];
+      const chart = document.getElementById('rank-chart');
+      const legend = document.getElementById('trend-legend');
+      const note = document.getElementById('trend-note');
+      chart.replaceChildren();
+      legend.replaceChildren();
+
+      document.querySelectorAll('.trend-button').forEach((button, index) => {
+        button.setAttribute('aria-selected', String(index === activeTrendIndex));
+      });
+
+      if (!trend || trend.series.length === 0) {
+        chart.appendChild(createElement('div', 'trend-note', '暂无排名趋势数据'));
+        note.textContent = '';
+        return;
+      }
+      const selectedDomains = getSelectedDomains(trend);
+      const visibleDates = getVisibleDates(trend);
+      syncDateControls(trend, visibleDates);
+
+      if (visibleDates.length === 0) {
+        chart.appendChild(createElement('div', 'trend-note', '所选日期范围内没有数据'));
+        note.textContent = '请调整开始日期或结束日期。';
+        return;
+      }
+
+      const width = 920;
+      const height = 360;
+      const margin = { top: 22, right: 24, bottom: 52, left: 52 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const svg = createSvgElement('svg', {
+        class: 'rank-chart',
+        viewBox: '0 0 ' + width + ' ' + height,
+        role: 'img',
+        'aria-label': trend.name + ' 域名排名趋势'
+      });
+      const xForIndex = (index) =>
+        visibleDates.length === 1
+          ? margin.left + plotWidth / 2
+          : margin.left + (index / (visibleDates.length - 1)) * plotWidth;
+      const yForRank = (rank) =>
+        margin.top + ((rank - 1) / Math.max(1, trend.maximumRank - 1)) * plotHeight;
+      const gridRanks = [...new Set([
+        1,
+        Math.ceil(trend.maximumRank / 2),
+        trend.maximumRank
+      ])];
+
+      gridRanks.forEach((rank) => {
+        const y = yForRank(rank);
+        svg.appendChild(createSvgElement('line', {
+          class: 'chart-grid',
+          x1: margin.left,
+          y1: y,
+          x2: width - margin.right,
+          y2: y
+        }));
+        const label = createSvgElement('text', {
+          class: 'chart-axis-label',
+          x: margin.left - 12,
+          y: y + 4,
+          'text-anchor': 'end'
+        });
+        label.textContent = '第 ' + rank + ' 名';
+        svg.appendChild(label);
+      });
+
+      const labelStride = Math.max(1, Math.ceil(visibleDates.length / 7));
+      visibleDates.forEach((date, index) => {
+        if (index % labelStride !== 0 && index !== visibleDates.length - 1) {
+          return;
+        }
+        const label = createSvgElement('text', {
+          class: 'chart-axis-label',
+          x: xForIndex(index),
+          y: height - 18,
+          'text-anchor': 'middle'
+        });
+        label.textContent = date.slice(5);
+        svg.appendChild(label);
+      });
+
+      trend.series.forEach((series, seriesIndex) => {
+        const color = chartColors[seriesIndex % chartColors.length];
+        const isSelected = selectedDomains.has(series.domain);
+
+        if (isSelected) {
+          let segment = [];
+          const ranksByDate = new Map(
+            series.points.map((point) => [point.date, point.rank])
+          );
+          const visiblePoints = visibleDates.map((date) => ({
+            date,
+            rank: ranksByDate.get(date) ?? null
+          }));
+          const drawSegment = () => {
+            if (segment.length >= 2) {
+              svg.appendChild(createSvgElement('polyline', {
+                class: 'chart-line',
+                points: segment.map((point) => point.x + ',' + point.y).join(' '),
+                stroke: color
+              }));
+            }
+            segment = [];
+          };
+
+          visiblePoints.forEach((point, pointIndex) => {
+            if (point.rank === null) {
+              drawSegment();
+              return;
+            }
+
+            const coordinate = {
+              x: xForIndex(pointIndex),
+              y: yForRank(point.rank)
+            };
+            segment.push(coordinate);
+            const circle = createSvgElement('circle', {
+              class: 'chart-point',
+              cx: coordinate.x,
+              cy: coordinate.y,
+              r: 4,
+              fill: color
+            });
+            const title = createSvgElement('title', {});
+            title.textContent =
+              series.domain + ' · ' + point.date + ' · 平均第 ' + point.rank + ' 名';
+            circle.appendChild(title);
+            svg.appendChild(circle);
+          });
+          drawSegment();
+        }
+
+        const legendItem = createElement('button', 'legend-item');
+        legendItem.type = 'button';
+        legendItem.setAttribute('aria-pressed', String(isSelected));
+        legendItem.setAttribute(
+          'aria-label',
+          (isSelected ? '隐藏 ' : '显示 ') + series.domain
+        );
+        const dot = createElement('span', 'legend-dot');
+        dot.style.background = color;
+        legendItem.append(dot, createElement('span', '', series.domain));
+        legendItem.addEventListener('click', () => {
+          if (selectedDomains.has(series.domain)) {
+            selectedDomains.delete(series.domain);
+          } else {
+            selectedDomains.add(series.domain);
+          }
+          renderRankTrend();
+        });
+        legend.appendChild(legendItem);
+      });
+
+      chart.appendChild(svg);
+      note.textContent = selectedDomains.size === 0
+        ? '请点击下方网站名称，选择需要显示的排名趋势。'
+        : visibleDates.length < 2
+        ? '当前范围只有一个历史日期，请扩大时间范围。'
+        : '当前范围 ' + visibleDates[0] + ' 至 ' +
+          visibleDates[visibleDates.length - 1] + ' · 已显示 ' +
+          selectedDomains.size + ' 个网站';
+    }
+
+    const legendSelections = new Map();
+    let customDateRange = null;
+    let rangePicker = null;
+    // 数据准备完成后先移除加载状态，再挂载 ECharts 画布。
+    const rankingChartElement = document.getElementById('rank-chart');
+    rankingChartElement.replaceChildren();
+    const rankingChart = window.echarts
+      ? window.echarts.init(rankingChartElement)
+      : null;
+
+    // 获取现代趋势图当前需要展示的日期范围。
+    function getModernVisibleDates(trend) {
+      if (activeDateRange === 'custom' && customDateRange) {
+        return trend.dates.filter(
+          (date) => date >= customDateRange[0] && date <= customDateRange[1]
+        );
+      }
+      if (activeDateRange === 'all') return trend.dates;
+      return trend.dates.slice(-Number(activeDateRange));
+    }
+
+    // 根据有效数据跨度决定单月或双月布局，避免短周期出现空白月份。
+    function getCalendarMonthCount(trend) {
+      if (window.innerWidth < 960 || trend.dates.length < 2) return 1;
+      const firstDate = new Date(trend.dates[0] + 'T00:00:00');
+      const lastDate = new Date(trend.dates[trend.dates.length - 1] + 'T00:00:00');
+      const spanDays = Math.round((lastDate - firstDate) / 86400000);
+      return spanDays >= 32 ? 2 : 1;
+    }
+
+    // 将当前时间范围同步到日历与快捷按钮。
+    function syncModernRangeControls(trend, visibleDates) {
+      document.querySelectorAll('.range-button').forEach((button) => {
+        button.setAttribute(
+          'aria-pressed',
+          String(button.dataset.range === activeDateRange)
+        );
+      });
+
+      if (!rangePicker || visibleDates.length === 0) return;
+      const calendarMode = trend.dates.length === 1 ? 'single' : 'range';
+      const calendarMonthCount = getCalendarMonthCount(trend);
+      if (rangePicker.config.mode !== calendarMode) {
+        rangePicker.set('mode', calendarMode);
+      }
+      rangePicker.calendarContainer.classList.toggle(
+        'rangeMode',
+        calendarMode === 'range'
+      );
+      if (rangePicker.config.showMonths !== calendarMonthCount) {
+        rangePicker.set('showMonths', calendarMonthCount);
+      }
+      rangePicker.set('minDate', trend.dates[0]);
+      rangePicker.set('maxDate', trend.dates[trend.dates.length - 1]);
+      const calendarSelection = calendarMode === 'single'
+        ? visibleDates[visibleDates.length - 1]
+        : [visibleDates[0], visibleDates[visibleDates.length - 1]];
+      rangePicker.setDate(calendarSelection, false);
+    }
+
+    // 为每个筛选组合建立独立图例状态，默认仅显示排序靠前的十个网站。
+    function getLegendSelection(trend) {
+      if (!legendSelections.has(trend.key)) {
+        const selection = Object.fromEntries(
+          trend.series.map((item, index) => [
+            item.domain,
+            index < defaultVisibleDomainCount
+          ])
+        );
+        legendSelections.set(trend.key, selection);
+      }
+      return legendSelections.get(trend.key);
+    }
+
+    // 使用 ECharts 绘制当前关键词的排名趋势。
+    function renderModernTrend() {
+      const trend = getActiveTrend();
+      const note = document.getElementById('trend-note');
+
+      document.querySelectorAll('[data-filter-type="keyword"]').forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.value === activeKeyword));
+      });
+      document.querySelectorAll('[data-filter-type="country"]').forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.value === activeCountry));
+      });
+
+      if (!rankingChart || !trend) {
+        document.getElementById('rank-chart').textContent =
+          '图表组件加载失败，请刷新页面后重试。';
+        note.textContent = '';
+        return;
+      }
+
+      const visibleDates = getModernVisibleDates(trend);
+      syncModernRangeControls(trend, visibleDates);
+      const selectedState = getLegendSelection(trend);
+      const series = trend.series.map((item) => {
+        const ranksByDate = new Map(
+          item.points.map((point) => [point.date, point.rank])
+        );
+        return {
+          name: item.domain,
+          type: 'line',
+          data: visibleDates.map((date) => ranksByDate.get(date) ?? null),
+          smooth: 0.28,
+          connectNulls: false,
+          symbol: 'circle',
+          symbolSize: 7,
+          showSymbol: visibleDates.length <= 14,
+          lineStyle: { width: 2.5 },
+          emphasis: { focus: 'series', lineStyle: { width: 4 } }
+        };
+      });
+      const zoom = [
+        {
+          type: 'inside',
+          xAxisIndex: 0,
+          filterMode: 'none',
+          zoomOnMouseWheel: false,
+          moveOnMouseWheel: true
+        }
+      ];
+
+      if (visibleDates.length > 14) {
+        zoom.push({
+          type: 'slider',
+          xAxisIndex: 0,
+          filterMode: 'none',
+          height: 18,
+          bottom: 52,
+          borderColor: 'transparent',
+          backgroundColor: '#edf1f5',
+          fillerColor: 'rgba(42,157,143,0.18)',
+          handleStyle: { color: '#2a9d8f' },
+          textStyle: { color: '#6b7688' }
+        });
+      }
+
+      rankingChart.setOption(
+        {
+          animationDuration: 450,
+          color: chartColors,
+          tooltip: {
+            trigger: 'axis',
+            confine: true,
+            backgroundColor: 'rgba(20,33,61,0.94)',
+            borderWidth: 0,
+            textStyle: { color: '#fff' },
+            valueFormatter: (value) =>
+              value === null || value === undefined ? '-' : '第 ' + value + ' 名'
+          },
+          legend: {
+            type: 'scroll',
+            bottom: 4,
+            data: trend.series.map((item) => item.domain),
+            selected: selectedState,
+            icon: 'roundRect',
+            itemWidth: 16,
+            itemHeight: 8,
+            itemGap: 18,
+            textStyle: { color: '#5d687c', fontSize: 11 }
+          },
+          grid: {
+            left: 54,
+            right: 24,
+            top: 34,
+            bottom: visibleDates.length > 14 ? 104 : 72
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: visibleDates,
+            axisLine: { lineStyle: { color: '#d9e0e8' } },
+            axisTick: { show: false },
+            axisLabel: {
+              color: '#718096',
+              hideOverlap: true,
+              interval: Math.max(0, Math.ceil(visibleDates.length / 7) - 1),
+              formatter: (value) => value.slice(5)
+            }
+          },
+          yAxis: {
+            type: 'value',
+            inverse: true,
+            min: 1,
+            max: trend.maximumRank,
+            minInterval: 1,
+            axisLabel: {
+              color: '#718096',
+              formatter: (value) => '第 ' + value + ' 名'
+            },
+            splitLine: { lineStyle: { color: '#e8edf2' } }
+          },
+          dataZoom: zoom,
+          series
+        },
+        { notMerge: true }
+      );
+
+      note.textContent = visibleDates.length === 0
+        ? '所选日期范围内没有数据'
+        : '关键词 ' + (activeKeyword === 'all' ? 'All' : activeKeyword) +
+          ' · 国家 ' + (activeCountry === 'all' ? 'All' : formatCountry(activeCountry)) +
+          ' · 当前范围 ' + visibleDates[0] + ' 至 ' +
+          visibleDates[visibleDates.length - 1] +
+          ' · 图例包含 ' + trend.series.length + ' 个网站，默认显示前 ' +
+          Math.min(defaultVisibleDomainCount, trend.series.length) +
+          ' 个 · 点击图例可切换网站';
+    }
+
+    // 初始化关键词与国家筛选按钮，两个维度均支持 All。
+    function createTrendFilterButtons(containerId, type, options) {
+      const container = document.getElementById(containerId);
+      options.forEach((option) => {
+        const label = option === 'all'
+          ? 'All'
+          : type === 'country'
+          ? formatCountry(option)
+          : option;
+        const button = createElement('button', 'trend-button', label);
+        button.type = 'button';
+        button.dataset.filterType = type;
+        button.dataset.value = option;
+        button.setAttribute(
+          'aria-pressed',
+          String(option === (type === 'keyword' ? activeKeyword : activeCountry))
+        );
+        button.addEventListener('click', () => {
+          if (type === 'keyword') activeKeyword = option;
+          if (type === 'country') activeCountry = option;
+          renderModernTrend();
+        });
+        container.appendChild(button);
+      });
+    }
+
+    createTrendFilterButtons(
+      'keyword-trend-tabs',
+      'keyword',
+      ['all', ...rankTrendData.keywords]
+    );
+    createTrendFilterButtons(
+      'country-trend-tabs',
+      'country',
+      ['all', ...rankTrendData.countries]
+    );
+
+    document.querySelectorAll('.range-button').forEach((button) => {
+      button.addEventListener('click', () => {
+        activeDateRange = button.dataset.range;
+        customDateRange = null;
+        renderModernTrend();
+      });
+    });
+
+    if (window.flatpickr) {
+      rangePicker = window.flatpickr('#date-range', {
+        mode: 'single',
+        dateFormat: 'Y-m-d',
+        altInput: true,
+        altInputClass: 'date-input',
+        altFormat: 'Y年m月d日',
+        locale: window.flatpickr.l10ns.zh,
+        disableMobile: true,
+        showMonths: 1,
+        monthSelectorType: 'static',
+        position: 'below right',
+        onClose(selectedDates, _dateText, instance) {
+          const expectedDateCount = instance.config.mode === 'single' ? 1 : 2;
+          if (selectedDates.length !== expectedDateCount) return;
+          const endDate = selectedDates[selectedDates.length - 1];
+          customDateRange = [
+            instance.formatDate(selectedDates[0], 'Y-m-d'),
+            instance.formatDate(endDate, 'Y-m-d')
+          ];
+          activeDateRange = 'custom';
+          renderModernTrend();
+        }
+      });
+    }
+
+    if (rankingChart) {
+      rankingChart.on('legendselectchanged', (event) => {
+        const trend = getActiveTrend();
+        if (trend) legendSelections.set(trend.key, event.selected);
+      });
+      window.addEventListener('resize', () => rankingChart.resize());
+    }
+
+    renderModernTrend();
+    })().catch((error) => {
+      console.error(error);
+      document.getElementById('rank-chart').textContent =
+        '趋势数据加载失败，请刷新页面后重试。';
+      document.getElementById('trend-note').textContent = '';
+    });
+  </script>
+</body>
+</html>
+`;
+}
+
+/**
+ * 生成独立的数据档案二级页面。
+ * @param {object[]} reports 历史报告摘要
+ * @returns {string} HTML 内容
+ */
+function renderArchiveHtml(reports) {
+  const totalResults = reports.reduce(
+    (total, report) => total + report.resultCount,
+    0,
+  );
+  const cards = reports
+    .map((report) => {
+      const visibleKeywords = report.keywords
+        .slice(0, 4)
+        .map(
+          (keyword) =>
+            `<span class="keyword">${escapeHtml(keyword.name)}</span>`,
+        )
+        .join('');
+      const remaining = Math.max(0, report.keywords.length - 4);
+
+      return `
+        <article class="archive-card">
+          <div class="card-topline">
+            <span>DAILY BRIEF</span>
+            <time datetime="${escapeHtml(report.date)}">${escapeHtml(report.date)}</time>
+          </div>
+          <h2>${escapeHtml(report.date.slice(5))} 数据简报</h2>
+          <div class="metrics">
+            <span><strong>${report.keywordCount}</strong> 关键词</span>
+            <span><strong>${report.queryCount}</strong> 条件</span>
+            <span><strong>${report.resultCount}</strong> 结果</span>
+          </div>
+          <div class="keywords">${visibleKeywords}${remaining > 0 ? `<span class="keyword more">+${remaining}</span>` : ''}</div>
+          <a class="card-link" href="reports/${encodeURIComponent(report.fileName)}">打开数据简报 <span aria-hidden="true">↗</span></a>
+        </article>`;
+    })
+    .join('');
+  const pageTitle = `搜索排名数据档案 · ${SITE_NAME}`;
+  const pageDescription = `按日期浏览关键词自然搜索排名、全球市场与网站表现数据简报，当前收录 ${reports.length} 个数据日。`;
+  const archiveStructuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        '@id': `${SITE_URL}/archive.html#webpage`,
+        url: `${SITE_URL}/archive.html`,
+        name: pageTitle,
+        description: pageDescription,
+        inLanguage: 'zh-CN',
+        isPartOf: { '@id': `${SITE_URL}/#website` },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: SITE_NAME,
+            item: `${SITE_URL}/`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: '数据档案',
+            item: `${SITE_URL}/archive.html`,
+          },
+        ],
+      },
+    ],
+  };
+
+  return `<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${escapeHtml(pageTitle)}</title>${renderSeoMeta({
+    title: pageTitle,
+    description: pageDescription,
+    pathname: 'archive.html',
+  })}
+  <meta name="theme-color" content="#0b1220">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  ${renderStructuredData(archiveStructuredData)}
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #111827;
+      --soft: #64748b;
+      --paper: #f3f6fa;
+      --surface: #fff;
+      --line: #dfe6ee;
+      --cyan: #0891b2;
+      --navy: #0b1220;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 5% 0%, rgba(34, 211, 238, 0.1), transparent 28rem),
+        var(--paper);
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+
+    .page {
+      width: min(1380px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 24px 0 72px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: center;
+      min-height: 64px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      gap: 11px;
+      align-items: center;
+      color: var(--ink);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 12px;
+      color: #67e8f9;
+      background: var(--navy);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 14px;
+    }
+
+    .back-link {
+      padding: 8px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--soft);
+      background: #fff;
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .archive-hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      align-items: end;
+      padding: 34px 38px;
+      border-radius: 24px;
+      color: #fff;
+      background:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(135deg, #0b1220, #16334c);
+      background-size: 32px 32px, 32px 32px, auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: #67e8f9;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 54px);
+      letter-spacing: -0.04em;
+    }
+
+    .archive-hero p:last-child {
+      max-width: 640px;
+      margin: 13px 0 0;
+      color: rgba(255,255,255,0.66);
+      line-height: 1.7;
+    }
+
+    .total {
+      flex: 0 0 auto;
+      color: rgba(255,255,255,0.68);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .total strong {
+      display: block;
+      color: #fff;
+      font-size: 32px;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      margin: 32px 0 16px;
+      color: var(--soft);
+      font-size: 12px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 16px;
+    }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .archive-card {
+      min-width: 0;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: 0 10px 28px rgba(15,23,42,0.04);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .archive-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px rgba(15,23,42,0.08);
+    }
+
+    .card-topline {
+      display: flex;
+      justify-content: space-between;
+      color: var(--soft);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+    }
+
+    .card-topline span { color: var(--cyan); }
+
+    .archive-card h2 {
+      margin: 15px 0 12px;
+      font-size: 20px;
+    }
+
+    .metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--soft);
+      font-size: 11px;
+    }
+
+    .metrics strong { color: var(--ink); }
+
+    .keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-height: 52px;
+      margin: 18px 0;
+    }
+
+    .keyword {
+      max-width: 100%;
+      overflow: hidden;
+      padding: 6px 8px;
+      border-radius: 8px;
+      color: #475569;
+      background: #f1f5f9;
+      font-size: 10px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .keyword.more {
+      color: var(--cyan);
+      background: #ecfeff;
+    }
+
+    .card-link {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .footer {
+      margin-top: 36px;
+      color: var(--soft);
+      font-size: 11px;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .archive-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 640px) {
+      .page { width: min(100% - 20px, 1380px); padding-top: 12px; }
+      .archive-hero { display: block; padding: 28px 22px; }
+      .total { margin-top: 22px; text-align: left; }
+      .archive-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>前端AI实验室</span>
+      </a>
+      <a class="back-link" href="index.html">← 返回实验室首页</a>
+    </div>
+    <header class="archive-hero">
+      <div>
+        <p class="eyebrow">FRONTEND AI LAB / DATA ARCHIVE</p>
+        <h1>资讯与数据档案</h1>
+        <p>按日期浏览每日关键词、全球市场与自然排名快照，进入简报后可进一步筛选国家和搜索结果。</p>
+      </div>
+      <div class="total">
+        <strong>${reports.length}</strong>
+        数据日 · ${totalResults.toLocaleString('zh-CN')} 条排名记录
+      </div>
+    </header>
+    <div class="section-heading">
+      <h2>每日数据简报</h2>
+      <span>按日期从新到旧</span>
+    </div>
+    <section class="archive-grid" aria-label="数据档案列表">${cards}</section>
+    <footer class="footer">前端AI实验室 · Copyright © pzl</footer>
+  </main>
+</body>
+</html>
+`;
+}
+
+/**
+ * 生成供搜索引擎发现全部公开页面的站点地图。
+ * @param {object[]} reports 历史报告摘要
+ * @returns {string} XML 站点地图
+ */
+function renderSitemap(reports) {
+  const latestDate = reports
+    .map((report) => report.date)
+    .filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date))
+    .sort((left, right) => right.localeCompare(left))[0];
+  const staticUrls = [
+    {
+      location: `${SITE_URL}/`,
+      lastModified: latestDate,
+      changeFrequency: 'daily',
+      priority: '1.0',
+    },
+    {
+      location: `${SITE_URL}/archive.html`,
+      lastModified: latestDate,
+      changeFrequency: 'daily',
+      priority: '0.8',
+    },
+  ];
+  const reportUrls = reports.map((report) => ({
+    location: `${SITE_URL}/reports/${encodeURIComponent(report.fileName)}`,
+    lastModified: /^\d{4}-\d{2}-\d{2}$/.test(report.date)
+      ? report.date
+      : latestDate,
+    changeFrequency: 'monthly',
+    priority: '0.6',
+  }));
+  const urls = [...staticUrls, ...reportUrls]
+    .map(
+      (item) => `  <url>
+    <loc>${escapeXml(item.location)}</loc>${
+      item.lastModified
+        ? `\n    <lastmod>${escapeXml(item.lastModified)}</lastmod>`
+        : ''
+    }
+    <changefreq>${item.changeFrequency}</changefreq>
+    <priority>${item.priority}</priority>
+  </url>`,
+    )
+    .join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>
+`;
+}
+
+/**
+ * 生成搜索引擎爬虫指令。
+ * @returns {string} robots.txt 内容
+ */
+function renderRobots() {
+  return `User-agent: *
+Allow: /
+
+Sitemap: ${SITE_URL}/sitemap.xml
+`;
+}
+
+/**
+ * 生成报告入口。
+ */
+async function main() {
+  const files = await findJsonFiles(RESULTS_DIRECTORY);
+  if (files.length === 0) {
+    throw new Error(`结果目录中没有 JSON 文件：${RESULTS_DIRECTORY}`);
+  }
+
+  const fileGroups = groupFilesByDate(files);
+  const reportSummaries = [];
+  const historicalReports = [];
+  await mkdir(OUTPUT_DIRECTORY, { recursive: true });
+  await mkdir(REPORTS_DIRECTORY, { recursive: true });
+  await mkdir(REPORT_DATA_DIRECTORY, { recursive: true });
+  await mkdir(VENDOR_DIRECTORY, { recursive: true });
+  await Promise.all([
+    copyFile(
+      path.resolve(process.cwd(), 'node_modules/echarts/dist/echarts.min.js'),
+      path.join(VENDOR_DIRECTORY, 'echarts.min.js'),
+    ),
+    copyFile(
+      path.resolve(process.cwd(), 'node_modules/flatpickr/dist/flatpickr.min.js'),
+      path.join(VENDOR_DIRECTORY, 'flatpickr.min.js'),
+    ),
+    copyFile(
+      path.resolve(process.cwd(), 'node_modules/flatpickr/dist/flatpickr.min.css'),
+      path.join(VENDOR_DIRECTORY, 'flatpickr.min.css'),
+    ),
+    copyFile(
+      path.resolve(process.cwd(), 'node_modules/flatpickr/dist/l10n/zh.js'),
+      path.join(VENDOR_DIRECTORY, 'flatpickr-zh.js'),
+    ),
+  ]);
+
+  for (const [date, groupFiles] of [...fileGroups.entries()].sort((left, right) =>
+    right[0].localeCompare(left[0]),
+  )) {
+    const reportData = await buildReportData(groupFiles, date);
+    if (reportData.keywordCount === 0) {
+      continue;
+    }
+    historicalReports.push(reportData);
+
+    const fileName =
+      date === '未分类'
+        ? 'undated.html'
+        : `${date.replace(/[^0-9-]/g, '_')}.html`;
+    const dataFileName = fileName.replace(/\.html$/, '.json');
+    const reportJson = JSON.stringify(reportData);
+    const reportDataVersion = createContentVersion(reportJson);
+    await Promise.all([
+      writeFile(
+        path.join(REPORTS_DIRECTORY, fileName),
+        renderHtml(reportData, dataFileName, reportDataVersion),
+        'utf8',
+      ),
+      // 数据文件使用紧凑 JSON，降低传输体积并支持浏览器独立缓存。
+      writeFile(
+        path.join(REPORT_DATA_DIRECTORY, dataFileName),
+        `${reportJson}\n`,
+        'utf8',
+      ),
+    ]);
+    reportSummaries.push({
+      date,
+      fileName,
+      keywordCount: reportData.keywordCount,
+      queryCount: reportData.queryCount,
+      resultCount: reportData.resultCount,
+      keywords: reportData.keywords.map((keyword) => ({
+        name: keyword.name,
+        resultCount: keyword.resultCount,
+      })),
+    });
+  }
+
+  if (reportSummaries.length === 0) {
+    throw new Error('结果文件中没有可识别的关键词数据');
+  }
+
+  const rankTrends = buildRankTrendData(historicalReports);
+  const rankTrendsJson = JSON.stringify(rankTrends);
+  const rankTrendsVersion = createContentVersion(rankTrendsJson);
+  await Promise.all([
+    writeFile(
+      INDEX_FILE,
+      renderIndexHtml(reportSummaries, rankTrendsVersion),
+      'utf8',
+    ),
+    writeFile(ARCHIVE_FILE, renderArchiveHtml(reportSummaries), 'utf8'),
+    // 首页趋势数据独立存储，避免历史增长持续放大 HTML 文件。
+    writeFile(
+      RANK_TRENDS_DATA_FILE,
+      `${rankTrendsJson}\n`,
+      'utf8',
+    ),
+    writeFile(SITEMAP_FILE, renderSitemap(reportSummaries), 'utf8'),
+    writeFile(ROBOTS_FILE, renderRobots(), 'utf8'),
+  ]);
+  console.log(
+    `报告生成完成：${INDEX_FILE}、${ARCHIVE_FILE}、${SITEMAP_FILE}（${reportSummaries.length} 个历史数据页）`,
+  );
+}
+
+main().catch((error) => {
+  console.error(`生成失败：${error.message}`);
+  process.exitCode = 1;
+});
