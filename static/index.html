@@ -693,8 +693,17 @@
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      align-items: flex-start;
+      align-items: center;
       margin-top: 17px;
+      padding: 12px 14px;
+      border: 1px solid rgba(217, 224, 232, 0.82);
+      border-radius: 16px;
+      background: rgba(248, 250, 252, 0.76);
+    }
+
+    .legend-selection-summary {
+      color: var(--ink-soft);
+      font-size: 11px;
     }
 
     .trend-legend {
@@ -737,6 +746,7 @@
 
     .legend-actions {
       display: flex;
+      flex-wrap: wrap;
       flex: 0 0 auto;
       gap: 7px;
     }
@@ -756,6 +766,11 @@
     .legend-action:hover {
       color: var(--ink);
       background: var(--surface);
+    }
+
+    .legend-action:disabled {
+      cursor: default;
+      opacity: 0.42;
     }
 
     .trend-note {
@@ -1005,6 +1020,15 @@
             <span class="loader-detail">准备关键词、国家与网站序列</span>
             <span class="loader-progress" aria-hidden="true"></span>
           </div>
+        </div>
+      </div>
+      <div class="legend-toolbar" aria-label="网站批量筛选">
+        <span class="legend-selection-summary" id="legend-selection-summary" aria-live="polite">正在准备网站选项</span>
+        <div class="legend-actions" role="group" aria-label="批量选择网站">
+          <button class="legend-action" type="button" data-legend-action="all">全选</button>
+          <button class="legend-action" type="button" data-legend-action="invert">反选</button>
+          <button class="legend-action" type="button" data-legend-action="default">默认前 10</button>
+          <button class="legend-action" type="button" data-legend-action="none">清空</button>
         </div>
       </div>
       <p class="trend-note" id="trend-note"></p>
@@ -1380,6 +1404,48 @@
       return legendSelections.get(trend.key);
     }
 
+    // 批量更新当前筛选组合的网站图例，减少逐个点击操作。
+    function setModernLegendSelection(mode) {
+      const trend = getActiveTrend();
+      if (!trend) return;
+      const currentSelection = getLegendSelection(trend);
+      const nextSelection = Object.fromEntries(
+        trend.series.map((item, index) => {
+          let selected = false;
+          if (mode === 'all') selected = true;
+          if (mode === 'invert') selected = !Boolean(currentSelection[item.domain]);
+          if (mode === 'default') selected = index < defaultVisibleDomainCount;
+          return [item.domain, selected];
+        })
+      );
+      legendSelections.set(trend.key, nextSelection);
+      renderModernTrend();
+    }
+
+    // 同步批量操作状态、已选数量和趋势辅助说明。
+    function updateLegendControls(trend, selectedState, visibleDates) {
+      const selectedCount = trend.series.reduce(
+        (count, item) => count + (selectedState[item.domain] ? 1 : 0),
+        0
+      );
+      const summary = document.getElementById('legend-selection-summary');
+      summary.textContent = '已选择 ' + selectedCount + ' / ' + trend.series.length + ' 个网站';
+      document.querySelectorAll('[data-legend-action]').forEach((button) => {
+        button.disabled =
+          (button.dataset.legendAction === 'all' && selectedCount === trend.series.length) ||
+          (button.dataset.legendAction === 'none' && selectedCount === 0);
+      });
+
+      const note = document.getElementById('trend-note');
+      note.textContent = visibleDates.length === 0
+        ? '所选日期范围内没有数据'
+        : '关键词 ' + (activeKeyword === 'all' ? 'All' : activeKeyword) +
+          ' · 国家 ' + (activeCountry === 'all' ? 'All' : formatCountry(activeCountry)) +
+          ' · 当前范围 ' + visibleDates[0] + ' 至 ' +
+          visibleDates[visibleDates.length - 1] +
+          ' · 已显示 ' + selectedCount + ' 个网站';
+    }
+
     // 使用 ECharts 绘制当前关键词的排名趋势。
     function renderModernTrend() {
       const trend = getActiveTrend();
@@ -1505,15 +1571,7 @@
         { notMerge: true }
       );
 
-      note.textContent = visibleDates.length === 0
-        ? '所选日期范围内没有数据'
-        : '关键词 ' + (activeKeyword === 'all' ? 'All' : activeKeyword) +
-          ' · 国家 ' + (activeCountry === 'all' ? 'All' : formatCountry(activeCountry)) +
-          ' · 当前范围 ' + visibleDates[0] + ' 至 ' +
-          visibleDates[visibleDates.length - 1] +
-          ' · 图例包含 ' + trend.series.length + ' 个网站，默认显示前 ' +
-          Math.min(defaultVisibleDomainCount, trend.series.length) +
-          ' 个 · 点击图例可切换网站';
+      updateLegendControls(trend, selectedState, visibleDates);
     }
 
     // 初始化关键词与国家筛选按钮，两个维度均支持 All。
@@ -1561,6 +1619,12 @@
       });
     });
 
+    document.querySelectorAll('[data-legend-action]').forEach((button) => {
+      button.addEventListener('click', () => {
+        setModernLegendSelection(button.dataset.legendAction);
+      });
+    });
+
     if (window.flatpickr) {
       rangePicker = window.flatpickr('#date-range', {
         mode: 'single',
@@ -1590,7 +1654,14 @@
     if (rankingChart) {
       rankingChart.on('legendselectchanged', (event) => {
         const trend = getActiveTrend();
-        if (trend) legendSelections.set(trend.key, event.selected);
+        if (trend) {
+          legendSelections.set(trend.key, event.selected);
+          updateLegendControls(
+            trend,
+            event.selected,
+            getModernVisibleDates(trend)
+          );
+        }
       });
       window.addEventListener('resize', () => rankingChart.resize());
     }

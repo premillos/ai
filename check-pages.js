@@ -87,6 +87,14 @@ async function main() {
     ) {
       throw new Error(`首页趋势数据缺少内容版本号：${htmlFile}`);
     }
+    if (path.basename(htmlFile) === 'index.html') {
+      // 首页必须保留网站图例的四种批量操作，避免只能逐项点击。
+      for (const action of ['all', 'invert', 'default', 'none']) {
+        if (!html.includes(`data-legend-action="${action}"`)) {
+          throw new Error(`首页缺少网站批量操作 ${action}：${htmlFile}`);
+        }
+      }
+    }
     if (
       path.dirname(htmlFile) === path.join(STATIC_DIRECTORY, 'reports') &&
       !/\.\.\/data\/reports\/[^?'"\s]+\.json\?v=[a-f0-9]{12}/.test(html)
