@@ -1,0 +1,78 @@
+{
+  "searchCondition": {
+    "keyword": "random cam chat",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-08-02T19:21:29.383Z",
+  "data": {
+    "searchParameters": {
+      "q": "random cam chat",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Azar: Video Chat with New People",
+        "link": "https://azarlive.com/",
+        "snippet": "Azar is a global video chat platform for meeting new people. Azar isn't a random video chat - the more you use Azar the more our recommendation algorithm ...",
+        "position": 1
+      },
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text ...",
+        "link": "https://opentalk.club/",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat",
+        "position": 2
+      },
+      {
+        "title": "Chatspin: Free Random Video Chat App",
+        "link": "https://chatspin.com/",
+        "snippet": "Chatspin is a free random video chat app to meet new friends and cam chat with cool people. Try our random chat and talk with strangers all over the world.",
+        "position": 3
+      },
+      {
+        "title": "Who - Live Random Video Chat",
+        "link": "https://whoapp.live/",
+        "snippet": "WHO is a random video chat platform connecting you with verified real strangers by live video, instantly, without requiring a signup or registration.",
+        "position": 4
+      },
+      {
+        "title": "Yap.Chat — Best Omegle Alternative for Random Video Chat",
+        "link": "https://yap.chat/",
+        "snippet": "Yap.chat is a popular Omegle alternative for random video and text chat. Meet new people worldwide in seconds — mobile & desktop friendly.",
+        "position": 5
+      },
+      {
+        "title": "Cam - Random Video Chats – Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.tangerine.live.cam&hl=en_IN",
+        "snippet": "CAM is the best Video Chat app for meeting new people. Discover, flirt and Video chat with interesting people around the world!",
+        "rating": 3.7,
+        "ratingCount": 5099,
+        "position": 6
+      },
+      {
+        "title": "Camgo: Talk to Strangers - Free Random Video Chat",
+        "link": "https://www.camgo.com/",
+        "snippet": "Camgo lets you meet friends and chat with strangers online. Our platform uses the latest in random chat technology, so you can have live chats with people ...",
+        "position": 7
+      },
+      {
+        "title": "Chatrandom: Free Random Video Chat - Stranger Cam Chat ...",
+        "link": "https://chatrandom.com/",
+        "snippet": "Join Chatrandom for free random video chat. Talk to strangers worldwide using live webcam chat. Click Start and connect instantly!",
+        "position": 8
+      },
+      {
+        "title": "Monkey: Random Video Chat | Talk to Strangers Instantly",
+        "link": "https://www.monkey.app/",
+        "snippet": "Meet new people and talk to strangers worldwide on Monkey, the safest random video chat. Connect with real humans via live video and text.",
+        "position": 9
+      }
+    ],
+    "credits": 1
+  }
+}
