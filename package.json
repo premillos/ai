@@ -19,8 +19,6 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "echarts": "^6.1.0",
-    "flatpickr": "^4.6.13",
     "tldts": "^7.4.10"
   },
   "devDependencies": {

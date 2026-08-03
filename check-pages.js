@@ -16,6 +16,13 @@ const REQUIRED_FILES = [
   '.nojekyll',
 ];
 const SITE_URL = 'https://premillos.github.io/ai';
+// 首页依赖固定版本的公共 CDN，构建检查用于防止误退回本地大文件。
+const REQUIRED_CDN_REFERENCES = [
+  'https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js',
+  'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css',
+  'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js',
+  'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/zh.js',
+];
 
 /**
  * 递归读取静态目录中的全部文件。
@@ -88,6 +95,14 @@ async function main() {
       throw new Error(`首页趋势数据缺少内容版本号：${htmlFile}`);
     }
     if (path.basename(htmlFile) === 'index.html') {
+      for (const reference of REQUIRED_CDN_REFERENCES) {
+        if (!html.includes(reference)) {
+          throw new Error(`首页缺少固定版本 CDN 资源：${reference}`);
+        }
+      }
+      if (/\b(?:href|src)="vendor\/(?:echarts|flatpickr)/.test(html)) {
+        throw new Error(`首页仍在引用本地图表资源：${htmlFile}`);
+      }
       // 首页必须保留网站图例的四种批量操作，避免只能逐项点击。
       for (const action of ['all', 'invert', 'default', 'none']) {
         if (!html.includes(`data-legend-action="${action}"`)) {

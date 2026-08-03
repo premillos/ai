@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { getDomain as getRegistrableDomain } from 'tldts';
@@ -14,10 +14,33 @@ const REPORTS_DIRECTORY = path.join(OUTPUT_DIRECTORY, 'reports');
 const DATA_DIRECTORY = path.join(OUTPUT_DIRECTORY, 'data');
 const REPORT_DATA_DIRECTORY = path.join(DATA_DIRECTORY, 'reports');
 const RANK_TRENDS_DATA_FILE = path.join(DATA_DIRECTORY, 'rank-trends.json');
-const VENDOR_DIRECTORY = path.join(OUTPUT_DIRECTORY, 'vendor');
 const SITE_URL = 'https://premillos.github.io/ai';
 const SITE_NAME = '前端AI实验室';
 const SOCIAL_IMAGE_URL = `${SITE_URL}/assets/og-cover.png`;
+
+// 固定 CDN 版本并校验资源完整性，避免上游更新导致页面行为变化。
+const CDN_ASSETS = {
+  echarts: {
+    url: 'https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js',
+    integrity:
+      'sha384-C2iskrW/uPW46KzOjrvJIQo4YkV8lkD+QS0CrDN18IIPIpT/g2USu8bTP3nvmIAD',
+  },
+  flatpickrCss: {
+    url: 'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css',
+    integrity:
+      'sha384-RkASv+6KfBMW9eknReJIJ6b3UnjKOKC5bOUaNgIY778NFbQ8MtWq9Lr/khUgqtTt',
+  },
+  flatpickrJs: {
+    url: 'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js',
+    integrity:
+      'sha384-5JqMv4L/Xa0hfvtF06qboNdhvuYXUku9ZrhZh3bSk8VXF0A/RuSLHpLsSV9Zqhl6',
+  },
+  flatpickrZh: {
+    url: 'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/zh.js',
+    integrity:
+      'sha384-VkrKIP0k00t+nCV0whCXV73obyqU1SxOHVMBi51kYfdGdJcg2UPxHUugSnmGCoid',
+  },
+};
 
 // 首页和日报共用的数据加载动效，使用纯 CSS 避免增加运行时依赖。
 const DATA_LOADER_STYLES = `
@@ -1508,7 +1531,7 @@ function renderIndexHtml(reports, dataVersion) {
   <meta name="theme-color" content="#19324d">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   ${renderStructuredData(pageStructuredData)}
-  <link rel="stylesheet" href="vendor/flatpickr.min.css">
+  <link rel="stylesheet" href="${CDN_ASSETS.flatpickrCss.url}" integrity="${CDN_ASSETS.flatpickrCss.integrity}" crossorigin="anonymous">
   <style>
     :root {
       color-scheme: light;
@@ -2749,9 +2772,9 @@ ${DATA_LOADER_STYLES}
 
     <footer class="footer">前端AI实验室 · Copyright © pzl</footer>
   </main>
-  <script src="vendor/echarts.min.js"></script>
-  <script src="vendor/flatpickr.min.js"></script>
-  <script src="vendor/flatpickr-zh.js"></script>
+  <script src="${CDN_ASSETS.echarts.url}" integrity="${CDN_ASSETS.echarts.integrity}" crossorigin="anonymous"></script>
+  <script src="${CDN_ASSETS.flatpickrJs.url}" integrity="${CDN_ASSETS.flatpickrJs.integrity}" crossorigin="anonymous"></script>
+  <script src="${CDN_ASSETS.flatpickrZh.url}" integrity="${CDN_ASSETS.flatpickrZh.integrity}" crossorigin="anonymous"></script>
   <script>
     (async () => {
     // 按需加载趋势数据，减少首页 HTML 体积并允许数据独立缓存。
@@ -4371,25 +4394,6 @@ async function main() {
   await mkdir(OUTPUT_DIRECTORY, { recursive: true });
   await mkdir(REPORTS_DIRECTORY, { recursive: true });
   await mkdir(REPORT_DATA_DIRECTORY, { recursive: true });
-  await mkdir(VENDOR_DIRECTORY, { recursive: true });
-  await Promise.all([
-    copyFile(
-      path.resolve(process.cwd(), 'node_modules/echarts/dist/echarts.min.js'),
-      path.join(VENDOR_DIRECTORY, 'echarts.min.js'),
-    ),
-    copyFile(
-      path.resolve(process.cwd(), 'node_modules/flatpickr/dist/flatpickr.min.js'),
-      path.join(VENDOR_DIRECTORY, 'flatpickr.min.js'),
-    ),
-    copyFile(
-      path.resolve(process.cwd(), 'node_modules/flatpickr/dist/flatpickr.min.css'),
-      path.join(VENDOR_DIRECTORY, 'flatpickr.min.css'),
-    ),
-    copyFile(
-      path.resolve(process.cwd(), 'node_modules/flatpickr/dist/l10n/zh.js'),
-      path.join(VENDOR_DIRECTORY, 'flatpickr-zh.js'),
-    ),
-  ]);
 
   for (const [date, groupFiles] of [...fileGroups.entries()].sort((left, right) =>
     right[0].localeCompare(left[0]),
