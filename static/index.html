@@ -780,6 +780,294 @@
       text-align: center;
     }
 
+    .analysis-section {
+      margin-top: 18px;
+    }
+
+    .analysis-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 14px;
+      padding: 0 4px;
+    }
+
+    .analysis-heading h2 {
+      margin: 0 0 5px;
+      font-size: 20px;
+    }
+
+    .analysis-heading p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 11px;
+    }
+
+    .analysis-range {
+      color: var(--teal);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+    }
+
+    .analysis-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .analysis-metric,
+    .analysis-panel,
+    .profile-panel {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 10px 28px rgba(20, 33, 61, 0.045);
+    }
+
+    .analysis-metric {
+      position: relative;
+      overflow: hidden;
+      min-height: 112px;
+      padding: 18px;
+      border-radius: 18px;
+    }
+
+    .analysis-metric::after {
+      position: absolute;
+      right: -18px;
+      bottom: -32px;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: var(--metric-glow, rgba(42, 157, 143, 0.1));
+      content: '';
+    }
+
+    .analysis-metric span,
+    .profile-stat span {
+      display: block;
+      color: var(--ink-soft);
+      font-size: 11px;
+    }
+
+    .analysis-metric strong {
+      display: block;
+      margin: 8px 0 4px;
+      font-family: Georgia, serif;
+      font-size: 30px;
+      font-weight: 500;
+    }
+
+    .analysis-metric small {
+      color: var(--ink-soft);
+      font-size: 10px;
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .analysis-panel,
+    .profile-panel {
+      padding: 22px;
+      border-radius: 20px;
+    }
+
+    .panel-heading,
+    .profile-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .panel-heading h3,
+    .profile-heading h3 {
+      margin: 0 0 4px;
+      font-size: 15px;
+    }
+
+    .panel-heading p,
+    .profile-heading p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 10px;
+    }
+
+    .analysis-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .analysis-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #e8edf2;
+      border-radius: 13px;
+      color: var(--ink);
+      background: #fbfcfe;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 160ms ease, transform 160ms ease;
+    }
+
+    .analysis-item:hover {
+      border-color: rgba(42, 157, 143, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .analysis-item strong {
+      display: block;
+      overflow: hidden;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .analysis-item small {
+      display: block;
+      margin-top: 3px;
+      color: var(--ink-soft);
+      font-size: 10px;
+    }
+
+    .change-value,
+    .volatility-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .change-value.up { color: #14866d; }
+    .change-value.down { color: #d95e41; }
+    .change-value.new { color: #2774a7; }
+    .change-value.lost { color: #8b6bb1; }
+
+    .volatility-track {
+      width: 84px;
+      height: 5px;
+      margin-top: 6px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e9eef3;
+    }
+
+    .volatility-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--teal), var(--orange));
+    }
+
+    .profile-panel {
+      margin-top: 12px;
+    }
+
+    .profile-select {
+      min-width: 220px;
+      max-width: 100%;
+      padding: 9px 34px 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--ink);
+      background: #fff;
+      font: inherit;
+      font-size: 12px;
+    }
+
+    .profile-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
+      gap: 22px;
+      align-items: center;
+    }
+
+    .profile-radar {
+      width: 100%;
+      height: 300px;
+    }
+
+    .profile-domain {
+      margin: 0 0 5px;
+      overflow-wrap: anywhere;
+      font-family: Georgia, serif;
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .profile-meta {
+      margin: 0 0 14px;
+      color: var(--ink-soft);
+      font-size: 10px;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .profile-stat {
+      padding: 12px;
+      border-radius: 13px;
+      background: #f6f8fb;
+    }
+
+    .profile-stat strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 15px;
+    }
+
+    .profile-strengths {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .profile-strength {
+      padding: 13px;
+      border: 1px solid #e8edf2;
+      border-radius: 13px;
+    }
+
+    .profile-strength h4 {
+      margin: 0 0 9px;
+      font-size: 11px;
+    }
+
+    .profile-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .profile-tag {
+      padding: 5px 7px;
+      border-radius: 8px;
+      color: var(--ink-soft);
+      background: #f2f5f8;
+      font-size: 9px;
+    }
+
+    .analysis-empty {
+      display: grid;
+      min-height: 180px;
+      place-items: center;
+      color: var(--ink-soft);
+      font-size: 11px;
+      text-align: center;
+    }
+
     .list-heading {
       display: flex;
       justify-content: space-between;
@@ -937,6 +1225,15 @@
       .custom-range { margin-top: 10px; }
       .legend-toolbar { display: block; }
       .legend-actions { margin-top: 12px; }
+      .analysis-heading,
+      .profile-heading { display: block; }
+      .analysis-range,
+      .profile-select { display: block; margin-top: 10px; }
+      .analysis-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .analysis-grid,
+      .profile-layout { grid-template-columns: 1fr; }
+      .profile-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .profile-strengths { grid-template-columns: 1fr; }
       .report-card { grid-template-columns: 1fr; }
       .date-block { display: flex; gap: 8px; align-items: baseline; padding: 14px 20px; }
       .date-block strong { font-size: 22px; }
@@ -1034,6 +1331,47 @@
       <p class="trend-note" id="trend-note"></p>
     </section>
 
+    <section class="analysis-section" id="analysis" aria-labelledby="analysis-title">
+      <div class="analysis-heading">
+        <div>
+          <h2 id="analysis-title">排名变化分析</h2>
+          <p>基于当前关键词、国家、日期和网站选择，观察变化、波动与竞争画像。</p>
+        </div>
+        <span class="analysis-range" id="analysis-range">正在计算真实数据</span>
+      </div>
+      <div class="analysis-metrics" id="analysis-metrics" aria-live="polite"></div>
+      <div class="analysis-grid">
+        <article class="analysis-panel">
+          <div class="panel-heading">
+            <div>
+              <h3>排名变化</h3>
+              <p>比较当前区间首日与末日排名</p>
+            </div>
+          </div>
+          <div class="analysis-list" id="ranking-changes"></div>
+        </article>
+        <article class="analysis-panel">
+          <div class="panel-heading">
+            <div>
+              <h3>波动指数</h3>
+              <p>0–100 分，分数越高代表排名越不稳定</p>
+            </div>
+          </div>
+          <div class="analysis-list" id="volatility-ranking"></div>
+        </article>
+      </div>
+      <article class="profile-panel">
+        <div class="profile-heading">
+          <div>
+            <h3>网站画像</h3>
+            <p>排名表现、覆盖能力与优势市场的综合视图</p>
+          </div>
+          <select class="profile-select" id="profile-domain-select" aria-label="选择画像网站"></select>
+        </div>
+        <div id="domain-profile" aria-live="polite"></div>
+      </article>
+    </section>
+
     <footer class="footer">前端AI实验室 · Copyright © pzl</footer>
   </main>
   <script src="vendor/echarts.min.js"></script>
@@ -1042,7 +1380,7 @@
   <script>
     (async () => {
     // 按需加载趋势数据，减少首页 HTML 体积并允许数据独立缓存。
-    const trendResponse = await fetch('data/rank-trends.json?v=d21c96d2d154');
+    const trendResponse = await fetch('data/rank-trends.json?v=d71275c71d56');
     if (!trendResponse.ok) {
       throw new Error('趋势数据请求失败：HTTP ' + trendResponse.status);
     }
@@ -1331,8 +1669,10 @@
     }
 
     const legendSelections = new Map();
+    const profileDomainSelections = new Map();
     let customDateRange = null;
     let rangePicker = null;
+    let profileRadar = null;
     // 数据准备完成后先移除加载状态，再挂载 ECharts 画布。
     const rankingChartElement = document.getElementById('rank-chart');
     rankingChartElement.replaceChildren();
@@ -1402,6 +1742,437 @@
         legendSelections.set(trend.key, selection);
       }
       return legendSelections.get(trend.key);
+    }
+
+    // 计算网站在当前日期范围内的排名变化与波动指标。
+    function calculateSeriesAnalytics(series, visibleDates, maximumRank) {
+      const ranksByDate = new Map(
+        series.points.map((point) => [point.date, point.rank])
+      );
+      const ranks = visibleDates.map((date) => ranksByDate.get(date) ?? null);
+      const observedRanks = ranks.filter((rank) => rank !== null);
+      const startRank = ranks[0] ?? null;
+      const endRank = ranks.at(-1) ?? null;
+      const averageRank = observedRanks.length === 0
+        ? null
+        : Math.round(
+            (observedRanks.reduce((total, rank) => total + rank, 0) /
+              observedRanks.length) * 10
+          ) / 10;
+      let volatilityTotal = 0;
+      let volatilityTransitions = 0;
+      const missingRank = maximumRank + 1;
+
+      for (let index = 1; index < ranks.length; index += 1) {
+        const previous = ranks[index - 1];
+        const current = ranks[index];
+        if (previous === null && current === null) continue;
+        volatilityTotal += Math.abs(
+          (previous ?? missingRank) - (current ?? missingRank)
+        );
+        volatilityTransitions += 1;
+      }
+
+      const volatility = volatilityTransitions === 0
+        ? null
+        : Math.min(
+            100,
+            Math.round(
+              (volatilityTotal / volatilityTransitions / maximumRank) * 1000
+            ) / 10
+          );
+      let changeType = 'stable';
+      let change = 0;
+      if (visibleDates.length < 2) {
+        changeType = 'insufficient';
+        change = null;
+      } else if (startRank === null && endRank !== null) {
+        changeType = 'new';
+        change = null;
+      } else if (startRank !== null && endRank === null) {
+        changeType = 'lost';
+        change = null;
+      } else if (startRank === null && endRank === null) {
+        changeType = 'insufficient';
+        change = null;
+      } else {
+        change = Math.round((startRank - endRank) * 10) / 10;
+        if (change > 0) changeType = 'up';
+        if (change < 0) changeType = 'down';
+      }
+
+      return {
+        domain: series.domain,
+        profile: series.profile,
+        startRank,
+        endRank,
+        averageRank,
+        bestRank: observedRanks.length ? Math.min(...observedRanks) : null,
+        worstRank: observedRanks.length ? Math.max(...observedRanks) : null,
+        observedCount: observedRanks.length,
+        coverageRate: visibleDates.length === 0
+          ? 0
+          : Math.round((observedRanks.length / visibleDates.length) * 1000) / 10,
+        volatility,
+        change,
+        changeType
+      };
+    }
+
+    // 将波动分数转换为易读等级。
+    function getVolatilityLevel(score) {
+      if (score === null) return '数据不足';
+      if (score <= 15) return '稳定';
+      if (score <= 35) return '轻微波动';
+      if (score <= 60) return '明显波动';
+      return '高波动';
+    }
+
+    // 获取当前筛选和网站选择共同决定的分析数据。
+    function buildActiveAnalytics(trend, visibleDates, selectedState) {
+      const items = trend.series
+        .filter((series) => selectedState[series.domain])
+        .map((series) =>
+          calculateSeriesAnalytics(series, visibleDates, trend.maximumRank)
+        )
+        .filter((item) => item.observedCount > 0);
+      const volatilityItems = items.filter((item) => item.volatility !== null);
+      const averageVolatility = volatilityItems.length === 0
+        ? null
+        : Math.round(
+            (volatilityItems.reduce((total, item) => total + item.volatility, 0) /
+              volatilityItems.length) * 10
+          ) / 10;
+      return {
+        items,
+        averageVolatility,
+        upCount: items.filter((item) => item.changeType === 'up').length,
+        downCount: items.filter((item) => item.changeType === 'down').length,
+        newCount: items.filter((item) => item.changeType === 'new').length,
+        lostCount: items.filter((item) => item.changeType === 'lost').length
+      };
+    }
+
+    // 创建分析概览指标卡。
+    function renderAnalysisMetrics(analytics) {
+      const container = document.getElementById('analysis-metrics');
+      const metrics = [
+        {
+          label: '监测网站',
+          value: analytics.items.length,
+          detail: '当前筛选范围内有排名数据',
+          glow: 'rgba(42, 157, 143, 0.12)'
+        },
+        {
+          label: '平均波动指数',
+          value: analytics.averageVolatility ?? '--',
+          detail: getVolatilityLevel(analytics.averageVolatility),
+          glow: 'rgba(233, 162, 59, 0.13)'
+        },
+        {
+          label: '排名上升',
+          value: analytics.upCount + analytics.newCount,
+          detail: analytics.newCount + ' 个新进入榜单',
+          glow: 'rgba(39, 116, 167, 0.12)'
+        },
+        {
+          label: '排名下降',
+          value: analytics.downCount + analytics.lostCount,
+          detail: analytics.lostCount + ' 个掉出榜单',
+          glow: 'rgba(238, 108, 77, 0.12)'
+        }
+      ];
+      container.replaceChildren();
+      metrics.forEach((metric) => {
+        const card = createElement('article', 'analysis-metric');
+        card.style.setProperty('--metric-glow', metric.glow);
+        card.append(
+          createElement('span', '', metric.label),
+          createElement('strong', '', metric.value),
+          createElement('small', '', metric.detail)
+        );
+        container.appendChild(card);
+      });
+    }
+
+    // 选择网站画像并将视线移动到画像区域。
+    function selectProfileDomain(trend, domain, shouldScroll = false) {
+      profileDomainSelections.set(trend.key, domain);
+      const selectedState = getLegendSelection(trend);
+      renderAnalytics(trend, getModernVisibleDates(trend), selectedState);
+      if (shouldScroll) {
+        document.querySelector('.profile-panel').scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }
+
+    // 格式化变化状态，用于变化榜展示。
+    function formatRankChange(item) {
+      if (item.changeType === 'up') return '上升 ' + item.change + ' 位';
+      if (item.changeType === 'down') return '下降 ' + Math.abs(item.change) + ' 位';
+      if (item.changeType === 'new') return '新进入';
+      if (item.changeType === 'lost') return '掉出榜单';
+      return '排名持平';
+    }
+
+    // 渲染排名变化榜，点击网站可直接查看画像。
+    function renderRankingChanges(trend, analytics) {
+      const container = document.getElementById('ranking-changes');
+      const changePriority = { new: 4, lost: 3, up: 2, down: 2, stable: 1 };
+      const items = [...analytics.items]
+        .filter((item) => item.changeType !== 'insufficient')
+        .sort((left, right) => {
+          const leftMagnitude = Math.abs(left.change ?? trend.maximumRank);
+          const rightMagnitude = Math.abs(right.change ?? trend.maximumRank);
+          return (
+            rightMagnitude - leftMagnitude ||
+            changePriority[right.changeType] - changePriority[left.changeType] ||
+            left.domain.localeCompare(right.domain)
+          );
+        })
+        .slice(0, 8);
+      container.replaceChildren();
+      if (items.length === 0) {
+        container.appendChild(
+          createElement('div', 'analysis-empty', '当前日期范围不足以计算排名变化')
+        );
+        return;
+      }
+      items.forEach((item) => {
+        const button = createElement('button', 'analysis-item');
+        button.type = 'button';
+        const detail = item.startRank === null
+          ? '未入榜 → 第 ' + item.endRank + ' 名'
+          : item.endRank === null
+          ? '第 ' + item.startRank + ' 名 → 未入榜'
+          : '第 ' + item.startRank + ' 名 → 第 ' + item.endRank + ' 名';
+        const content = createElement('span');
+        content.append(
+          createElement('strong', '', item.domain),
+          createElement('small', '', detail)
+        );
+        const value = createElement(
+          'span',
+          'change-value ' + item.changeType,
+          formatRankChange(item)
+        );
+        button.append(content, value);
+        button.addEventListener('click', () =>
+          selectProfileDomain(trend, item.domain, true)
+        );
+        container.appendChild(button);
+      });
+    }
+
+    // 渲染波动指数排行榜。
+    function renderVolatilityRanking(trend, analytics) {
+      const container = document.getElementById('volatility-ranking');
+      const items = [...analytics.items]
+        .filter((item) => item.volatility !== null)
+        .sort(
+          (left, right) =>
+            right.volatility - left.volatility ||
+            left.domain.localeCompare(right.domain)
+        )
+        .slice(0, 8);
+      container.replaceChildren();
+      if (items.length === 0) {
+        container.appendChild(
+          createElement('div', 'analysis-empty', '至少需要两个真实数据日才能计算波动指数')
+        );
+        return;
+      }
+      items.forEach((item) => {
+        const button = createElement('button', 'analysis-item');
+        button.type = 'button';
+        const content = createElement('span');
+        content.append(
+          createElement('strong', '', item.domain),
+          createElement('small', '', getVolatilityLevel(item.volatility))
+        );
+        const score = createElement('span');
+        score.append(
+          createElement('span', 'volatility-value', item.volatility),
+          createElement('span', 'volatility-track')
+        );
+        score.lastChild.appendChild(createElement('span', 'volatility-fill'));
+        score.lastChild.lastChild.style.width = item.volatility + '%';
+        button.append(content, score);
+        button.addEventListener('click', () =>
+          selectProfileDomain(trend, item.domain, true)
+        );
+        container.appendChild(button);
+      });
+    }
+
+    // 创建网站画像中的单个指标。
+    function createProfileStat(label, value) {
+      const stat = createElement('div', 'profile-stat');
+      stat.append(
+        createElement('span', '', label),
+        createElement('strong', '', value)
+      );
+      return stat;
+    }
+
+    // 渲染网站优势关键词和国家标签。
+    function createProfileStrength(title, items, formatter) {
+      const panel = createElement('section', 'profile-strength');
+      panel.appendChild(createElement('h4', '', title));
+      const tags = createElement('div', 'profile-tags');
+      if (items.length === 0) {
+        tags.appendChild(createElement('span', 'profile-tag', '暂无数据'));
+      } else {
+        items.forEach((item) => {
+          tags.appendChild(createElement('span', 'profile-tag', formatter(item)));
+        });
+      }
+      panel.appendChild(tags);
+      return panel;
+    }
+
+    // 渲染选中网站的排名、覆盖能力和雷达画像。
+    function renderDomainProfile(trend, analytics) {
+      const container = document.getElementById('domain-profile');
+      const select = document.getElementById('profile-domain-select');
+      const domains = analytics.items.map((item) => item.domain);
+      let activeDomain = profileDomainSelections.get(trend.key);
+      if (!domains.includes(activeDomain)) activeDomain = domains[0] ?? null;
+      profileDomainSelections.set(trend.key, activeDomain);
+      select.replaceChildren();
+      domains.forEach((domain) => {
+        const option = createElement('option', '', domain);
+        option.value = domain;
+        option.selected = domain === activeDomain;
+        select.appendChild(option);
+      });
+      select.disabled = domains.length === 0;
+      container.replaceChildren();
+      if (profileRadar) {
+        profileRadar.dispose();
+        profileRadar = null;
+      }
+      const item = analytics.items.find((entry) => entry.domain === activeDomain);
+      if (!item) {
+        container.appendChild(
+          createElement('div', 'analysis-empty', '请至少选择一个有排名数据的网站')
+        );
+        return;
+      }
+
+      const layout = createElement('div', 'profile-layout');
+      const radarElement = createElement('div', 'profile-radar');
+      radarElement.setAttribute('role', 'img');
+      radarElement.setAttribute('aria-label', item.domain + ' 网站画像雷达图');
+      const details = createElement('div');
+      details.appendChild(createElement('h4', 'profile-domain', item.domain));
+      details.appendChild(
+        createElement(
+          'p',
+          'profile-meta',
+          '首次出现 ' + (item.profile.firstSeen ?? '--') +
+            ' · 最近出现 ' + (item.profile.lastSeen ?? '--')
+        )
+      );
+      const stats = createElement('div', 'profile-stats');
+      stats.append(
+        createProfileStat('当前排名', item.endRank === null ? '未入榜' : '第 ' + item.endRank + ' 名'),
+        createProfileStat('区间平均', item.averageRank === null ? '--' : '第 ' + item.averageRank + ' 名'),
+        createProfileStat('最佳排名', item.bestRank === null ? '--' : '第 ' + item.bestRank + ' 名'),
+        createProfileStat('最差排名', item.worstRank === null ? '--' : '第 ' + item.worstRank + ' 名'),
+        createProfileStat('波动指数', item.volatility ?? '--'),
+        createProfileStat('日期覆盖', item.coverageRate + '%'),
+        createProfileStat('Top 3 占比', item.profile.top3Rate + '%'),
+        createProfileStat('Top 10 占比', item.profile.top10Rate + '%'),
+        createProfileStat('关键词覆盖', item.profile.keywordCount),
+        createProfileStat('国家覆盖', item.profile.countryCount),
+        createProfileStat('收录次数', item.profile.appearances)
+      );
+      details.appendChild(stats);
+      const strengths = createElement('div', 'profile-strengths');
+      strengths.append(
+        createProfileStrength(
+          '优势关键词',
+          item.profile.topKeywords,
+          (entry) => entry.name + ' · 平均第 ' + entry.averageRank + ' 名'
+        ),
+        createProfileStrength(
+          '优势国家',
+          item.profile.topCountries,
+          (entry) => formatCountry(entry.name) + ' · 平均第 ' + entry.averageRank + ' 名'
+        )
+      );
+      details.appendChild(strengths);
+      layout.append(radarElement, details);
+      container.appendChild(layout);
+
+      if (window.echarts) {
+        const rankingStrength = item.averageRank === null
+          ? 0
+          : Math.max(
+              0,
+              Math.round(
+                (1 -
+                  (item.averageRank - 1) /
+                    Math.max(1, trend.maximumRank - 1)) *
+                  100
+              )
+            );
+        profileRadar = window.echarts.init(radarElement);
+        profileRadar.setOption({
+          animationDuration: 420,
+          color: ['#2a9d8f'],
+          tooltip: { trigger: 'item' },
+          radar: {
+            radius: '64%',
+            splitNumber: 4,
+            indicator: [
+              { name: '排名强度', max: 100 },
+              { name: '稳定性', max: 100 },
+              { name: '日期覆盖', max: 100 },
+              { name: 'Top 3', max: 100 },
+              { name: 'Top 10', max: 100 }
+            ],
+            axisName: { color: '#5d687c', fontSize: 10 },
+            splitArea: {
+              areaStyle: { color: ['#fbfcfe', '#f6f9fb'] }
+            },
+            splitLine: { lineStyle: { color: '#dfe6ee' } },
+            axisLine: { lineStyle: { color: '#dfe6ee' } }
+          },
+          series: [{
+            type: 'radar',
+            symbolSize: 5,
+            areaStyle: { color: 'rgba(42, 157, 143, 0.18)' },
+            lineStyle: { width: 2 },
+            data: [{
+              name: item.domain,
+              value: [
+                rankingStrength,
+                item.volatility === null ? 0 : 100 - item.volatility,
+                item.coverageRate,
+                item.profile.top3Rate,
+                item.profile.top10Rate
+              ]
+            }]
+          }]
+        });
+      }
+    }
+
+    // 同步当前筛选条件下的全部分析模块。
+    function renderAnalytics(trend, visibleDates, selectedState) {
+      const analytics = buildActiveAnalytics(trend, visibleDates, selectedState);
+      const range = document.getElementById('analysis-range');
+      range.textContent = visibleDates.length === 0
+        ? '当前范围无数据'
+        : visibleDates[0] + ' → ' + visibleDates.at(-1);
+      renderAnalysisMetrics(analytics);
+      renderRankingChanges(trend, analytics);
+      renderVolatilityRanking(trend, analytics);
+      renderDomainProfile(trend, analytics);
     }
 
     // 批量更新当前筛选组合的网站图例，减少逐个点击操作。
@@ -1572,6 +2343,7 @@
       );
 
       updateLegendControls(trend, selectedState, visibleDates);
+      renderAnalytics(trend, visibleDates, selectedState);
     }
 
     // 初始化关键词与国家筛选按钮，两个维度均支持 All。
@@ -1625,6 +2397,11 @@
       });
     });
 
+    document.getElementById('profile-domain-select').addEventListener('change', (event) => {
+      const trend = getActiveTrend();
+      if (trend) selectProfileDomain(trend, event.target.value);
+    });
+
     if (window.flatpickr) {
       rangePicker = window.flatpickr('#date-range', {
         mode: 'single',
@@ -1661,9 +2438,23 @@
             event.selected,
             getModernVisibleDates(trend)
           );
+          renderAnalytics(
+            trend,
+            getModernVisibleDates(trend),
+            event.selected
+          );
         }
       });
-      window.addEventListener('resize', () => rankingChart.resize());
+      rankingChart.on('click', (event) => {
+        const trend = getActiveTrend();
+        if (trend && event.componentType === 'series' && event.seriesName) {
+          selectProfileDomain(trend, event.seriesName, true);
+        }
+      });
+      window.addEventListener('resize', () => {
+        rankingChart.resize();
+        if (profileRadar) profileRadar.resize();
+      });
     }
 
     renderModernTrend();

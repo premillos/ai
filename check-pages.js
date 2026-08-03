@@ -169,6 +169,46 @@ async function main() {
     }
   }
 
+  // 首页趋势数据必须包含网站画像，确保变化分析和波动指数具备数据基础。
+  const rankTrendData = JSON.parse(
+    await readFile(
+      path.join(STATIC_DIRECTORY, 'data', 'rank-trends.json'),
+      'utf8',
+    ),
+  );
+  if (
+    !Array.isArray(rankTrendData.trends) ||
+    rankTrendData.trends.length === 0 ||
+    rankTrendData.trends.some(
+      (trend) =>
+        !Array.isArray(trend.series) ||
+        trend.series.some(
+          (series) =>
+            !series.profile ||
+            !Array.isArray(series.profile.topKeywords) ||
+            !Array.isArray(series.profile.topCountries),
+        ),
+    )
+  ) {
+    throw new Error('首页趋势数据缺少完整的网站画像字段');
+  }
+
+  const indexHtml = await readFile(
+    path.join(STATIC_DIRECTORY, 'index.html'),
+    'utf8',
+  );
+  for (const componentId of [
+    'analysis-metrics',
+    'ranking-changes',
+    'volatility-ranking',
+    'profile-domain-select',
+    'domain-profile',
+  ]) {
+    if (!indexHtml.includes(`id="${componentId}"`)) {
+      throw new Error(`首页缺少排名分析组件：${componentId}`);
+    }
+  }
+
   const reportHtmlFiles = htmlFiles.filter(
     (file) => path.dirname(file) === path.join(STATIC_DIRECTORY, 'reports'),
   );
