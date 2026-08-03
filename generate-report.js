@@ -8,6 +8,7 @@ const RESULTS_DIRECTORY = path.resolve(process.cwd(), 'results');
 const OUTPUT_DIRECTORY = path.resolve(process.cwd(), 'static');
 const INDEX_FILE = path.join(OUTPUT_DIRECTORY, 'index.html');
 const ARCHIVE_FILE = path.join(OUTPUT_DIRECTORY, 'archive.html');
+const RANK_ANIMATION_FILE = path.join(OUTPUT_DIRECTORY, 'rank-animation.html');
 const SITEMAP_FILE = path.join(OUTPUT_DIRECTORY, 'sitemap.xml');
 const ROBOTS_FILE = path.join(OUTPUT_DIRECTORY, 'robots.txt');
 const REPORTS_DIRECTORY = path.join(OUTPUT_DIRECTORY, 'reports');
@@ -2645,6 +2646,7 @@ ${DATA_LOADER_STYLES}
       </a>
       <nav class="main-nav" aria-label="主导航">
         <a href="#trends">排名趋势</a>
+        <a href="rank-animation.html">排名动画</a>
         <a href="archive.html">数据档案</a>
         <a class="nav-badge" href="#trends">AI × Frontend</a>
       </nav>
@@ -3966,6 +3968,514 @@ ${DATA_LOADER_STYLES}
 }
 
 /**
+ * 生成沉浸式排名动画页面。
+ * @param {string} dataVersion 趋势数据内容版本号
+ * @returns {string} HTML 内容
+ */
+function renderRankAnimationHtml(dataVersion) {
+  const pageTitle = `搜索排名动态演化 · ${SITE_NAME}`;
+  const pageDescription =
+    '以 Gapminder 风格动态气泡图播放网站自然搜索排名、关键词覆盖和国家覆盖随时间的变化。';
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${SITE_URL}/rank-animation.html#webpage`,
+    url: `${SITE_URL}/rank-animation.html`,
+    name: pageTitle,
+    description: pageDescription,
+    inLanguage: 'zh-CN',
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+  };
+
+  return `<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${escapeHtml(pageTitle)}</title>${renderSeoMeta({
+    title: pageTitle,
+    description: pageDescription,
+    pathname: 'rank-animation.html',
+  })}
+  <meta name="theme-color" content="#07111f">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  ${renderStructuredData(structuredData)}
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07111f;
+      --surface: rgba(13, 27, 45, 0.82);
+      --surface-strong: #10233a;
+      --line: rgba(148, 163, 184, 0.18);
+      --text: #f8fafc;
+      --soft: #94a3b8;
+      --cyan: #22d3ee;
+      --teal: #2dd4bf;
+      --orange: #fb923c;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(34, 211, 238, 0.12), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(45, 212, 191, 0.09), transparent 24%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, select, input { font: inherit; }
+    button, select { color: inherit; }
+    .app { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; height: 100dvh; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
+      padding: 12px clamp(16px, 2.4vw, 38px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(7, 17, 31, 0.72);
+      backdrop-filter: blur(18px);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; color: var(--text); text-decoration: none; font-weight: 760; }
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid rgba(34, 211, 238, 0.38);
+      border-radius: 12px;
+      background: rgba(34, 211, 238, 0.08);
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .page-meta { display: flex; align-items: center; gap: 18px; }
+    .page-meta span { color: var(--soft); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+    .back-link { color: #cbd5e1; font-size: 13px; text-decoration: none; }
+    .back-link:hover { color: var(--cyan); }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(250px, 1.35fr) repeat(4, minmax(112px, 0.5fr)) auto;
+      gap: 10px;
+      padding: 12px clamp(16px, 2.4vw, 38px);
+      border-bottom: 1px solid var(--line);
+    }
+    .title-block h1 { margin: 0; font-size: clamp(20px, 2vw, 30px); line-height: 1.15; letter-spacing: -0.03em; }
+    .title-block p { margin: 6px 0 0; color: var(--soft); font-size: 12px; }
+    .control { display: grid; gap: 6px; }
+    .control label { color: var(--soft); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+    select, .play-button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--surface);
+      outline: none;
+    }
+    select { width: 100%; padding: 0 32px 0 12px; }
+    select:focus, .play-button:focus-visible { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.12); }
+    .play-button {
+      align-self: end;
+      min-width: 110px;
+      padding: 0 18px;
+      border-color: rgba(34, 211, 238, 0.38);
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.22), rgba(45, 212, 191, 0.12));
+      cursor: pointer;
+      font-weight: 720;
+    }
+    .play-button:hover { transform: translateY(-1px); border-color: var(--cyan); }
+
+    .stage { position: relative; min-height: 0; }
+    #rank-motion-chart { position: absolute; inset: 0; }
+    .date-watermark {
+      position: absolute;
+      right: clamp(22px, 5vw, 84px);
+      bottom: clamp(30px, 8vh, 100px);
+      z-index: 0;
+      color: rgba(226, 232, 240, 0.08);
+      font-size: clamp(58px, 11vw, 180px);
+      font-weight: 850;
+      letter-spacing: -0.07em;
+      line-height: 0.8;
+      pointer-events: none;
+      user-select: none;
+    }
+    .empty-state {
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-items: center;
+      color: var(--soft);
+      text-align: center;
+    }
+    .loading-state {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      z-index: 2;
+      place-items: center;
+      background: var(--bg);
+      color: var(--soft);
+      transition: opacity 240ms ease;
+    }
+    .loading-state.hidden { opacity: 0; pointer-events: none; }
+    .loading-state span::before {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 10px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 18px var(--cyan);
+      content: '';
+      animation: pulse 1s ease-in-out infinite alternate;
+    }
+    @keyframes pulse { to { opacity: 0.35; transform: scale(0.72); } }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: 90px minmax(0, 1fr) 90px;
+      align-items: center;
+      gap: 18px;
+      padding: 12px clamp(16px, 3vw, 46px) 18px;
+      border-top: 1px solid var(--line);
+      background: rgba(7, 17, 31, 0.86);
+    }
+    .timeline time { color: #cbd5e1; font-size: 12px; font-variant-numeric: tabular-nums; }
+    .timeline time:last-child { text-align: right; }
+    input[type="range"] { width: 100%; accent-color: var(--cyan); cursor: pointer; }
+    .timeline-detail { grid-column: 1 / -1; display: flex; justify-content: space-between; margin-top: -7px; color: var(--soft); font-size: 11px; }
+
+    @media (max-width: 960px) {
+      .toolbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .title-block { grid-column: 1 / -1; }
+      .play-button { align-self: end; }
+      .page-meta span { display: none; }
+    }
+    @media (max-width: 620px) {
+      .app { grid-template-rows: auto auto minmax(320px, 1fr) auto; overflow-y: auto; }
+      html, body { overflow: auto; }
+      .toolbar { grid-template-columns: 1fr 1fr; }
+      .control:first-of-type { grid-column: 1 / -1; }
+      .play-button { width: 100%; }
+      .timeline { grid-template-columns: 74px minmax(0, 1fr) 74px; gap: 8px; }
+      .date-watermark { bottom: 64px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="返回前端AI实验室首页">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>前端AI实验室</span>
+      </a>
+      <div class="page-meta">
+        <span>Ranking Motion Lab</span>
+        <a class="back-link" href="index.html">返回排名中心 ↗</a>
+      </div>
+    </header>
+
+    <section class="toolbar" aria-label="动画控制器">
+      <div class="title-block">
+        <h1>搜索排名动态演化</h1>
+        <p>横轴越靠左排名越高，纵轴与气泡大小分别表示关键词、国家覆盖。</p>
+      </div>
+      <div class="control">
+        <label for="motion-keyword">关键词</label>
+        <select id="motion-keyword"></select>
+      </div>
+      <div class="control">
+        <label for="motion-country">国家</label>
+        <select id="motion-country"></select>
+      </div>
+      <div class="control">
+        <label for="motion-count">显示网站</label>
+        <select id="motion-count">
+          <option value="10">前 10</option>
+          <option value="20" selected>前 20</option>
+          <option value="all">全部</option>
+        </select>
+      </div>
+      <div class="control">
+        <label for="motion-speed">播放速度</label>
+        <select id="motion-speed">
+          <option value="1800">慢速</option>
+          <option value="1000" selected>标准</option>
+          <option value="520">快速</option>
+        </select>
+      </div>
+      <button class="play-button" id="motion-play" type="button" aria-pressed="false">▶ 播放</button>
+    </section>
+
+    <section class="stage" aria-label="网站搜索排名动态气泡图">
+      <div class="date-watermark" id="motion-date" aria-hidden="true">----</div>
+      <div id="rank-motion-chart" role="img" aria-label="网站排名、关键词覆盖和国家覆盖动态气泡图"></div>
+      <div class="empty-state" id="motion-empty">当前筛选条件没有可播放的排名数据</div>
+      <div class="loading-state" id="motion-loading"><span>正在载入排名时间线</span></div>
+    </section>
+
+    <footer class="timeline">
+      <time id="motion-start">----</time>
+      <input id="motion-timeline" type="range" min="0" max="0" value="0" step="1" aria-label="排名动画时间轴">
+      <time id="motion-end">----</time>
+      <div class="timeline-detail">
+        <span id="motion-summary">等待数据</span>
+        <span>空格键播放 / 暂停 · 方向键逐日查看</span>
+      </div>
+    </footer>
+  </main>
+
+  <script src="${CDN_ASSETS.echarts.url}" integrity="${CDN_ASSETS.echarts.integrity}" crossorigin="anonymous"></script>
+  <script>
+    (async () => {
+      const response = await fetch('data/rank-trends.json?v=${encodeURIComponent(dataVersion)}');
+      if (!response.ok) throw new Error('排名数据请求失败：HTTP ' + response.status);
+      const data = await response.json();
+      const chartElement = document.getElementById('rank-motion-chart');
+      if (!window.echarts) throw new Error('图表组件加载失败');
+      const chart = window.echarts.init(chartElement, null, { renderer: 'canvas' });
+      const keywordSelect = document.getElementById('motion-keyword');
+      const countrySelect = document.getElementById('motion-country');
+      const countSelect = document.getElementById('motion-count');
+      const speedSelect = document.getElementById('motion-speed');
+      const playButton = document.getElementById('motion-play');
+      const timeline = document.getElementById('motion-timeline');
+      const watermark = document.getElementById('motion-date');
+      const emptyState = document.getElementById('motion-empty');
+      const loadingState = document.getElementById('motion-loading');
+      const summary = document.getElementById('motion-summary');
+      const startLabel = document.getElementById('motion-start');
+      const endLabel = document.getElementById('motion-end');
+      let frameIndex = 0;
+      let timer = null;
+
+      // 统一转换国家代码，保证与首页筛选名称一致。
+      const countryNames = {
+        all: 'All', in: '印度', us: '美国', gb: '英国', ca: '加拿大',
+        br: '巴西', fr: '法国', ph: '菲律宾', mx: '墨西哥'
+      };
+      function appendOptions(select, values, formatter) {
+        select.replaceChildren();
+        values.forEach((value) => {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = formatter(value);
+          select.appendChild(option);
+        });
+      }
+      appendOptions(keywordSelect, ['all', ...data.keywords], (value) => value === 'all' ? 'All' : value);
+      appendOptions(countrySelect, ['all', ...data.countries], (value) => countryNames[value] ?? value.toUpperCase());
+
+      function activeTrend() {
+        return data.trends.find(
+          (trend) => trend.keyword === keywordSelect.value && trend.country === countrySelect.value
+        );
+      }
+
+      // 当前帧按真实排名排序后限制网站数量，避免大量标签遮挡。
+      function buildFrame(trend, date) {
+        const limit = countSelect.value === 'all' ? Infinity : Number(countSelect.value);
+        return trend.series
+          .map((series) => {
+            const point = series.points.find((item) => item.date === date);
+            if (!point || point.rank === null) return null;
+            const coverage = series.profile.coverageByDate.find((item) => item.date === date);
+            const keywordCount = coverage?.keywords.length ?? 0;
+            const countryCount = coverage?.countries.length ?? 0;
+            return {
+              id: series.domain,
+              name: series.domain,
+              value: [point.rank, Math.max(1, keywordCount), Math.max(1, countryCount), series.domain],
+              keywordCount,
+              countryCount
+            };
+          })
+          .filter(Boolean)
+          .sort((left, right) => left.value[0] - right.value[0] || left.name.localeCompare(right.name))
+          .slice(0, limit);
+      }
+
+      function renderFrame(animate = true) {
+        const trend = activeTrend();
+        if (!trend || trend.dates.length === 0) return;
+        frameIndex = Math.max(0, Math.min(frameIndex, trend.dates.length - 1));
+        const date = trend.dates[frameIndex];
+        const frame = buildFrame(trend, date);
+        const maximumKeywordCount = Math.max(
+          2,
+          ...frame.map((item) => item.keywordCount)
+        );
+        watermark.textContent = date;
+        timeline.value = String(frameIndex);
+        emptyState.style.display = frame.length === 0 ? 'grid' : 'none';
+        summary.textContent = frame.length + ' 个网站 · ' +
+          (keywordSelect.value === 'all' ? '全部关键词' : keywordSelect.value) + ' · ' +
+          (countryNames[countrySelect.value] ?? countrySelect.value.toUpperCase());
+        chart.setOption({
+          animationDurationUpdate: animate ? Math.min(900, Number(speedSelect.value) * 0.72) : 0,
+          animationEasingUpdate: 'cubicInOut',
+          grid: { left: '7%', right: '5%', top: 44, bottom: 64, containLabel: true },
+          tooltip: {
+            trigger: 'item',
+            backgroundColor: 'rgba(7, 17, 31, 0.94)',
+            borderColor: 'rgba(34, 211, 238, 0.35)',
+            textStyle: { color: '#f8fafc' },
+            formatter(params) {
+              const item = params.data;
+              return '<strong>' + item.name + '</strong><br>' +
+                '平均排名：第 ' + item.value[0] + ' 名<br>' +
+                '关键词覆盖：' + item.keywordCount + '<br>' +
+                '国家覆盖：' + item.countryCount;
+            }
+          },
+          xAxis: {
+            type: 'value',
+            inverse: true,
+            min: 1,
+            max: Math.max(10, trend.maximumRank),
+            name: '自然搜索平均排名  ← 更优',
+            nameLocation: 'middle',
+            nameGap: 42,
+            nameTextStyle: { color: '#94a3b8' },
+            axisLabel: { color: '#94a3b8', formatter: '第 {value} 名' },
+            axisLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.26)' } },
+            splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } }
+          },
+          yAxis: {
+            type: 'value',
+            min: 0,
+            max: maximumKeywordCount + 1,
+            minInterval: 1,
+            name: '关键词覆盖',
+            nameTextStyle: { color: '#94a3b8' },
+            axisLabel: { color: '#94a3b8' },
+            axisLine: { show: false },
+            splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } }
+          },
+          visualMap: {
+            show: true,
+            type: 'continuous',
+            dimension: 0,
+            min: 1,
+            max: Math.max(10, trend.maximumRank),
+            inverse: true,
+            orient: 'horizontal',
+            left: 'center',
+            bottom: 5,
+            text: ['排名领先', '排名靠后'],
+            textStyle: { color: '#94a3b8' },
+            inRange: { color: ['#fb923c', '#22d3ee', '#2dd4bf'] },
+            calculable: false
+          },
+          series: [{
+            type: 'scatter',
+            data: frame,
+            universalTransition: true,
+            symbolSize(value) {
+              return Math.min(74, 22 + value[1] * 3 + value[2] * 7);
+            },
+            label: {
+              show: true,
+              position: 'top',
+              distance: 8,
+              color: '#e2e8f0',
+              fontSize: 11,
+              formatter: (params) => params.data.name
+            },
+            labelLayout: { hideOverlap: true },
+            itemStyle: {
+              borderColor: 'rgba(255, 255, 255, 0.78)',
+              borderWidth: 1,
+              shadowBlur: 16,
+              shadowColor: 'rgba(34, 211, 238, 0.2)',
+              opacity: 0.9
+            },
+            emphasis: {
+              focus: 'self',
+              scale: 1.24,
+              label: { show: true, fontWeight: 700, fontSize: 13 }
+            }
+          }]
+        }, { notMerge: false, lazyUpdate: true });
+      }
+
+      function syncTimeline() {
+        const trend = activeTrend();
+        stopPlayback();
+        frameIndex = 0;
+        timeline.max = String(Math.max(0, trend.dates.length - 1));
+        timeline.value = '0';
+        startLabel.textContent = trend.dates[0] ?? '----';
+        endLabel.textContent = trend.dates.at(-1) ?? '----';
+        renderFrame(false);
+      }
+
+      function stopPlayback() {
+        if (timer) window.clearInterval(timer);
+        timer = null;
+        playButton.textContent = '▶ 播放';
+        playButton.setAttribute('aria-pressed', 'false');
+      }
+
+      function startPlayback() {
+        const trend = activeTrend();
+        if (trend.dates.length < 2) return;
+        stopPlayback();
+        if (frameIndex >= trend.dates.length - 1) frameIndex = 0;
+        playButton.textContent = 'Ⅱ 暂停';
+        playButton.setAttribute('aria-pressed', 'true');
+        timer = window.setInterval(() => {
+          frameIndex = (frameIndex + 1) % trend.dates.length;
+          renderFrame(true);
+        }, Number(speedSelect.value));
+      }
+
+      function togglePlayback() {
+        if (timer) stopPlayback();
+        else startPlayback();
+      }
+
+      keywordSelect.addEventListener('change', syncTimeline);
+      countrySelect.addEventListener('change', syncTimeline);
+      countSelect.addEventListener('change', () => renderFrame(false));
+      speedSelect.addEventListener('change', () => { if (timer) startPlayback(); });
+      playButton.addEventListener('click', togglePlayback);
+      timeline.addEventListener('input', () => {
+        stopPlayback();
+        frameIndex = Number(timeline.value);
+        renderFrame(false);
+      });
+      window.addEventListener('keydown', (event) => {
+        if (event.target.matches?.('select, input, button')) return;
+        const trend = activeTrend();
+        if (event.code === 'Space') {
+          event.preventDefault();
+          togglePlayback();
+        }
+        if (event.code === 'ArrowRight' || event.code === 'ArrowLeft') {
+          stopPlayback();
+          const offset = event.code === 'ArrowRight' ? 1 : -1;
+          frameIndex = Math.max(0, Math.min(trend.dates.length - 1, frameIndex + offset));
+          renderFrame(false);
+        }
+      });
+      window.addEventListener('resize', () => chart.resize());
+      syncTimeline();
+      loadingState.classList.add('hidden');
+    })().catch((error) => {
+      const loading = document.getElementById('motion-loading');
+      loading.innerHTML = '<span>动画加载失败：' + String(error.message) + '</span>';
+      console.error(error);
+    });
+  </script>
+</body>
+</html>
+`;
+}
+
+/**
  * 生成独立的数据档案二级页面。
  * @param {object[]} reports 历史报告摘要
  * @returns {string} HTML 内容
@@ -4337,6 +4847,12 @@ function renderSitemap(reports) {
       changeFrequency: 'daily',
       priority: '0.8',
     },
+    {
+      location: `${SITE_URL}/rank-animation.html`,
+      lastModified: latestDate,
+      changeFrequency: 'daily',
+      priority: '0.9',
+    },
   ];
   const reportUrls = reports.map((report) => ({
     location: `${SITE_URL}/reports/${encodeURIComponent(report.fileName)}`,
@@ -4451,6 +4967,11 @@ async function main() {
       'utf8',
     ),
     writeFile(ARCHIVE_FILE, renderArchiveHtml(reportSummaries), 'utf8'),
+    writeFile(
+      RANK_ANIMATION_FILE,
+      renderRankAnimationHtml(rankTrendsVersion),
+      'utf8',
+    ),
     // 首页趋势数据独立存储，避免历史增长持续放大 HTML 文件。
     writeFile(
       RANK_TRENDS_DATA_FILE,
@@ -4461,7 +4982,7 @@ async function main() {
     writeFile(ROBOTS_FILE, renderRobots(), 'utf8'),
   ]);
   console.log(
-    `报告生成完成：${INDEX_FILE}、${ARCHIVE_FILE}、${SITEMAP_FILE}（${reportSummaries.length} 个历史数据页）`,
+    `报告生成完成：${INDEX_FILE}、${ARCHIVE_FILE}、${RANK_ANIMATION_FILE}、${SITEMAP_FILE}（${reportSummaries.length} 个历史数据页）`,
   );
 }
 

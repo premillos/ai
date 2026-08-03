@@ -7,6 +7,7 @@ const STATIC_DIRECTORY = path.resolve(process.cwd(), directoryArgument);
 const REQUIRED_FILES = [
   'index.html',
   'archive.html',
+  'rank-animation.html',
   'sitemap.xml',
   'robots.txt',
   'favicon.svg',
@@ -226,6 +227,28 @@ async function main() {
     }
   }
 
+  // 排名动画页必须具备完整控制器，并继续按版本加载同一份趋势数据。
+  const rankAnimationHtml = await readFile(
+    path.join(STATIC_DIRECTORY, 'rank-animation.html'),
+    'utf8',
+  );
+  for (const componentId of [
+    'rank-motion-chart',
+    'motion-keyword',
+    'motion-country',
+    'motion-count',
+    'motion-speed',
+    'motion-play',
+    'motion-timeline',
+  ]) {
+    if (!rankAnimationHtml.includes(`id="${componentId}"`)) {
+      throw new Error(`排名动画页缺少交互组件：${componentId}`);
+    }
+  }
+  if (!/data\/rank-trends\.json\?v=[a-f0-9]{12}/.test(rankAnimationHtml)) {
+    throw new Error('排名动画页趋势数据缺少内容版本号');
+  }
+
   const reportHtmlFiles = htmlFiles.filter(
     (file) => path.dirname(file) === path.join(STATIC_DIRECTORY, 'reports'),
   );
@@ -244,8 +267,12 @@ async function main() {
   }
 
   const sitemap = await readFile(path.join(STATIC_DIRECTORY, 'sitemap.xml'), 'utf8');
-  if (!sitemap.includes(`${SITE_URL}/`) || !sitemap.includes('<urlset')) {
-    throw new Error('站点地图缺少站点首页或 urlset 根节点');
+  if (
+    !sitemap.includes(`${SITE_URL}/`) ||
+    !sitemap.includes(`${SITE_URL}/rank-animation.html`) ||
+    !sitemap.includes('<urlset')
+  ) {
+    throw new Error('站点地图缺少站点首页、排名动画页或 urlset 根节点');
   }
 
   const robots = await readFile(path.join(STATIC_DIRECTORY, 'robots.txt'), 'utf8');
