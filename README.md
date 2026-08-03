@@ -111,7 +111,7 @@ npm run check
 npm run report
 ```
 
-核心首页生成在 `static/index.html`，沉浸式排名动画生成在 `static/rank-animation.html`，数据档案生成在 `static/archive.html`，每天的数据报告生成在 `static/reports/YYYY-MM-DD.html`。首页与动画页共用 `static/data/rank-trends.json`，日报数据写入 `static/data/reports/YYYY-MM-DD.json`，页面会通过带内容版本号的 Fetch 按需加载，避免把完整业务数据嵌入 HTML，并在数据更新后主动绕过旧缓存。报告包含：
+核心首页生成在 `static/index.html`，沉浸式排名动画生成在 `static/rank-animation.html`，文案历史生成在 `static/meta-history.html`，数据档案生成在 `static/archive.html`，每天的数据报告生成在 `static/reports/YYYY-MM-DD.html`。首页与动画页共用 `static/data/rank-trends.json`，文案历史从 `static/data/meta-history.json` 加载，日报数据写入 `static/data/reports/YYYY-MM-DD.json`。页面均通过带内容版本号的 Fetch 按需加载，避免把完整业务数据嵌入 HTML，并在数据更新后主动绕过旧缓存。报告包含：
 
 - 首页以关键词排名趋势作为核心工具，采用全宽布局。
 - 数据档案二级页面按日期从新到旧排列每日简报。
@@ -125,6 +125,7 @@ npm run report
 - 点击趋势折线、变化榜、波动榜或覆盖率榜中的网站可联动切换网站画像。
 - 排名趋势默认显示最近一周，可快捷切换最近 3 天、最近一个月、全部数据或自定义日期范围。
 - 独立排名动画页采用 Gapminder 风格动态气泡图，全屏播放排名、关键词覆盖和国家覆盖的逐日变化，并支持时间轴、速度与筛选控制。
+- 独立文案历史页按相同关键词、国家和 URL 对比搜索结果 Title 与 Description，支持变化类型、关键词、国家、网站和文本筛选。
 - 趋势图使用 jsDelivr 固定版本加载 Apache ECharts，支持点击图例、拖动和缩放。
 - 日期范围使用 jsDelivr 固定版本加载经过主题美化的 Flatpickr 中文范围日历选择器。
 - CDN 资源均配置 SRI 完整性校验与跨域属性，避免资源内容异常或版本漂移。

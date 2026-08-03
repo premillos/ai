@@ -8,12 +8,14 @@ const REQUIRED_FILES = [
   'index.html',
   'archive.html',
   'rank-animation.html',
+  'meta-history.html',
   'sitemap.xml',
   'robots.txt',
   'favicon.svg',
   'assets/og-cover.png',
   'assets/og-cover.svg',
   'data/rank-trends.json',
+  'data/meta-history.json',
   '.nojekyll',
 ];
 const SITE_URL = 'https://premillos.github.io/ai';
@@ -249,6 +251,46 @@ async function main() {
     throw new Error('排名动画页趋势数据缺少内容版本号');
   }
 
+  // 文案历史页必须提供完整筛选器，并按版本加载独立历史数据。
+  const metaHistoryHtml = await readFile(
+    path.join(STATIC_DIRECTORY, 'meta-history.html'),
+    'utf8',
+  );
+  for (const componentId of [
+    'meta-metrics',
+    'meta-search',
+    'meta-status',
+    'meta-keyword',
+    'meta-country',
+    'meta-domain',
+    'meta-history-list',
+  ]) {
+    if (!metaHistoryHtml.includes(`id="${componentId}"`)) {
+      throw new Error(`文案历史页缺少交互组件：${componentId}`);
+    }
+  }
+  if (!/data\/meta-history\.json\?v=[a-f0-9]{12}/.test(metaHistoryHtml)) {
+    throw new Error('文案历史页数据缺少内容版本号');
+  }
+
+  const metaHistoryData = JSON.parse(
+    await readFile(path.join(STATIC_DIRECTORY, 'data', 'meta-history.json'), 'utf8'),
+  );
+  if (
+    !Array.isArray(metaHistoryData.histories) ||
+    metaHistoryData.histories.some(
+      (history) =>
+        !Array.isArray(history.snapshots) ||
+        history.snapshots.some(
+          (snapshot) =>
+            typeof snapshot.titleChanged !== 'boolean' ||
+            typeof snapshot.descriptionChanged !== 'boolean',
+        ),
+    )
+  ) {
+    throw new Error('文案历史数据缺少完整的 Title 或 Description 变化标记');
+  }
+
   const reportHtmlFiles = htmlFiles.filter(
     (file) => path.dirname(file) === path.join(STATIC_DIRECTORY, 'reports'),
   );
@@ -270,9 +312,10 @@ async function main() {
   if (
     !sitemap.includes(`${SITE_URL}/`) ||
     !sitemap.includes(`${SITE_URL}/rank-animation.html`) ||
+    !sitemap.includes(`${SITE_URL}/meta-history.html`) ||
     !sitemap.includes('<urlset')
   ) {
-    throw new Error('站点地图缺少站点首页、排名动画页或 urlset 根节点');
+    throw new Error('站点地图缺少首页、排名动画页、文案历史页或 urlset 根节点');
   }
 
   const robots = await readFile(path.join(STATIC_DIRECTORY, 'robots.txt'), 'utf8');
