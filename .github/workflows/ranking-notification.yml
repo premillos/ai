@@ -1,0 +1,47 @@
+name: 每日发送排名变化通知
+
+on:
+  schedule:
+    # GitHub Actions 使用 UTC，01:30 UTC 对应北京时间 09:30。
+    - cron: '30 1 * * *'
+  workflow_dispatch:
+    inputs:
+      send:
+        description: 是否实际发送钉钉通知；关闭时只生成任务摘要预览
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ranking-notification
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - name: 获取 main 分支
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: 配置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 生成通知预览
+        if: github.event_name == 'workflow_dispatch' && inputs.send != true
+        run: npm run notify:ranking -- --allow-stale
+
+      - name: 生成并发送钉钉通知
+        if: github.event_name == 'schedule' || inputs.send == true
+        env:
+          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
+          DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
+        run: npm run notify:ranking -- --send

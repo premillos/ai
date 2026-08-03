@@ -159,6 +159,18 @@ npm run check:pages:dist
 
 定时表达式使用 UTC，`0 18 * * *` 对应次日北京时间 02:00。也可以在 GitHub Actions 页面手动触发。
 
+## 每日排名通知
+
+`.github/workflows/ranking-notification.yml` 每天北京时间 09:30 读取最新趋势数据，对比最近两个真实数据日，并通过钉钉机器人发送 Markdown 通知。通知包含排名上升、下降、持平、新进入、掉出以及当前领先网站。
+
+钉钉地址和加签密钥分别保存为仓库 Secrets：`DINGTALK_WEBHOOK`、`DINGTALK_SECRET`，不会写入代码或日志。定时任务仅在最新数据日期等于上海时区当天日期时发送，避免数据采集延迟时误发旧数据。
+
+可以在 GitHub Actions 页面手动执行。手动执行默认只在任务摘要中生成预览；明确开启“是否实际发送钉钉通知”后才会发送。也可以在本地生成预览：
+
+```bash
+npm run notify:ranking -- --allow-stale
+```
+
 ## SEO 与搜索收录
 
 每次执行 `npm run report` 时，生成器会同步更新页面 SEO 信息和搜索引擎入口：
