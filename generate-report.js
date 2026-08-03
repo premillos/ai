@@ -4664,17 +4664,20 @@ function renderMetaHistoryHtml(dataVersion) {
     }
     button, input, select { font: inherit; }
     .page { width: min(1540px, calc(100% - 40px)); margin: 0 auto; padding: 20px 0 70px; }
-    .topbar { display: flex; align-items: center; justify-content: space-between; min-height: 54px; }
-    .brand { display: flex; align-items: center; gap: 11px; color: var(--ink); font-weight: 780; text-decoration: none; }
-    .brand-mark {
-      display: grid; width: 38px; height: 38px; place-items: center;
-      border: 1px solid rgba(8, 145, 178, 0.2); border-radius: 12px;
-      background: #fff; color: var(--cyan); font-family: ui-monospace, monospace;
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    .topbar {
+      display: flex; justify-content: space-between; gap: 24px; align-items: center;
+      min-height: 64px; margin-bottom: 18px;
     }
-    .nav { display: flex; gap: 18px; }
-    .nav a { color: var(--soft); font-size: 13px; text-decoration: none; }
-    .nav a:hover, .nav a[aria-current="page"] { color: var(--cyan); }
+    .brand { display: inline-flex; align-items: center; gap: 11px; color: #111827; font-weight: 700; text-decoration: none; }
+    .brand-mark {
+      display: grid; width: 38px; height: 38px; place-items: center; border-radius: 12px;
+      color: #67e8f9; background: var(--navy);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px;
+    }
+    .back-link {
+      padding: 8px 13px; border: 1px solid #dfe6ee; border-radius: 999px;
+      color: #64748b; background: #fff; font-size: 12px; text-decoration: none;
+    }
     .hero {
       display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(340px, 0.75fr);
       gap: 26px; align-items: end; padding: clamp(42px, 7vw, 88px) 0 34px;
@@ -4745,7 +4748,6 @@ function renderMetaHistoryHtml(dataVersion) {
     }
     @media (max-width: 720px) {
       .page { width: min(100% - 24px, 1540px); }
-      .nav a:not([aria-current="page"]) { display: none; }
       .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .filters { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .control:first-child { grid-column: 1 / -1; }
@@ -4757,15 +4759,13 @@ function renderMetaHistoryHtml(dataVersion) {
 </head>
 <body>
   <main class="page">
-    <header class="topbar">
-      <a class="brand" href="index.html"><span class="brand-mark">&lt;/&gt;</span><span>前端AI实验室</span></a>
-      <nav class="nav" aria-label="页面导航">
-        <a href="index.html">排名中心</a>
-        <a href="rank-animation.html">排名动画</a>
-        <a href="meta-history.html" aria-current="page">文案历史</a>
-        <a href="archive.html">数据档案</a>
-      </nav>
-    </header>
+    <div class="topbar">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>前端AI实验室</span>
+      </a>
+      <a class="back-link" href="index.html">← 返回实验室首页</a>
+    </div>
 
     <section class="hero">
       <div>

@@ -272,6 +272,9 @@ async function main() {
   if (!/data\/meta-history\.json\?v=[a-f0-9]{12}/.test(metaHistoryHtml)) {
     throw new Error('文案历史页数据缺少内容版本号');
   }
+  if (!metaHistoryHtml.includes('class="back-link" href="index.html"')) {
+    throw new Error('文案历史页缺少返回实验室首页按钮');
+  }
 
   const metaHistoryData = JSON.parse(
     await readFile(path.join(STATIC_DIRECTORY, 'data', 'meta-history.json'), 'utf8'),
