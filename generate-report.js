@@ -466,6 +466,7 @@ function buildRankTrendData(reports) {
     const dailyRanks = new Map();
     const domainAppearances = new Map();
     const domainProfileStats = new Map();
+    const dailyProfileCoverage = new Map();
 
     // 获取网站画像累计器，画像数据与当前关键词、国家组合保持一致。
     const getDomainProfileStats = (domain) => {
@@ -491,6 +492,8 @@ function buildRankTrendData(reports) {
 
     for (const report of reports) {
       const positionsByDomain = new Map();
+      const coverageByDomain = new Map();
+      dailyProfileCoverage.set(report.snapshotDate, coverageByDomain);
 
       const visibleKeywords = report.keywords.filter(
         (keyword) => keywordFilter === 'all' || keyword.name === keywordFilter,
@@ -520,6 +523,14 @@ function buildRankTrendData(reports) {
               query.country,
               result.position,
             );
+            if (!coverageByDomain.has(result.domain)) {
+              coverageByDomain.set(result.domain, {
+                keywords: new Set(),
+                countries: new Set(),
+              });
+            }
+            coverageByDomain.get(result.domain).keywords.add(keyword.name);
+            coverageByDomain.get(result.domain).countries.add(query.country);
           }
         }
       }
@@ -598,6 +609,14 @@ function buildRankTrendData(reports) {
           lastSeen: observedPoints.at(-1)?.date ?? null,
           topKeywords: buildProfileDimension(profileStats.keywords),
           topCountries: buildProfileDimension(profileStats.countries),
+          coverageByDate: dates.map((date) => {
+            const coverage = dailyProfileCoverage.get(date)?.get(domain);
+            return {
+              date,
+              keywords: coverage ? [...coverage.keywords].sort() : [],
+              countries: coverage ? [...coverage.countries].sort() : [],
+            };
+          }),
         },
       };
     });
@@ -2195,7 +2214,7 @@ ${DATA_LOADER_STYLES}
 
     .analysis-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
     }
 
@@ -2270,7 +2289,8 @@ ${DATA_LOADER_STYLES}
     }
 
     .change-value,
-    .volatility-value {
+    .volatility-value,
+    .coverage-value {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 11px;
       font-weight: 700;
@@ -2294,6 +2314,17 @@ ${DATA_LOADER_STYLES}
       height: 100%;
       border-radius: inherit;
       background: linear-gradient(90deg, var(--teal), var(--orange));
+    }
+
+    .coverage-value { color: var(--teal); }
+
+    .coverage-breakdown {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 8px;
+      margin-top: 4px;
+      color: var(--ink-soft);
+      font-size: 9px;
     }
 
     .profile-panel {
@@ -2395,6 +2426,11 @@ ${DATA_LOADER_STYLES}
       color: var(--ink-soft);
       font-size: 11px;
       text-align: center;
+    }
+
+    @media (max-width: 1050px) {
+      .analysis-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .coverage-panel { grid-column: 1 / -1; }
     }
 
     .list-heading {
@@ -2561,6 +2597,7 @@ ${DATA_LOADER_STYLES}
       .analysis-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .analysis-grid,
       .profile-layout { grid-template-columns: 1fr; }
+      .coverage-panel { grid-column: auto; }
       .profile-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .profile-strengths { grid-template-columns: 1fr; }
       .report-card { grid-template-columns: 1fr; }
@@ -2687,6 +2724,15 @@ ${DATA_LOADER_STYLES}
             </div>
           </div>
           <div class="analysis-list" id="volatility-ranking"></div>
+        </article>
+        <article class="analysis-panel coverage-panel">
+          <div class="panel-heading">
+            <div>
+              <h3>网站覆盖率</h3>
+              <p>综合日期、关键词和国家覆盖能力</p>
+            </div>
+          </div>
+          <div class="analysis-list" id="coverage-ranking"></div>
         </article>
       </div>
       <article class="profile-panel">
@@ -3157,13 +3203,62 @@ ${DATA_LOADER_STYLES}
       return '高波动';
     }
 
+    // 将综合覆盖率转换为便于识别的等级。
+    function getCoverageLevel(score) {
+      if (score >= 80) return '全面覆盖';
+      if (score >= 60) return '较高覆盖';
+      if (score >= 35) return '中等覆盖';
+      return '低覆盖';
+    }
+
     // 获取当前筛选和网站选择共同决定的分析数据。
     function buildActiveAnalytics(trend, visibleDates, selectedState) {
       const items = trend.series
         .filter((series) => selectedState[series.domain])
-        .map((series) =>
-          calculateSeriesAnalytics(series, visibleDates, trend.maximumRank)
-        )
+        .map((series) => {
+          const item = calculateSeriesAnalytics(
+            series,
+            visibleDates,
+            trend.maximumRank
+          );
+          const keywordTotal = trend.keyword === 'all'
+            ? rankTrendData.keywords.length
+            : 1;
+          const countryTotal = trend.country === 'all'
+            ? rankTrendData.countries.length
+            : 1;
+          const visibleDateSet = new Set(visibleDates);
+          const visibleCoverage = item.profile.coverageByDate.filter(
+            (coverage) => visibleDateSet.has(coverage.date)
+          );
+          const coveredKeywords = new Set(
+            visibleCoverage.flatMap((coverage) => coverage.keywords)
+          );
+          const coveredCountries = new Set(
+            visibleCoverage.flatMap((coverage) => coverage.countries)
+          );
+          const keywordCoverageRate = Math.min(
+            100,
+            Math.round((coveredKeywords.size / keywordTotal) * 1000) / 10
+          );
+          const countryCoverageRate = Math.min(
+            100,
+            Math.round((coveredCountries.size / countryTotal) * 1000) / 10
+          );
+          const overallCoverageRate = Math.round(
+            ((item.coverageRate + keywordCoverageRate + countryCoverageRate) /
+              3) *
+              10
+          ) / 10;
+          return {
+            ...item,
+            coveredKeywordCount: coveredKeywords.size,
+            coveredCountryCount: coveredCountries.size,
+            keywordCoverageRate,
+            countryCoverageRate,
+            overallCoverageRate
+          };
+        })
         .filter((item) => item.observedCount > 0);
       const volatilityItems = items.filter((item) => item.volatility !== null);
       const averageVolatility = volatilityItems.length === 0
@@ -3336,6 +3431,52 @@ ${DATA_LOADER_STYLES}
       });
     }
 
+    // 渲染网站综合覆盖率排行，点击网站可直接查看画像。
+    function renderCoverageRanking(trend, analytics) {
+      const container = document.getElementById('coverage-ranking');
+      const items = [...analytics.items]
+        .sort(
+          (left, right) =>
+            right.overallCoverageRate - left.overallCoverageRate ||
+            right.coverageRate - left.coverageRate ||
+            left.domain.localeCompare(right.domain)
+        )
+        .slice(0, 8);
+      container.replaceChildren();
+      if (items.length === 0) {
+        container.appendChild(
+          createElement('div', 'analysis-empty', '当前筛选范围内没有可计算的覆盖数据')
+        );
+        return;
+      }
+      items.forEach((item) => {
+        const button = createElement('button', 'analysis-item');
+        button.type = 'button';
+        const content = createElement('span');
+        const breakdown = createElement('span', 'coverage-breakdown');
+        breakdown.append(
+          createElement('span', '', '日期 ' + item.coverageRate + '%'),
+          createElement('span', '', '关键词 ' + item.keywordCoverageRate + '%'),
+          createElement('span', '', '国家 ' + item.countryCoverageRate + '%')
+        );
+        content.append(
+          createElement('strong', '', item.domain),
+          createElement('small', '', getCoverageLevel(item.overallCoverageRate)),
+          breakdown
+        );
+        const score = createElement(
+          'span',
+          'coverage-value',
+          item.overallCoverageRate + '%'
+        );
+        button.append(content, score);
+        button.addEventListener('click', () =>
+          selectProfileDomain(trend, item.domain, true)
+        );
+        container.appendChild(button);
+      });
+    }
+
     // 创建网站画像中的单个指标。
     function createProfileStat(label, value) {
       const stat = createElement('div', 'profile-stat');
@@ -3412,11 +3553,12 @@ ${DATA_LOADER_STYLES}
         createProfileStat('最佳排名', item.bestRank === null ? '--' : '第 ' + item.bestRank + ' 名'),
         createProfileStat('最差排名', item.worstRank === null ? '--' : '第 ' + item.worstRank + ' 名'),
         createProfileStat('波动指数', item.volatility ?? '--'),
+        createProfileStat('综合覆盖', item.overallCoverageRate + '%'),
         createProfileStat('日期覆盖', item.coverageRate + '%'),
         createProfileStat('Top 3 占比', item.profile.top3Rate + '%'),
         createProfileStat('Top 10 占比', item.profile.top10Rate + '%'),
-        createProfileStat('关键词覆盖', item.profile.keywordCount),
-        createProfileStat('国家覆盖', item.profile.countryCount),
+        createProfileStat('关键词覆盖', item.coveredKeywordCount),
+        createProfileStat('国家覆盖', item.coveredCountryCount),
         createProfileStat('收录次数', item.profile.appearances)
       );
       details.appendChild(stats);
@@ -3501,6 +3643,7 @@ ${DATA_LOADER_STYLES}
       renderAnalysisMetrics(analytics);
       renderRankingChanges(trend, analytics);
       renderVolatilityRanking(trend, analytics);
+      renderCoverageRanking(trend, analytics);
       renderDomainProfile(trend, analytics);
     }
 

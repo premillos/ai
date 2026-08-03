@@ -186,7 +186,8 @@ async function main() {
           (series) =>
             !series.profile ||
             !Array.isArray(series.profile.topKeywords) ||
-            !Array.isArray(series.profile.topCountries),
+            !Array.isArray(series.profile.topCountries) ||
+            !Array.isArray(series.profile.coverageByDate),
         ),
     )
   ) {
@@ -201,6 +202,7 @@ async function main() {
     'analysis-metrics',
     'ranking-changes',
     'volatility-ranking',
+    'coverage-ranking',
     'profile-domain-select',
     'domain-profile',
   ]) {
