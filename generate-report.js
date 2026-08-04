@@ -1742,6 +1742,31 @@ function renderIndexHtml(reports, dataVersion) {
 
     .main-nav a:hover { color: var(--teal); }
 
+    .nav-toggle,
+    .nav-close,
+    .nav-backdrop,
+    .nav-drawer-header {
+      display: none;
+    }
+
+    .nav-toggle,
+    .nav-close {
+      border: 0;
+      color: var(--ink);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .nav-toggle {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #d8e0e9;
+      border-radius: 12px;
+      background: #fff;
+      font-size: 20px;
+      line-height: 1;
+    }
+
     .nav-badge {
       padding: 7px 11px;
       border: 1px solid #d8e0e9;
@@ -2729,9 +2754,70 @@ ${DATA_LOADER_STYLES}
 
     @media (max-width: 700px) {
       .page { width: min(100% - 20px, 1440px); padding-top: 18px; }
-      .topbar { align-items: flex-start; }
-      .main-nav { gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
-      .main-nav a:not(.nav-badge) { display: none; }
+      .topbar { align-items: center; }
+      .nav-toggle { display: grid; place-items: center; }
+      /* H5 使用右侧抽屉承载完整导航，避免挤占顶栏空间。 */
+      .main-nav {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 101;
+        display: flex;
+        width: min(82vw, 320px);
+        height: 100dvh;
+        flex-direction: column;
+        gap: 0;
+        align-items: stretch;
+        padding: 18px;
+        background: #fff;
+        box-shadow: -20px 0 50px rgba(15, 23, 42, 0.18);
+        transform: translateX(105%);
+        transition: transform 220ms ease;
+      }
+      .main-nav.is-open { transform: translateX(0); }
+      .nav-drawer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 48px;
+        margin-bottom: 10px;
+        padding: 0 4px 12px;
+        border-bottom: 1px solid #e5eaf0;
+      }
+      .nav-drawer-header strong { font-size: 15px; }
+      .nav-close {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 10px;
+        background: #f1f5f9;
+        font-size: 24px;
+        line-height: 1;
+      }
+      .main-nav a {
+        padding: 15px 10px;
+        border-bottom: 1px solid #eef2f6;
+        color: var(--ink);
+        font-size: 15px;
+      }
+      .main-nav .nav-badge { display: none; }
+      .nav-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: block;
+        border: 0;
+        background: rgba(11, 18, 32, 0.48);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 220ms ease;
+      }
+      .nav-backdrop.is-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      body.nav-open { overflow: hidden; }
       .hero { grid-template-columns: 1fr; padding: 30px 24px; }
       .total { width: 100%; }
       .tool-grid { grid-template-columns: 1fr; }
@@ -2773,7 +2859,12 @@ ${DATA_LOADER_STYLES}
         <span class="brand-mark">&lt;/&gt;</span>
         <span>前端AI实验室</span>
       </a>
-      <nav class="main-nav" aria-label="主导航">
+      <button class="nav-toggle" type="button" aria-label="打开导航菜单" aria-controls="main-nav" aria-expanded="false">☰</button>
+      <nav class="main-nav" id="main-nav" aria-label="主导航">
+        <div class="nav-drawer-header">
+          <strong>功能导航</strong>
+          <button class="nav-close" type="button" aria-label="关闭导航菜单">×</button>
+        </div>
         <a href="#trends">排名趋势</a>
         <a href="rank-animation.html">排名动画</a>
         <a href="meta-history.html">文案历史</a>
@@ -2781,6 +2872,7 @@ ${DATA_LOADER_STYLES}
         <a class="nav-badge" href="#trends">AI × Frontend</a>
       </nav>
     </div>
+    <button class="nav-backdrop" type="button" aria-label="关闭导航菜单" tabindex="-1"></button>
     <header class="hero">
       <div>
         <p class="eyebrow">Frontend Intelligence Workspace</p>
@@ -2908,6 +3000,41 @@ ${DATA_LOADER_STYLES}
   <script src="${CDN_ASSETS.flatpickrJs.url}" integrity="${CDN_ASSETS.flatpickrJs.integrity}" crossorigin="anonymous"></script>
   <script src="${CDN_ASSETS.flatpickrZh.url}" integrity="${CDN_ASSETS.flatpickrZh.integrity}" crossorigin="anonymous"></script>
   <script>
+    // H5 导航抽屉独立初始化，避免受趋势数据加载状态影响。
+    (() => {
+      const toggle = document.querySelector('.nav-toggle');
+      const drawer = document.querySelector('.main-nav');
+      const closeButton = document.querySelector('.nav-close');
+      const backdrop = document.querySelector('.nav-backdrop');
+      if (!toggle || !drawer || !closeButton || !backdrop) return;
+
+      const setDrawerOpen = (isOpen, restoreFocus = false) => {
+        drawer.classList.toggle('is-open', isOpen);
+        backdrop.classList.toggle('is-open', isOpen);
+        document.body.classList.toggle('nav-open', isOpen);
+        toggle.setAttribute('aria-expanded', String(isOpen));
+        if (isOpen) closeButton.focus();
+        else if (restoreFocus) toggle.focus();
+      };
+
+      toggle.addEventListener('click', () => setDrawerOpen(true));
+      closeButton.addEventListener('click', () => setDrawerOpen(false, true));
+      backdrop.addEventListener('click', () => setDrawerOpen(false, true));
+      drawer.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => setDrawerOpen(false));
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && drawer.classList.contains('is-open')) {
+          setDrawerOpen(false, true);
+        }
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 700 && drawer.classList.contains('is-open')) {
+          setDrawerOpen(false);
+        }
+      });
+    })();
+
     (async () => {
     // 按需加载趋势数据，减少首页 HTML 体积并允许数据独立缓存。
     const trendResponse = await fetch('data/rank-trends.json?v=${encodeURIComponent(dataVersion)}');
