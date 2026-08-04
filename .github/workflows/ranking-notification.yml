@@ -10,7 +10,7 @@ on:
         description: 是否实际发送钉钉通知；关闭时只生成任务摘要预览
         required: true
         type: boolean
-        default: false
+        default: true
 
 permissions:
   contents: read
