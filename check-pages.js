@@ -298,6 +298,12 @@ async function main() {
     (file) => path.dirname(file) === path.join(STATIC_DIRECTORY, 'reports'),
   );
   for (const reportHtmlFile of reportHtmlFiles) {
+    const reportHtml = await readFile(reportHtmlFile, 'utf8');
+    if (!reportHtml.includes('id="ranking-change"')) {
+      throw new Error(
+        `日报缺少排名变化模块：${path.relative(process.cwd(), reportHtmlFile)}`,
+      );
+    }
     const dataFile = path.join(
       STATIC_DIRECTORY,
       'data',
@@ -307,6 +313,22 @@ async function main() {
     if (!files.includes(dataFile)) {
       throw new Error(
         `日报缺少动态数据文件：${path.relative(process.cwd(), reportHtmlFile)}`,
+      );
+    }
+    const reportData = JSON.parse(await readFile(dataFile, 'utf8'));
+    const changes = reportData.rankingChanges;
+    if (
+      changes !== null &&
+      (!changes ||
+        !Array.isArray(changes.up) ||
+        !Array.isArray(changes.down) ||
+        !Array.isArray(changes.stable) ||
+        !Array.isArray(changes.newEntries) ||
+        !Array.isArray(changes.lost) ||
+        !Array.isArray(changes.leaders))
+    ) {
+      throw new Error(
+        `日报排名变化数据不完整：${path.relative(process.cwd(), dataFile)}`,
       );
     }
   }

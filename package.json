@@ -11,7 +11,7 @@
     "mock-history": "node generate-demo-history.js",
     "mock-quarter": "node generate-three-month-history.js",
     "build:pages": "node prepare-pages.js",
-    "check": "node --check serper-search.js && node --check generate-report.js && node --check ranking-notification.js && node --check generate-demo-history.js && node --check generate-three-month-history.js && node --check prepare-pages.js && node --check check-pages.js",
+    "check": "node --check serper-search.js && node --check generate-report.js && node --check ranking-changes.js && node --check ranking-notification.js && node --check generate-demo-history.js && node --check generate-three-month-history.js && node --check prepare-pages.js && node --check check-pages.js",
     "check:pages": "node check-pages.js",
     "check:pages:dist": "node check-pages.js .pages-dist"
   },

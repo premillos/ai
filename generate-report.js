@@ -3,6 +3,7 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { getDomain as getRegistrableDomain } from 'tldts';
+import { calculateRankingChanges } from './ranking-changes.js';
 
 const RESULTS_DIRECTORY = path.resolve(process.cwd(), 'results');
 const OUTPUT_DIRECTORY = path.resolve(process.cwd(), 'static');
@@ -1042,6 +1043,102 @@ function renderHtml(reportData, dataFileName, dataVersion) {
       font-size: 13px;
     }
 
+    .ranking-change {
+      margin-top: 28px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 12px 30px rgba(20, 33, 61, 0.05);
+    }
+
+    .ranking-change[hidden] { display: none; }
+
+    .ranking-change-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+
+    .ranking-change-heading h2 {
+      margin: 0;
+      font-family: Georgia, "Songti SC", serif;
+      font-size: 26px;
+      font-weight: 500;
+    }
+
+    .ranking-change-heading p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .change-metrics {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .change-metric {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #f5f7fa;
+    }
+
+    .change-metric strong {
+      display: block;
+      font-family: Georgia, serif;
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .change-metric span {
+      color: var(--ink-soft);
+      font-size: 11px;
+    }
+
+    .change-lists {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .change-panel {
+      min-width: 0;
+      padding: 17px;
+      border: 1px solid #e6ebf1;
+      border-radius: 15px;
+      background: #fff;
+    }
+
+    .change-panel h3 {
+      margin: 0 0 12px;
+      font-size: 13px;
+    }
+
+    .change-list {
+      display: grid;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .change-list li {
+      overflow-wrap: anywhere;
+      color: var(--ink-soft);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .change-list strong {
+      color: var(--ink);
+      font-size: 12px;
+    }
+
     .toolbar {
       display: flex;
       gap: 10px;
@@ -1309,6 +1406,8 @@ ${DATA_LOADER_STYLES}
     @media (max-width: 900px) {
       .insight-grid { grid-template-columns: 1fr 1fr; }
       .insight-grid .panel:last-child { grid-column: 1 / -1; }
+      .change-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .change-lists { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .results-grid { grid-template-columns: 1fr; }
     }
 
@@ -1316,6 +1415,11 @@ ${DATA_LOADER_STYLES}
       .page { width: min(100% - 20px, 1180px); padding-top: 10px; }
       .hero { padding: 30px 22px; border-radius: 20px; }
       .summary-grid { grid-template-columns: 1fr; }
+      .ranking-change { padding: 21px 18px; }
+      .ranking-change-heading { display: block; }
+      .ranking-change-heading p { margin-top: 7px; }
+      .change-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .change-lists { grid-template-columns: 1fr; }
       .toolbar { display: block; }
       .toolbar-label { display: block; margin: 0 0 10px; line-height: 1.4; }
       .insight-grid { grid-template-columns: 1fr; }
@@ -1346,6 +1450,8 @@ ${DATA_LOADER_STYLES}
         <div class="summary"><strong id="result-count"></strong><span>自然搜索结果</span></div>
       </div>
     </header>
+
+    <section class="ranking-change" id="ranking-change" aria-labelledby="ranking-change-title" hidden></section>
 
     <nav class="toolbar" aria-label="选择关键词">
       <span class="toolbar-label">关键词</span>
@@ -1413,6 +1519,103 @@ ${DATA_LOADER_STYLES}
         dateStyle: 'medium',
         timeStyle: 'short'
       }).format(new Date(value));
+    }
+
+    // 将平均排名格式化为最多一位小数。
+    function formatRank(rank) {
+      if (rank === null) return '未入榜';
+      return Number.isInteger(rank) ? String(rank) : rank.toFixed(1);
+    }
+
+    // 创建排名变化列表，内容与钉钉通知保持一致。
+    function buildRankingChangeList(title, items, formatItem) {
+      const panel = createElement('section', 'change-panel');
+      panel.appendChild(createElement('h3', '', title));
+      const list = createElement('ol', 'change-list');
+      if (items.length === 0) {
+        list.appendChild(createElement('li', '', '暂无'));
+      } else {
+        items.forEach((item, index) => {
+          const row = createElement('li');
+          row.append(
+            createElement('strong', '', (index + 1) + '. ' + item.domain),
+            document.createTextNode('：' + formatItem(item))
+          );
+          list.appendChild(row);
+        });
+      }
+      panel.appendChild(list);
+      return panel;
+    }
+
+    // 渲染全部关键词和国家范围的每日排名变化摘要。
+    function renderRankingChanges() {
+      const changes = reportData.rankingChanges;
+      const section = document.getElementById('ranking-change');
+      if (!changes) return;
+
+      const heading = createElement('div', 'ranking-change-heading');
+      const headingText = createElement('div');
+      headingText.append(
+        createElement('h2', '', '每日排名变化'),
+        createElement('p', '', '全部关键词 / 全部国家，排名越小表现越好')
+      );
+      heading.append(
+        headingText,
+        createElement('p', '', '对比 ' + changes.previousDate)
+      );
+
+      const metrics = createElement('div', 'change-metrics');
+      [
+        ['⬆️', changes.up.length, '排名上升'],
+        ['⬇️', changes.down.length, '排名下降'],
+        ['➖', changes.stable.length, '排名持平'],
+        ['🆕', changes.newEntries.length, '新进入榜单'],
+        ['⚠️', changes.lost.length, '掉出榜单']
+      ].forEach(([icon, value, label]) => {
+        const metric = createElement('div', 'change-metric');
+        metric.append(
+          createElement('strong', '', icon + ' ' + value),
+          createElement('span', '', label)
+        );
+        metrics.appendChild(metric);
+      });
+
+      const lists = createElement('div', 'change-lists');
+      lists.append(
+        buildRankingChangeList(
+          '上升幅度最大',
+          changes.up.slice(0, 5),
+          (item) =>
+            formatRank(item.previousRank) + ' → ' + formatRank(item.latestRank) +
+            '，上升 ' + Math.abs(item.change) + ' 位'
+        ),
+        buildRankingChangeList(
+          '下降幅度最大',
+          changes.down.slice(0, 5),
+          (item) =>
+            formatRank(item.previousRank) + ' → ' + formatRank(item.latestRank) +
+            '，下降 ' + Math.abs(item.change) + ' 位'
+        ),
+        buildRankingChangeList(
+          '新进入榜单',
+          changes.newEntries,
+          (item) => '第 ' + formatRank(item.latestRank) + ' 名'
+        ),
+        buildRankingChangeList(
+          '掉出榜单',
+          changes.lost,
+          (item) => '前一日第 ' + formatRank(item.previousRank) + ' 名'
+        ),
+        buildRankingChangeList(
+          '当前排名领先网站',
+          changes.leaders,
+          (item) => '第 ' + formatRank(item.latestRank) + ' 名'
+        )
+      );
+
+      section.append(heading, metrics, lists);
+      section.hidden = false;
     }
 
     // 创建横向条形图。
@@ -1593,6 +1796,7 @@ ${DATA_LOADER_STYLES}
     document.getElementById('result-count').textContent = reportData.resultCount;
     document.getElementById('generated-time').textContent =
       '前端AI实验室 · 报告生成于 ' + formatDate(reportData.generatedAt) + ' · Copyright © pzl';
+    renderRankingChanges();
 
     const tabs = document.getElementById('keyword-tabs');
     reportData.keywords.forEach((keyword, index) => {
@@ -5550,6 +5754,7 @@ async function main() {
   const fileGroups = groupFilesByDate(files);
   const reportSummaries = [];
   const historicalReports = [];
+  const pendingReports = [];
   await mkdir(OUTPUT_DIRECTORY, { recursive: true });
   await mkdir(REPORTS_DIRECTORY, { recursive: true });
   await mkdir(REPORT_DATA_DIRECTORY, { recursive: true });
@@ -5568,21 +5773,7 @@ async function main() {
         ? 'undated.html'
         : `${date.replace(/[^0-9-]/g, '_')}.html`;
     const dataFileName = fileName.replace(/\.html$/, '.json');
-    const reportJson = JSON.stringify(reportData);
-    const reportDataVersion = createContentVersion(reportJson);
-    await Promise.all([
-      writeFile(
-        path.join(REPORTS_DIRECTORY, fileName),
-        renderHtml(reportData, dataFileName, reportDataVersion),
-        'utf8',
-      ),
-      // 数据文件使用紧凑 JSON，降低传输体积并支持浏览器独立缓存。
-      writeFile(
-        path.join(REPORT_DATA_DIRECTORY, dataFileName),
-        `${reportJson}\n`,
-        'utf8',
-      ),
-    ]);
+    pendingReports.push({ reportData, fileName, dataFileName });
     reportSummaries.push({
       date,
       fileName,
@@ -5603,6 +5794,40 @@ async function main() {
   const rankTrends = buildRankTrendData(historicalReports);
   const rankTrendsJson = JSON.stringify(rankTrends);
   const rankTrendsVersion = createContentVersion(rankTrendsJson);
+  const aggregateTrend = rankTrends.trends.find(
+    (trend) => trend.key === 'all::all',
+  );
+  if (!aggregateTrend) {
+    throw new Error('趋势数据中缺少 all::all 聚合视图');
+  }
+
+  // 日报与钉钉通知共用排名变化计算，保证同一数据日展示一致。
+  for (const { reportData, fileName, dataFileName } of pendingReports) {
+    try {
+      reportData.rankingChanges = calculateRankingChanges(
+        aggregateTrend,
+        reportData.snapshotDate,
+      );
+    } catch {
+      reportData.rankingChanges = null;
+    }
+    const reportJson = JSON.stringify(reportData);
+    const reportDataVersion = createContentVersion(reportJson);
+    await Promise.all([
+      writeFile(
+        path.join(REPORTS_DIRECTORY, fileName),
+        renderHtml(reportData, dataFileName, reportDataVersion),
+        'utf8',
+      ),
+      // 数据文件使用紧凑 JSON，降低传输体积并支持浏览器独立缓存。
+      writeFile(
+        path.join(REPORT_DATA_DIRECTORY, dataFileName),
+        `${reportJson}\n`,
+        'utf8',
+      ),
+    ]);
+  }
+
   const metaHistory = buildMetaHistoryData(historicalReports);
   const metaHistoryJson = JSON.stringify(metaHistory);
   const metaHistoryVersion = createContentVersion(metaHistoryJson);
