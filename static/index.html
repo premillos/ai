@@ -403,8 +403,9 @@
     }
 
     .date-input {
-      width: 238px;
+      width: 300px;
       max-width: 100%;
+      min-width: 0;
       padding: 9px 12px 9px 38px;
       border: 1px solid var(--line);
       border-radius: 11px;
@@ -1270,10 +1271,17 @@
         padding: 18px;
         background: #fff;
         box-shadow: -20px 0 50px rgba(15, 23, 42, 0.18);
-        transform: translateX(105%);
-        transition: transform 220ms ease;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateX(100%);
+        transition: transform 220ms ease, visibility 0s linear 220ms;
       }
-      .main-nav.is-open { transform: translateX(0); }
+      .main-nav.is-open {
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateX(0);
+        transition-delay: 0s;
+      }
       .nav-drawer-header {
         display: flex;
         justify-content: space-between;
@@ -1325,7 +1333,34 @@
       .trend-filter-row { grid-template-columns: 1fr; gap: 6px; }
       .trend-filter-label { padding-top: 0; }
       .range-toolbar { display: block; }
-      .custom-range { margin-top: 10px; }
+      /* H5 下日期标签与输入框分行，避免结束日期被容器裁切。 */
+      .custom-range {
+        display: grid;
+        width: 100%;
+        margin-top: 10px;
+      }
+      .date-picker-shell,
+      .date-input { width: 100%; }
+      .date-picker-shell { min-width: 0; }
+      /* Flatpickr 默认宽度为 330px，320px 设备会越出视口。 */
+      .flatpickr-calendar.open {
+        right: 8px !important;
+        left: 8px !important;
+        width: auto;
+        max-width: calc(100vw - 16px);
+        padding: 4px;
+      }
+      .flatpickr-calendar .flatpickr-innerContainer,
+      .flatpickr-calendar .flatpickr-rContainer,
+      .flatpickr-calendar .flatpickr-days,
+      .flatpickr-calendar .dayContainer,
+      .flatpickr-calendar .flatpickr-weekdays,
+      .flatpickr-calendar .flatpickr-weekdaycontainer {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+      }
+      .flatpickr-calendar .flatpickr-day { max-width: none; }
       .legend-toolbar { display: block; }
       .legend-actions { margin-top: 12px; }
       .analysis-heading,
