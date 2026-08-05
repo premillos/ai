@@ -2,8 +2,8 @@ name: 每日发送排名变化通知
 
 on:
   schedule:
-    # GitHub Actions 使用 UTC，01:30 UTC 对应北京时间 09:30。
-    - cron: '30 1 * * *'
+    # GitHub Actions 使用 UTC，02:30 UTC 对应北京时间 10:30。
+    - cron: '30 2 * * *'
   workflow_dispatch:
     inputs:
       send:
