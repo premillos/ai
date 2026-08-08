@@ -1,0 +1,83 @@
+{
+  "searchCondition": {
+    "keyword": "random video chat",
+    "country": "gb",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-08-08T18:49:20.133Z",
+  "data": {
+    "searchParameters": {
+      "q": "random video chat",
+      "gl": "gb",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text Chat",
+        "link": "https://opentalk.club/",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 1
+      },
+      {
+        "title": "Random Video Chat: Talk to Strangers on Yap.Chat",
+        "link": "https://yap.chat/video",
+        "snippet": "Start a random video chat on Yap.Chat instantly. Meet new people and talk to strangers worldwide with fast matching, high-quality streams, and no sign-up ...",
+        "position": 2
+      },
+      {
+        "title": "Linko TV - Random Video Chat - Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.linko.ometv&hl=en",
+        "snippet": "Linko is the ultimate Omegle alternative and the most exciting way to meet strangers through live video chat. Bored? Curious?",
+        "date": "5 days ago",
+        "position": 3
+      },
+      {
+        "title": "Azar: Video Chat with New People",
+        "link": "https://azarlive.com/",
+        "snippet": "Azar isn't a random video chat - the more you use Azar the more our recommendation algorithm learns the type of persons you enjoyed chatting with and seeks to ...",
+        "position": 4
+      },
+      {
+        "title": "Who - Live Random Video Chat",
+        "link": "https://whoapp.live/",
+        "snippet": "WHO is a random video chat platform connecting you with verified real strangers by live video, instantly, without requiring a signup or registration.",
+        "position": 5
+      },
+      {
+        "title": "Aznabee - Free Random Video Chat with Strangers | Meet New ...",
+        "link": "https://www.aznabee.com/",
+        "snippet": "Aznabee is a free random video chat platform to meet strangers online. No sign-up. Duo Mode, AR filters, AI moderation, and WebRTC peer-to-peer video - plus ...",
+        "position": 6
+      },
+      {
+        "title": "MonkeyChat: Free Random Video Chat to Talk to Strangers",
+        "link": "https://www.monkeychat.fun/",
+        "snippet": "MonkeyChat — the new and 100% free way to meet and talk to strangers through instant 1-on-1 video and text chat. No bots. No paywalls.",
+        "position": 7
+      },
+      {
+        "title": "Random Video Chat With Strangers — Free, No Signup - Yapping",
+        "link": "https://yapping.me/video-chat",
+        "snippet": "Free random video chat with anonymous strangers worldwide. Cam-to-cam matching over secure WebRTC, no signup, moderated. Start video chatting in your ...",
+        "position": 8
+      },
+      {
+        "title": "Chatroulette - Video Chat with the World",
+        "link": "https://chatroulette.com/",
+        "snippet": "Chatroulette is the original free random video chat. Meet new people worldwide in safe, AI moderated video chats.",
+        "position": 9
+      },
+      {
+        "title": "Hay - Talk to Strangers & Random Video Chat",
+        "link": "https://www.hay.fun/",
+        "snippet": "Talk to strangers and make friends on Hay! Experience a secure, random video chat alternative to connect with people worldwide.",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}
