@@ -1,0 +1,76 @@
+{
+  "searchCondition": {
+    "keyword": "video chat with strangers",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-08-11T19:12:37.638Z",
+  "data": {
+    "searchParameters": {
+      "q": "video chat with strangers",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text Chat",
+        "link": "https://opentalk.club/",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 1
+      },
+      {
+        "title": "Who - Live Random Video Chat",
+        "link": "https://whoapp.live/",
+        "snippet": "WHO is a random video chat platform connecting you with verified real strangers by live video, instantly, without requiring a signup or registration.",
+        "position": 2
+      },
+      {
+        "title": "Azar: Video Chat with New People",
+        "link": "https://azarlive.com/",
+        "snippet": "Azar is a global video chat platform for meeting new people. ... Connect with interest-based matches around the world. Discover people who share your interests!",
+        "position": 3
+      },
+      {
+        "title": "Chatspin: Free Random Video Chat with Strangers",
+        "link": "https://chatspin.com/",
+        "snippet": "Random video chat with people worldwide. Start your 1-on-1 video chat in seconds. Basic chat with strangers is free for adults 18+.",
+        "position": 4
+      },
+      {
+        "title": "DUCKCHAT - Stranger video & text chat - better than omegle",
+        "link": "https://duckchat.club/",
+        "snippet": "Random video chat with strangers. Duckchat is best omegle alternative which gives all features like text chat, video chat and audio chat.",
+        "position": 5
+      },
+      {
+        "title": "Camgo: Talk to Strangers - Free Random Video Chat",
+        "link": "https://www.camgo.com/",
+        "snippet": "Meet new people instantly with Camgo's free random video chat app. Talk to strangers, make new friends or find a date using your webcam.",
+        "position": 6
+      },
+      {
+        "title": "Chatroulette - Video Chat with the World",
+        "link": "https://chatroulette.com/",
+        "snippet": "Chatroulette is the original free random video chat. It pairs you with strangers from around the world for one-on-one online video chat - no sign-up required.",
+        "position": 7
+      },
+      {
+        "title": "Hay - Talk to Strangers & Random Video Chat",
+        "link": "https://www.hay.fun/",
+        "snippet": "With Hay, you can instantly connect with people worldwide through random video chat, text chat, and real-time translation.",
+        "position": 8
+      },
+      {
+        "title": "Yap.Chat — Best Omegle Alternative for Random Video Chat",
+        "link": "https://yap.chat/",
+        "snippet": "Yap.chat is a popular Omegle alternative for random video and text chat. Meet new people worldwide in seconds — mobile & desktop friendly.",
+        "position": 9
+      }
+    ],
+    "credits": 1
+  }
+}

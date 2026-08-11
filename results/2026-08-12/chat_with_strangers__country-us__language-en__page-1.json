@@ -1,0 +1,102 @@
+{
+  "searchCondition": {
+    "keyword": "chat with strangers",
+    "country": "us",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-08-11T19:12:31.554Z",
+  "data": {
+    "searchParameters": {
+      "q": "chat with strangers",
+      "gl": "us",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text ...",
+        "link": "https://opentalk.club/",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 1
+      },
+      {
+        "title": "Yapping: Talk to Strangers Online — Free Random Text ...",
+        "link": "https://yapping.me/",
+        "snippet": "Yapping is the free way to talk to strangers online — anonymous text chat or random video chat, instant matching, moderated, no signup.",
+        "position": 2
+      },
+      {
+        "title": "Chat with Random Strangers. Meet New Friends Around the ...",
+        "link": "https://strangermeetup.com/",
+        "snippet": "Chat with Strangers and Meet New Friends Online in Our Friendly community. StrangerMeetup can be used for dating and finding new friends.",
+        "position": 3
+      },
+      {
+        "title": "Random Chat - Instant Chat with Strangers",
+        "link": "https://www.chatblink.com/random-chat",
+        "snippet": "This is one on one random chat room. You can safely start chat and share pics without registration! This is a great omegle random text chat alternative.",
+        "position": 4
+      },
+      {
+        "title": "Hay - Talk to Strangers & Random Video Chat",
+        "link": "https://www.hay.fun/",
+        "snippet": "Talk to strangers and make friends on Hay! Experience a secure, random video chat alternative to connect with people worldwide.",
+        "position": 5
+      },
+      {
+        "title": "Free Chat Rooms,Free Online Chat With No Registration 2026",
+        "link": "https://www.chatib.us/",
+        "snippet": "Chatib is a free chat room website where you can have live chat with single women and men, you can discuss with random strangers from USA, Canada, United ...",
+        "position": 6
+      },
+      {
+        "title": "RandomChatPro: Talk to Strangers - Omegle Alternative",
+        "link": "https://randomchatpro.com/en",
+        "snippet": "Looking for an Omegle alternative? RandomChatPro offers free and anonymous random video and text chat. Filter by gender and meet new people now!",
+        "position": 7
+      },
+      {
+        "title": "StrangerLine: Talk to Strangers Online - Free Anonymous ...",
+        "link": "https://strangerline.io/",
+        "snippet": "Make real friends, free. Free anonymous random chat with real people worldwide. Text, voice, and video - no sign-up needed. Start Chatting → Video Chat.",
+        "position": 8
+      },
+      {
+        "title": "Camgo: Talk to Strangers - Free Random Video Chat",
+        "link": "https://www.camgo.com/",
+        "snippet": "Meet new people instantly with Camgo's free random video chat app. Talk to strangers, make new friends or find a date using your webcam.",
+        "position": 9
+      }
+    ],
+    "relatedSearches": [
+      {
+        "query": "Chat with strangers app"
+      },
+      {
+        "query": "Free chat with strangers"
+      },
+      {
+        "query": "Omegle chat with strangers"
+      },
+      {
+        "query": "Best websites to chat with strangers"
+      },
+      {
+        "query": "Stranger text chat online"
+      },
+      {
+        "query": "Free chat with strangers video call"
+      },
+      {
+        "query": "Talk to strangers video call"
+      },
+      {
+        "query": "Text chat with strangers online free"
+      }
+    ],
+    "credits": 1
+  }
+}
