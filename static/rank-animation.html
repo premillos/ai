@@ -255,7 +255,7 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js" integrity="sha384-C2iskrW/uPW46KzOjrvJIQo4YkV8lkD+QS0CrDN18IIPIpT/g2USu8bTP3nvmIAD" crossorigin="anonymous"></script>
   <script>
     (async () => {
-      const response = await fetch('data/rank-trends.json?v=cea9698a4b2c');
+      const response = await fetch('data/rank-trends.json?v=d8271ae8c340');
       if (!response.ok) throw new Error('排名数据请求失败：HTTP ' + response.status);
       const data = await response.json();
       const chartElement = document.getElementById('rank-motion-chart');
