@@ -1,0 +1,84 @@
+{
+  "searchCondition": {
+    "keyword": "random cam chat",
+    "country": "gb",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-08-29T20:50:12.619Z",
+  "data": {
+    "searchParameters": {
+      "q": "random cam chat",
+      "gl": "gb",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Chatspin: Free Random Video Chat with Strangers",
+        "link": "https://chatspin.com/",
+        "snippet": "Random video chat with people worldwide. Start your 1-on-1 video chat in seconds. Basic chat with strangers is free for adults 18+.",
+        "position": 1
+      },
+      {
+        "title": "Aznabee - Free Random Video Chat with Strangers | Meet New ...",
+        "link": "https://www.aznabee.com/",
+        "snippet": "Aznabee is a free random video chat platform to meet strangers online. No sign-up. Duo Mode, AR filters, AI moderation, and WebRTC peer-to-peer video",
+        "position": 2
+      },
+      {
+        "title": "Nightcap — Random Video Chat. No Signup. No Nonsense.",
+        "link": "https://www.nightcap.chat/",
+        "snippet": "Nightcap connects you to a random stranger for a live video call in seconds — completely free, with no signup, no download, and no per-minute charges.",
+        "position": 3
+      },
+      {
+        "title": "CamSurf: Free Random Video Chat",
+        "link": "https://camsurf.com/",
+        "snippet": "Video chat with strangers instantly on CamSurf. Our random video chat site makes it easy to meet new people around the world!",
+        "position": 4
+      },
+      {
+        "title": "Azar: Video Chat with New People",
+        "link": "https://azarlive.com/",
+        "snippet": "Azar is a global video chat platform for meeting new people. Azar isn't a random video chat - the more you use Azar the more our recommendation algorithm ...",
+        "position": 5
+      },
+      {
+        "title": "MonkeyChat: Free Random Video Chat to Talk to Strangers",
+        "link": "https://www.monkeychat.fun/",
+        "snippet": "MonkeyChat — meet strangers through random 1-on-1 video and room text chat, with clear controls and safety support.",
+        "position": 6
+      },
+      {
+        "title": "Chatroulette - Video Chat with the World",
+        "link": "https://chatroulette.com/",
+        "snippet": "Chatroulette is the original free random video chat. Meet new people worldwide, practice languages, and make friends in safe, AI-moderated 1-on-1 video ...",
+        "position": 7
+      },
+      {
+        "title": "Camgo: Talk to Strangers - Free Random Video Chat",
+        "link": "https://www.camgo.com/",
+        "snippet": "Meet new people instantly with Camgo's free random video chat app. Talk to strangers, make new friends or find a date using your webcam.",
+        "position": 8
+      },
+      {
+        "title": "ChatPlanet - Random video chat - Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.chatplanet.videochat&hl=en",
+        "snippet": "A simple application for chatting with random strangers from around the world. Click on the \"Start\" button and find hundreds of people who want to chat.",
+        "rating": 3.8,
+        "ratingCount": 5486,
+        "position": 9
+      },
+      {
+        "title": "Random Video Chat With Strangers — Free, No Signup - Yapping",
+        "link": "https://yapping.me/video-chat",
+        "snippet": "Free random video chat with anonymous strangers worldwide. Cam-to-cam matching over secure WebRTC, no signup, moderated. Start video chatting in your ...",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}
