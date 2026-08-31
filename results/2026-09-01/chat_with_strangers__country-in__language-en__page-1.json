@@ -1,0 +1,86 @@
+{
+  "searchCondition": {
+    "keyword": "chat with strangers",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-08-31T22:43:38.943Z",
+  "data": {
+    "searchParameters": {
+      "q": "chat with strangers",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text Chat",
+        "link": "CAESWAHrOzAVle4CWBwMPDmghK-CeSqJRDETLDbhWqek1zqoZWL_N3h73HRKIR-CE3UVS0FKo1vv8DCZj047Tw22bEl6DwLjJIg4hIo9b3YvZk4FZ9ACQiEfZZ8",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 1
+      },
+      {
+        "title": "StrangerLine: Talk to Strangers Online - Free Anonymous Random ...",
+        "link": "CAESUAHrOzAVv12TwVJRTI5OIZntf4OeFVbfKYDS6itmjhswxg7fzhlgXLz9WnGAc7V_na-POQLA0E1xJuILtIoo1AT-Rf09Wla7xAfogy1To9x9",
+        "snippet": "The modern Omegle alternative. Connect with strangers, enjoy free text chat, voice chat, and video chat - and actually keep the connections that matter.",
+        "position": 2
+      },
+      {
+        "title": "Chitchat: Random Chat & Talk to Strangers Online",
+        "link": "CAESUAHrOzAVWukUvPQ6_lyFGLfFZpM5DScN69qHfINM1S0M1Gvg10x8pO-8RsORQqt8XI9roYNX_re0OrKuGEn9X8uegjDq9QgrNEIpjT1W39P8",
+        "snippet": "Chat with strangers by text or video. Our random chat is free, one-on-one, ad-free and moderated. Meet new people and make friends online.",
+        "position": 3
+      },
+      {
+        "title": "Chat.TalkWithStranger.com – Talk To Strangers",
+        "link": "CAESWgHrOzAV-SKwzxWQ3iVJuXH5x2Js4Eczinag0I95r4xrWiE6VtD6OYM38kZAKv6AjZSsAhivwrolo5l90wgCOi3FNLj3vIXh-n3REz-gy2wsWVK6rvf4LOx44g",
+        "snippet": "TalkWithStranger is the #1 anonymous chat platform to meet new people in free chatrooms. Enjoy live random chat, group chats, voice and video calls—no ...",
+        "position": 4
+      },
+      {
+        "title": "Random Chat - Stranger Chat – Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.gagasoft.ranchat&hl=en_IN",
+        "snippet": "Random Chat shines through its core feature: effortless random chatting. Instantly connect with people worldwide through video calls, photo sharing, and voice ...",
+        "rating": 3,
+        "ratingCount": 7183,
+        "position": 5
+      },
+      {
+        "title": "Talk With Strangers Online — Free Anonymous Chat - OpenTalk",
+        "link": "CAESYQHrOzAVTmK-5NkZcq6hay7lTlfzJt4r71-AiaQShfN5TuQNQepyKtXxQhJFFMiXFiPV82Rp0hJsDvQhQMMgdQ2kxJCAEKb8tjxkjdKlsGI81HrGTefkgbTsjzdB4Ul33AQ",
+        "snippet": "Talk with strangers online instantly on OpenTalk: free anonymous text and video chat, no signup, no download, works on mobile and desktop.",
+        "rating": 4.4,
+        "ratingCount": 21000,
+        "position": 6
+      },
+      {
+        "title": "Chat Room - Y99.in",
+        "link": "CAESSwHrOzAVrmhOGt-fZVI24VOdZ4achxlLCqZE2qUzo0fMlQdxv0ea5EhsU3ewGE_NpoKqsMxgrB66QMHJbYUEL8ScrUTlylooI4YWFg",
+        "snippet": "Chat with random strangers without registration, talk in private chats, send videos, pictures for free. Connect to people from around the world",
+        "position": 7
+      },
+      {
+        "title": "Chatspin: Free Random Video Chat with Strangers",
+        "link": "CAESTQHrOzAVptzVNbT130EklIMqvBTI0W4fGF0qKtuafUZSSuEeVcA5D8dAVEQKMVwL0joepIMQx7xQpq-OrXTwSStPCTuJ4h695qjk5eJ_",
+        "snippet": "Random video chat with people worldwide. Start your 1-on-1 video chat in seconds. Basic chat with strangers is free for adults 18+.",
+        "position": 8
+      },
+      {
+        "title": "Talk to Strangers Online Free — Random Video & Text Chat | Knotchat",
+        "link": "CAESSgHrOzAVQsNOffJ18-ofFoIpZ2G3KCogD7sV-1-z38nJcxBXENs6KbcnZEG605200bNWU_f4b3JAEqsM6G__bD_Tm-get3WXmCul",
+        "snippet": "Talk to strangers online free on Knotchat. Start anonymous random text or video chat with real people worldwide in seconds. No app download, fast matching, ...",
+        "position": 9
+      },
+      {
+        "title": "Random Chat Rooms: Talk to Strangers App - Free Online Chat ...",
+        "link": "CAESUAHrOzAVp1l77IggkkWoDgBYkBOyTmbB_vWy6JJuxmAsdxWJGD4yk5aPVsNH0HkSW9EL_WDjEZrOuRhwzG79zgtN6yntSmRs36_xyLLuY6or",
+        "snippet": "Talk to strangers instantly and easily just by clicking the \"chat now\" button. It's a completely free, anonymous, and fun random chat room experience! There is ...",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}

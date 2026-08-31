@@ -1,0 +1,84 @@
+{
+  "searchCondition": {
+    "keyword": "random video chat",
+    "country": "gb",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-08-31T22:43:34.212Z",
+  "data": {
+    "searchParameters": {
+      "q": "random video chat",
+      "gl": "gb",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Azar: Video Chat with New People",
+        "link": "CAESTQHrOzAVXrUEmDooeQULGzHaexCWOq9RTW-p2KMdNFSCEwL9gvOpxXgnD4Nsl7vXVDOC38tr7598aj_3uJvdZB_bYB9VgCiQh4pDFBzQ",
+        "snippet": "Azar is a global video chat platform for meeting new people. ... Connect with interest-based matches around the world. Discover people who share your interests!",
+        "position": 1
+      },
+      {
+        "title": "Nightcap — Random Video Chat. No Signup. No Nonsense.",
+        "link": "CAESUgHrOzAVvLq0tCnF0HJiUe2kEIJvUrdkBrvIZd-78tpBXLfFH-xw5D0QlUPDgvdjZUwFeMuqjoXsBP8I___5X6AXo3VZywsMTTdqnB9kxtk5xyw",
+        "snippet": "Nightcap connects you to a random stranger for a live video call in seconds — completely free, with no signup, no download, and no per-minute charges.",
+        "position": 2
+      },
+      {
+        "title": "Chatspin: Free Random Video Chat with Strangers",
+        "link": "CAESTQHrOzAVJ-clOxR6Z4Mg9vX4cp6bZdWGWW_Gh7MjIWtvqUBccWNilKLOPnmSujnq-UFGgiJyXw1VOk5yMcywul_AZwmQkpP89cuPrHAG",
+        "snippet": "Random video chat with people worldwide. Start your 1-on-1 video chat in seconds. Basic chat with strangers is free for adults 18+.",
+        "position": 3
+      },
+      {
+        "title": "Chatroulette - Video Chat with the World",
+        "link": "CAESUQHrOzAVe-NGDH5KTO-4aXu1YSkOjNfJ_uiI0JGKK7_X7hohKIsPeXJ7DpoDbLT0-VmVffnBwU5tZFIVuOUP-BeWHPDYnd219YmQ5gQMXuuwOA",
+        "snippet": "Chatroulette is the original free random video chat. Meet new people worldwide, practice languages, and make friends in safe, AI-moderated",
+        "position": 4
+      },
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text Chat",
+        "link": "CAESWAHrOzAVYfLAwRw69VH8sGBHH8hVOX3eYMlrqmyGDpTqvKpJbNU8J0MWvfGKKoFOMPYy_TlerYXqYkqQaQ_L9fW1Pk18oK9WEt2I5-AnINF6KMi8vQdyueM",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 5
+      },
+      {
+        "title": "Cafe Video Chat: Free Video Call with Random Girl",
+        "link": "CAESTQHrOzAVrt677a9dRkdrDnFf_FNwHbZJSNfzArCB7OAr3Plqr2p2j--NZxXfEFrXaNCTvhuPUDbZ0UGHZqN9P_wQsgxiJytQB8FKZzu6",
+        "snippet": "Join Cafe Video Chat for free video chat with random people from around the world online. Fully anonymous and encrypted chat. Only real users.",
+        "position": 6
+      },
+      {
+        "title": "Random Video Chat With Strangers — Free, No Signup - Yapping",
+        "link": "CAESVQHrOzAVftrr1AP10ihb1G95PfH4MJiahyQIMBa4P8g1SvufF_xG0qQ6Z4Fmd4d-LcZvlxOFku9OeCDwBrV-VstiwICDA4zMI_M0dSZOv3sdbuYcnqM",
+        "snippet": "Free random video chat with anonymous strangers worldwide. Cam-to-cam matching over secure WebRTC, no signup, moderated. Start video chatting in your ...",
+        "position": 7
+      },
+      {
+        "title": "Aznabee - Free Random Video Chat with Strangers | Meet New ...",
+        "link": "CAESUAHrOzAV511hwlWQe_PbE4Z8s3SK9isrhGn_mOpFq7Jl1lhBMvAx4VzDlWYaXsKLQPPzvujHgKdHXAN-RL4tOSQr2ftg3J2OD4L3-OF5Gshj",
+        "snippet": "Aznabee is a free random video chat platform to meet strangers online. No sign-up. Duo Mode, AR filters, AI moderation, and WebRTC",
+        "position": 8
+      },
+      {
+        "title": "MonkeyChat: Free Random Video Chat to Talk to Strangers",
+        "link": "CAESUwHrOzAVy9dMtS_LnPKunRrm0HvyS0qNzlmBaum4jZ3Q6_bs7aFZV2zpSLu0S2cFUbRb6jFRiNDrshXFDcV43zLEBsS-JjkwhmQKgxUJeTia-TxP",
+        "snippet": "Random video chat to meet new people. Start a face-to-face conversation with someone new. Fast matching, real people, and an adults-only community.",
+        "position": 9
+      },
+      {
+        "title": "Video Chat - Random Video Call – Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.randomvideomatch.xxavideochatapp.chat1011&hl=en_IE",
+        "snippet": "Start video chats with cute strangers and make real connections, only on Video Call! Video chat instantly with random people from all over the world!",
+        "rating": 4.3,
+        "ratingCount": 2275,
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}
