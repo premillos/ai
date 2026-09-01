@@ -1,0 +1,78 @@
+{
+  "searchCondition": {
+    "keyword": "random cam chat",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-09-01T20:55:55.512Z",
+  "data": {
+    "searchParameters": {
+      "q": "random cam chat",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Chatspin: Free Random Video Chat with Strangers",
+        "link": "https://chatspin.com/",
+        "snippet": "Random video chat with people worldwide. Start your 1-on-1 video chat in seconds. Basic chat with strangers is free for adults 18+.",
+        "position": 1
+      },
+      {
+        "title": "Aznabee - Free Random Video Chat with Strangers | Meet New ...",
+        "link": "https://www.aznabee.com/",
+        "snippet": "Aznabee is a free random video chat platform to meet strangers online. No sign-up. Duo Mode, AR filters, AI moderation, and WebRTC peer-to-peer video",
+        "position": 2
+      },
+      {
+        "title": "Hay - Talk to Strangers & Random Video Chat",
+        "link": "https://www.hay.fun/",
+        "snippet": "With Hay, you can instantly connect with people worldwide through random video chat, text chat, and real-time translation.",
+        "position": 3
+      },
+      {
+        "title": "MeetNew – Random Video Chat – Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.randomchat.videochat.livecall.freevideocall&hl=en_IN",
+        "snippet": "Random Video Chat Live Call is a free video chat app to meet new people online. Connect with strangers for live video calls and live chats every day.",
+        "rating": 4.4,
+        "ratingCount": 462,
+        "position": 4
+      },
+      {
+        "title": "Chatzyo: Free Random Video Call & Live Video Chat | No Registration",
+        "link": "https://chatzyo.in/",
+        "snippet": "Chatzyo is a free random video call and live video chat site — connect with real strangers, one to one, with no registration, no app, no coins.",
+        "position": 5
+      },
+      {
+        "title": "Nightcap — Random Video Chat. No Signup. No Nonsense.",
+        "link": "https://www.nightcap.chat/",
+        "snippet": "Nightcap connects you to a random stranger for a live video call in seconds — completely free, with no signup, no download, and no per-minute charges.",
+        "position": 6
+      },
+      {
+        "title": "Camgo: Talk to Strangers - Free Random Video Chat",
+        "link": "https://www.camgo.com/",
+        "snippet": "Meet new people instantly with Camgo's free random video chat app. Talk to strangers, make new friends or find a date using your webcam.",
+        "position": 7
+      },
+      {
+        "title": "Chatroulette - Video Chat with the World",
+        "link": "https://chatroulette.com/",
+        "snippet": "Chatroulette is the original free random video chat. Meet new people worldwide, practice languages, and make friends in safe, AI-moderated 1-on-1 video ...",
+        "position": 8
+      },
+      {
+        "title": "Cafe Video Chat: Free Video Call with Random Girl",
+        "link": "https://yourcafe.app/",
+        "snippet": "Cafe Video Chat is the #1 random video chat platform, where you can video call with strangers from all over the world. Start 1v1 cam to cam with real people and ...",
+        "position": 9
+      }
+    ],
+    "credits": 1
+  }
+}
