@@ -1,0 +1,79 @@
+{
+  "searchCondition": {
+    "keyword": "random chat",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-09-06T20:17:37.854Z",
+  "data": {
+    "searchParameters": {
+      "q": "random chat",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Random Chat - Stranger Chat – Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.gagasoft.ranchat&hl=en_IN",
+        "snippet": "Random Chat shines through its core feature: effortless random chatting. Instantly connect with people worldwide through video calls, photo sharing, and voice ...",
+        "rating": 2.9,
+        "ratingCount": 7237,
+        "position": 1
+      },
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text Chat",
+        "link": "https://opentalk.club/index.html",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 2
+      },
+      {
+        "title": "StrangerLine: Talk to Strangers Online - Free Anonymous Random ...",
+        "link": "https://strangerline.io/",
+        "snippet": "Talk to strangers free on StrangerLine - anonymous text chat, random chat, voice chat, and video chat with real people worldwide.",
+        "position": 3
+      },
+      {
+        "title": "Chat.TalkWithStranger.com – Talk To Strangers",
+        "link": "https://chat.talkwithstranger.com/",
+        "snippet": "TalkWithStranger is the #1 anonymous chat platform to meet new people in free chatrooms. Enjoy live random chat, group chats, voice and video calls—no ...",
+        "position": 4
+      },
+      {
+        "title": "Random Chat - no login - no B.S. - Y99.in",
+        "link": "https://y99.in/articles/random-chat/",
+        "snippet": "Y99 is a free random chat service website that allows people to chat with others without having to register. Y99 algorithms randomly connect ...",
+        "date": "2 days ago",
+        "position": 5
+      },
+      {
+        "title": "DUCKCHAT - Stranger video & text chat - better than omegle",
+        "link": "https://duckchat.club/",
+        "snippet": "Random video chat with strangers. Duckchat is best omegle alternative which gives all features like text chat, video chat and audio chat.",
+        "position": 6
+      },
+      {
+        "title": "Chitchat: Random Chat & Talk to Strangers Online",
+        "link": "https://www.chitchat.gg/",
+        "snippet": "Chat with strangers by text or video. Our random chat is free, one-on-one, ad-free and moderated. Meet new people and make friends online.",
+        "position": 7
+      },
+      {
+        "title": "Yapping: Talk to Strangers Online — Free Random Text & Video Chat",
+        "link": "https://yapping.me/",
+        "snippet": "Free anonymous chat with random people worldwide — text or video, your call. No signup, instant matching, moderated. 100% free for text chat and video",
+        "position": 8
+      },
+      {
+        "title": "Random Chat - Instant Chat with Strangers - ChatBlink",
+        "link": "https://www.chatblink.com/random-chat",
+        "snippet": "This is one on one random chat room. You can safely start chat and share pics without registration! This is a great omegle random text chat alternative.",
+        "position": 9
+      }
+    ],
+    "credits": 1
+  }
+}
