@@ -1,0 +1,97 @@
+{
+  "searchCondition": {
+    "keyword": "random chat",
+    "country": "us",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-09-11T20:50:57.916Z",
+  "data": {
+    "searchParameters": {
+      "q": "random chat",
+      "gl": "us",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Random Chat - no login - no B.S.",
+        "link": "https://y99.in/articles/random-chat/",
+        "snippet": "Y99 is a free random chat service website that allows people to chat with others without having to register.",
+        "date": "8 days ago",
+        "position": 1
+      },
+      {
+        "title": "StrangerLine: Talk to Strangers Online - Free Anonymous ...",
+        "link": "https://play.google.com/store/apps/details?id=com.gagasoft.ranchat&hl=en_US",
+        "snippet": "Talk to strangers free on StrangerLine - anonymous text chat, random chat, voice chat, and video chat with real people worldwide.",
+        "position": 2
+      },
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text ...",
+        "link": "https://opentalk.club/index.html",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 3
+      },
+      {
+        "title": "Free Chat Rooms,Free Online Chat With No Registration 2026",
+        "link": "https://www.chatib.us/",
+        "snippet": "Chatib.us is an online free chat rooms. Here you can meet new friends from all over the world. No download, no setup & no registration needed.",
+        "position": 4
+      },
+      {
+        "title": "Yapping: Talk to Strangers Online — Free Random Text ...",
+        "link": "https://yapping.me/",
+        "snippet": "Yapping is the free way to talk to strangers online — anonymous text chat or random video chat, instant matching, moderated, no signup.",
+        "position": 5
+      },
+      {
+        "title": "Chatix: Anonymous Chat — Talk to Strangers Online Free",
+        "link": "https://chatix.chat/",
+        "snippet": "Chatix is a free anonymous chat platform where you can talk to strangers from around the world without giving up your phone number, email address, or real name.",
+        "position": 6
+      },
+      {
+        "title": "Chitchat: Random Chat & Talk to Strangers Online",
+        "link": "https://www.chitchat.gg/",
+        "snippet": "Chat with strangers by text or video. Our random chat is free, one-on-one, ad-free and moderated. Meet new people and make friends online.",
+        "position": 7
+      },
+      {
+        "title": "Chat.TalkWithStranger.com – Talk To Strangers",
+        "link": "https://chat.talkwithstranger.com/",
+        "snippet": "TalkWithStranger is the #1 anonymous chat platform to meet new people in free chatrooms. Enjoy live random chat, group chats, voice and video calls—no ...",
+        "position": 8
+      }
+    ],
+    "relatedSearches": [
+      {
+        "query": "Random chat Omegle"
+      },
+      {
+        "query": "Random chat video call"
+      },
+      {
+        "query": "Text random chat"
+      },
+      {
+        "query": "Random chat with girls"
+      },
+      {
+        "query": "Random Chat manhwa"
+      },
+      {
+        "query": "Random chat app"
+      },
+      {
+        "query": "Random chat free"
+      },
+      {
+        "query": "Random chat app free"
+      }
+    ],
+    "credits": 1
+  }
+}
