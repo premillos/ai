@@ -1,0 +1,80 @@
+{
+  "searchCondition": {
+    "keyword": "random cam chat",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-09-12T20:27:07.834Z",
+  "data": {
+    "searchParameters": {
+      "q": "random cam chat",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Azar: Video Chat with New People",
+        "link": "https://azarlive.com/",
+        "snippet": "Azar is a global video chat platform for meeting new people. ... Connect with interest-based matches around the world. Discover people who share your interests!",
+        "position": 1
+      },
+      {
+        "title": "Chatrandom: Random Video Chat - Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=chatrandom.com&hl=en",
+        "snippet": "Chatrandom is easy to use and fun, get paired with a random person for video chat then just swipe right to connect with someone new. It's that simple! With ...",
+        "rating": 3,
+        "ratingCount": 14798,
+        "position": 2
+      },
+      {
+        "title": "Chatspin: Free Random Video Chat with Strangers",
+        "link": "https://chatspin.com/",
+        "snippet": "Random video chat with people worldwide. Start your 1-on-1 video chat in seconds. Basic chat with strangers is free for adults 18+.",
+        "position": 3
+      },
+      {
+        "title": "Chatroulette - Video Chat with the World",
+        "link": "https://chatroulette.com/",
+        "snippet": "Chatroulette is the original free random video chat. Meet new people worldwide, practice languages, and make friends in safe, AI-moderated 1-on-1 video ...",
+        "position": 4
+      },
+      {
+        "title": "Safe Omegle Alternative — Moderated Random Chat - OpenTalk",
+        "link": "https://opentalk.club/safe-omegle-alternative/",
+        "snippet": "OpenTalk is a safer Omegle alternative with active moderation, one-tap report, and auto-ban enforcement for abusive behavior.",
+        "rating": 4.4,
+        "ratingCount": 21000,
+        "position": 5
+      },
+      {
+        "title": "Hay - Talk to Strangers & Random Video Chat",
+        "link": "https://www.hay.fun/",
+        "snippet": "Talk to strangers and make friends on Hay! Experience a secure, random video chat alternative to connect with people worldwide.",
+        "position": 6
+      },
+      {
+        "title": "Nightcap — Random Video Chat. No Signup. No Nonsense.",
+        "link": "https://www.nightcap.chat/",
+        "snippet": "Nightcap is the best free Thundr & Omegle alternative for random video chat. Anonymous, no account needed — match by interest and start talking instantly.",
+        "position": 7
+      },
+      {
+        "title": "Camgo: Talk to Strangers - Free Random Video Chat",
+        "link": "https://www.camgo.com/",
+        "snippet": "Meet new people instantly with Camgo's free random video chat app. Talk to strangers, make new friends or find a date using your webcam.",
+        "position": 8
+      },
+      {
+        "title": "Chatrandom: Free Random Video Chat - Stranger Cam Chat Live",
+        "link": "https://chatrandom.com/",
+        "snippet": "Join Chatrandom for free random video chat. Talk to strangers worldwide using live webcam chat. Click Start and connect instantly!",
+        "position": 9
+      }
+    ],
+    "credits": 1
+  }
+}
