@@ -1,0 +1,91 @@
+{
+  "searchCondition": {
+    "keyword": "random chat",
+    "country": "us",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-09-20T20:39:56.839Z",
+  "data": {
+    "searchParameters": {
+      "q": "random chat",
+      "gl": "us",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Chitchat: Random Chat & Talk to Strangers Online",
+        "link": "https://www.chitchat.gg/",
+        "snippet": "Chitchat is a platform to chat with strangers from all over the world via text or video. You can find friends, connect with people, and enjoy ad free, spam-free, and secure chats based on your interests, genders, or locations.",
+        "position": 1
+      },
+      {
+        "title": "Talk to Strangers Online Free — Random Video & Text Chat ...",
+        "link": "https://knot.chat/",
+        "snippet": "Talk to strangers online free on Knotchat. Start anonymous random text or video chat with real people worldwide in seconds. No app download, fast matching, safe moderation.",
+        "position": 2
+      },
+      {
+        "title": "Random Chat with Strangers — Free Random Video Chat | Chatib",
+        "link": "https://chatib.chat/random-chat/",
+        "snippet": "Talk to strangers instantly in random video chat, voice chat or text chat — anonymous, free, no sign up, no app. Match with random people from 150+ countries. Random chat with strangers is the fastest way to meet someone new online.",
+        "position": 3
+      },
+      {
+        "title": "RandomChat – Free Video Chat & Singles Chat Rooms",
+        "link": "https://randomchat.io/",
+        "snippet": "Free random video chat with strangers. Meet new people instantly with a quick free sign-in, live translation in 100+ languages and private chat rooms.",
+        "date": "6 days ago",
+        "position": 4
+      },
+      {
+        "title": "Talk to Strangers Online — Free Random Text & Video Chat ...",
+        "link": "https://yapping.me/",
+        "snippet": "Yapping is the free way to talk to strangers online — anonymous text chat or random video chat, instant matching, moderated, no signup. Start chatting in seconds.",
+        "position": 5
+      },
+      {
+        "title": "Joingy: Random Video Chat Roulette • Stranger Cam Chat",
+        "link": "https://joingy.com/",
+        "snippet": "Joingy is a free and anonymous webcam chat app that connects you with random people from around the world. You can choose between text-only or 1-on-1 video chat, add your interests, and enjoy fast and fun conversations with strangers.",
+        "position": 6
+      },
+      {
+        "title": "Talk to Strangers Online — Anonymous Video & Text Chat ...",
+        "link": "https://strangerline.io/chat/",
+        "snippet": "Free anonymous random chat to talk to strangers online instantly. 1-on-1 text, voice and video chat with real people worldwide. No signup required. Safe Omegle alternative.",
+        "position": 7
+      }
+    ],
+    "relatedSearches": [
+      {
+        "query": "random chat with strangers"
+      },
+      {
+        "query": "random chat sites like omegle"
+      },
+      {
+        "query": "omegle random chat alternative"
+      },
+      {
+        "query": "random text chat"
+      },
+      {
+        "query": "random chat rooms"
+      },
+      {
+        "query": "omegle"
+      },
+      {
+        "query": "random video chat"
+      },
+      {
+        "query": "free random chat online"
+      }
+    ],
+    "credits": 1
+  }
+}
