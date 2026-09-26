@@ -1,0 +1,84 @@
+{
+  "searchCondition": {
+    "keyword": "random video chat",
+    "country": "gb",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-09-26T20:57:49.772Z",
+  "data": {
+    "searchParameters": {
+      "q": "random video chat",
+      "gl": "gb",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Chatroulette - Video Chat with the World",
+        "link": "https://chatroulette.com/",
+        "snippet": "Chatroulette is the original free random video chat. Meet new people worldwide in safe, AI moderated video chats. Trusted by millions; 190+ countries; 24/7 ...",
+        "position": 1
+      },
+      {
+        "title": "Nightcap — Random Video Chat. No Signup. No Nonsense.",
+        "link": "https://www.nightcap.chat/",
+        "snippet": "Nightcap is the best free Thundr & Omegle alternative for random video chat. Anonymous, no account needed — match by interest and start talking instantly.",
+        "position": 2
+      },
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text ...",
+        "link": "https://opentalk.club/",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 3
+      },
+      {
+        "title": "Random Video Chat with Strangers | Free Omegle Alternative",
+        "link": "https://chaturro.com/",
+        "snippet": "Free random video chat with strangers from over 190 countries, one on one, in your browser. No sign up, no app, active moderation. An Omegle alternative.",
+        "position": 4
+      },
+      {
+        "title": "Hay - Talk to Strangers & Random Video Chat",
+        "link": "https://www.hay.fun/",
+        "snippet": "With Hay, you can instantly connect with people worldwide through random video chat, text chat, and real-time translation.",
+        "position": 5
+      },
+      {
+        "title": "Chatspin: Free Random Video Chat with Strangers",
+        "link": "https://chatspin.com/",
+        "snippet": "Random video chat with people worldwide. Start your 1-on-1 video chat in seconds. Basic chat with strangers is free for adults 18+.",
+        "position": 6
+      },
+      {
+        "title": "MonkeyChat: Free 1-on-1 Random Video Chat",
+        "link": "https://www.monkeychat.fun/",
+        "snippet": "Start free 1-on-1 random video chat on MonkeyChat. Meet strangers worldwide with fast matching, room text chat, clear controls, and safety support.",
+        "position": 7
+      },
+      {
+        "title": "CamSurf: Free Random Video Chat",
+        "link": "https://camsurf.com/",
+        "snippet": "Video chat with strangers instantly on CamSurf. Our random video chat site makes it easy to meet new people around the world!",
+        "position": 8
+      },
+      {
+        "title": "Video Chat - Random Video Call – Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.randomvideomatch.xxavideochatapp.chat1011&hl=en_GB",
+        "snippet": "Start video chats with cute strangers and make real connections, only on Video Call! Video chat instantly with random people from all over the world!",
+        "rating": 4.3,
+        "ratingCount": 2295,
+        "position": 9
+      },
+      {
+        "title": "Cafe Video Chat: Free Video Call with Random Girl",
+        "link": "https://yourcafe.app/",
+        "snippet": "Cafe Video Chat is the #1 random video chat platform, where you can video call with strangers from all over the world. Start 1v1 cam to cam with real people and ...",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}
