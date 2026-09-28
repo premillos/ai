@@ -1,0 +1,91 @@
+{
+  "searchCondition": {
+    "keyword": "chat with strangers",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-09-28T23:12:01.956Z",
+  "data": {
+    "searchParameters": {
+      "q": "chat with strangers",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "ChatGPT: Chat, Work, Create & Code with AI",
+        "link": "https://chatgpt.com/",
+        "snippet": "Use ChatGPT to answer questions, write, create images, complete work, and code—all in one place. Get started for free or download the app.",
+        "position": 1
+      },
+      {
+        "title": "Google Chat",
+        "link": "https://chat.google.com/app/home",
+        "snippet": "No information is available for this page.",
+        "sitelinks": [
+          {
+            "title": "Learn why",
+            "link": "https://support.google.com/webmasters/answer/7489871?hl=en"
+          }
+        ],
+        "position": 2
+      },
+      {
+        "title": "ChatOn - AI Chat Bot Assistant – Apps on ...",
+        "link": "https://play.google.com/store/apps/details?id=ai.chat.gpt.bot&hl=en_IN",
+        "snippet": "Welcome to the world of AI assistance! Meet ChatOn, your chat AI and virtual assistant designed to streamline your daily tasks.",
+        "date": "5 days ago",
+        "position": 3
+      },
+      {
+        "title": "Introducing ChatGPT",
+        "link": "https://openai.com/index/chatgpt/",
+        "snippet": "We've trained a model called ChatGPT which interacts in a conversational way. The dialogue format makes it possible for ChatGPT to answer ...",
+        "date": "30 Nov 2022",
+        "position": 4
+      },
+      {
+        "title": "CHAT Definition & Meaning",
+        "link": "https://www.merriam-webster.com/dictionary/chat",
+        "snippet": "The meaning of CHAT is chatter, prattle. 1 : idle small talk : software used for e-mail and chat",
+        "date": "3 days ago",
+        "position": 5
+      },
+      {
+        "title": "AI Chat",
+        "link": "https://deepai.org/chat",
+        "snippet": "AI Chat is a free AI assistant and chatbot. Ask questions, write text, create code, and make or edit images.",
+        "position": 6
+      },
+      {
+        "title": "CHAT | English meaning - Cambridge Dictionary",
+        "link": "https://dictionary.cambridge.org/dictionary/english/chat",
+        "snippet": "to talk to someone in a friendly informal way: chat with She spends hours on the phone chatting with her friends. chat about We were just chatting about ...",
+        "position": 7
+      },
+      {
+        "title": "Get started",
+        "link": "https://chatgpt.com/auth/login",
+        "snippet": "Log in or sign up to ChatGPT. Continue with Google Continue with Apple Continue with phone OR Continue",
+        "position": 8
+      },
+      {
+        "title": "LiveChat® - The Best AI Live Chat Software for Business ...",
+        "link": "https://www.livechat.com/",
+        "snippet": "LiveChat® is the best AI live chat software for business, perfect for ecommerce and B2B. It powers real-time website support, boosting sales and customer ...",
+        "position": 9
+      },
+      {
+        "title": "HuggingChat",
+        "link": "https://huggingface.co/chat/",
+        "snippet": "Welcome to HuggingChat, the chat app powered by open source AI models. Omni automatically picks the best AI model to give you optimal answers depending on ...",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}

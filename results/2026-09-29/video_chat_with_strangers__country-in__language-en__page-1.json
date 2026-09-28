@@ -1,0 +1,84 @@
+{
+  "searchCondition": {
+    "keyword": "video chat with strangers",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-09-28T23:12:09.478Z",
+  "data": {
+    "searchParameters": {
+      "q": "video chat with strangers",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Video",
+        "link": "https://en.wikipedia.org/wiki/Video",
+        "snippet": "Video is an electronic medium used for the recording, copying, playback, transmission, and display of moving visual images and pictures, with or without ...",
+        "position": 1
+      },
+      {
+        "title": "Gracie Abrams - Look at My Life (Official Music Video)",
+        "link": "https://www.youtube.com/watch?v=2YSnCqHXMGY",
+        "snippet": "Gracie Abrams - Look at My Life (Official Music Video) Gracie Abrams - Hit the Wall (Official Music Video) - Risk (Official Music Video)",
+        "date": "3 months ago",
+        "position": 2
+      },
+      {
+        "title": "YouTube",
+        "link": "https://www.youtube.com/",
+        "snippet": "Share your videos with friends, family, and the world. Start watching videos to help us build a feed of videos you'll love.",
+        "date": "18 Sept 2025",
+        "position": 3
+      },
+      {
+        "title": "Free 4K Stock Videos & Full HD Video Clips to Download",
+        "link": "https://www.pexels.com/videos/",
+        "snippet": "Pexels Videos makes it easy to find free stock footage for your website, promo video or anything else. All videos are free for personal and commercial use.",
+        "position": 4
+      },
+      {
+        "title": "Sign in",
+        "link": "https://www.google.com/videohp",
+        "snippet": "Sign in Videos Double-tap to search Google. Advanced search Search history Search help Feedback PrivacyTerms AdvertisingBusinessAbout Google apps",
+        "position": 5
+      },
+      {
+        "title": "VIDEO Definition & Meaning",
+        "link": "https://www.merriam-webster.com/dictionary/video",
+        "snippet": "The meaning of VIDEO is a recording of an image or of moving images. a recorded show or presentation a training/workout/promotional video",
+        "position": 6
+      },
+      {
+        "title": "Stunning free stock video footage & clips",
+        "link": "https://pixabay.com/videos/",
+        "snippet": "Find the perfect royalty-free stock video footage for your next project. ✓ Royalty-free ✓ HD & 4K video available ✓ No attribution required.",
+        "position": 7
+      },
+      {
+        "title": "VIDEO Definition & Meaning",
+        "link": "https://www.dictionary.com/browse/video",
+        "snippet": "VIDEO definition: a program, movie, or other visual media product featuring moving images, with or without audio, that is recorded and saved digitally",
+        "position": 8
+      },
+      {
+        "title": "YouTube videos",
+        "link": "https://www.youtube.com/user/YouTube/videos",
+        "snippet": "Keira Riff reacts to her Watch History. 2.2M views ; Sam Smith reacts to their Watch History. 6.1M views ; Marina Sena reacts to her Watch History. 7.7M views.",
+        "position": 9
+      },
+      {
+        "title": "Free Stock Video Footage HD and 4K Download",
+        "link": "https://www.magnific.com/videos",
+        "snippet": "Free and Premium stock video footage for your projects. Thousands of videos for personal and commercial use in HD and 4K available for download.",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}
