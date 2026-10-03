@@ -1,0 +1,86 @@
+{
+  "searchCondition": {
+    "keyword": "chat with strangers",
+    "country": "gb",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-10-03T20:55:39.887Z",
+  "data": {
+    "searchParameters": {
+      "q": "chat with strangers",
+      "gl": "gb",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text ...",
+        "link": "https://opentalk.club/",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 1
+      },
+      {
+        "title": "Talk to Strangers - Free Chat Rooms With Strangers Online ...",
+        "link": "https://talkwithstranger.com/free-chat-rooms/talk",
+        "snippet": "TalkwithStranger works well for people who want text, voice, video, and group chat in one place with no signup and full anonymity.",
+        "date": "1 day ago",
+        "position": 2
+      },
+      {
+        "title": "Yapping: Talk to Strangers Online — Free Random Text ...",
+        "link": "https://yapping.me/",
+        "snippet": "Yapping is the free way to talk to strangers online — anonymous text chat or random video chat, instant matching, moderated, no signup.",
+        "position": 3
+      },
+      {
+        "title": "StrangerLine: Talk to Strangers Online - Free Anonymous ...",
+        "link": "https://strangerline.io/",
+        "snippet": "The modern Omegle alternative. Connect with strangers, enjoy free text chat, voice chat, and video chat - and actually keep the connections that matter.",
+        "position": 4
+      },
+      {
+        "title": "United Kingdom (UK) Online chat rooms to talk with strangers",
+        "link": "https://y99.uk/",
+        "snippet": "Free and easy to use online chat in UK. Talk with stranger boys, girls, men and women from UK & world. Over 450K monthly active users from United Kingdom of ...",
+        "position": 5
+      },
+      {
+        "title": "Chatix: Free Chat With Strangers — Anonymous & Random ...",
+        "link": "https://chatix.chat/",
+        "snippet": "Chatix is a free anonymous chat platform where you can talk to strangers from around the world without giving up your phone number, email address, or real name.",
+        "position": 6
+      },
+      {
+        "title": "Talk to Strangers Online Free — Random Video & Text Chat ...",
+        "link": "https://knot.chat/",
+        "snippet": "Talk to strangers online free on Knotchat. Start anonymous random text or video chat with real people worldwide in seconds. No app download, fast matching, ...",
+        "position": 7
+      },
+      {
+        "title": "FunChat — Free Anonymous Chat with Strangers Online",
+        "link": "https://funchat.in/",
+        "snippet": "FunChat is a free anonymous chat platform to talk to strangers online — no sign-up needed. Chat globally, do random 1-on-1 stranger chat, video call anonymously ...",
+        "position": 8
+      },
+      {
+        "title": "Anonymous chat - Random Chat – Apps on ...",
+        "link": "https://play.google.com/store/apps/details?id=com.chatrandom.strangerchat.randomchat&hl=en_GB",
+        "snippet": "Anonymous chat no login allows users have private chat freely. Talk to Strangers: chat with strangers and explore the world of meaningful ...",
+        "date": "19 Jun 2025",
+        "rating": 3.2,
+        "ratingCount": 1814,
+        "position": 9
+      },
+      {
+        "title": "Talk to Strangers Online | Whisperly Voice & Text Chat ...",
+        "link": "https://www.whisperly.live/",
+        "snippet": "Whisperly gives you a simple way to connect with random strangers online. Choose voice when you want a real conversation, or start with text when you prefer ...",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}

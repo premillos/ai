@@ -1,0 +1,111 @@
+{
+  "searchCondition": {
+    "keyword": "random chat",
+    "country": "us",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-10-03T20:55:42.631Z",
+  "data": {
+    "searchParameters": {
+      "q": "random chat",
+      "gl": "us",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Random Chat - no login - no B.S.",
+        "link": "https://y99.in/articles/random-chat/",
+        "snippet": "Y99 is a free random chat service website that allows people to chat with others without having to register. Y99 algorithms randomly connect ...",
+        "date": "Sep 4, 2026",
+        "position": 1
+      },
+      {
+        "title": "OpenTalk — Talk to Strangers with Free Random Video & Text ...",
+        "link": "https://opentalk.club/",
+        "snippet": "OpenTalk lets you talk to strangers with free random video and text chat. No signup, instant matching, active moderation, and mobile-friendly chat in any ...",
+        "position": 2
+      },
+      {
+        "title": "Random Chat - Stranger Chat - Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.gagasoft.ranchat&hl=en_US",
+        "snippet": "Random Chat stands out with its core. Connect instantly with people worldwide through video calls, photo exchanges, and audio messages.",
+        "rating": 3,
+        "ratingCount": 7554,
+        "position": 3
+      },
+      {
+        "title": "Yapping: Talk to Strangers Online — Free Random Text ...",
+        "link": "https://yapping.me/",
+        "snippet": "Yapping is the free way to talk to strangers online — anonymous text chat or random video chat, instant matching, moderated, no signup.",
+        "position": 4
+      },
+      {
+        "title": "Free Chat Rooms,Free Online Chat With No Registration 2026",
+        "link": "https://www.chatib.us/",
+        "snippet": "Chatib.us is an online free chat rooms. Here you can meet new friends from all over the world. No download, no setup & no registration needed.",
+        "position": 5
+      },
+      {
+        "title": "StrangerLine: Talk to Strangers Online - Free Anonymous ...",
+        "link": "https://strangerline.io/",
+        "snippet": "Talk to strangers free on StrangerLine - anonymous text chat, random chat, voice chat, and video chat with real people worldwide.",
+        "position": 6
+      },
+      {
+        "title": "Chat.TalkWithStranger.com – Talk To Strangers",
+        "link": "https://chat.talkwithstranger.com/",
+        "snippet": "TalkWithStranger is the #1 anonymous chat platform to meet new people in free chatrooms. Enjoy live random chat, group chats, voice and video calls—no ...",
+        "position": 7
+      },
+      {
+        "title": "Talk to Strangers Online | Whisperly Voice & Text Chat ...",
+        "link": "https://www.whisperly.live/",
+        "snippet": "Whisperly is a random chat platform where you can talk to strangers online by voice or text. You can start chatting with random people instantly and meet new ...",
+        "position": 8
+      },
+      {
+        "title": "FunChat — Free Anonymous Chat with Strangers Online",
+        "link": "https://funchat.in/",
+        "snippet": "FunChat is a free anonymous chat platform to talk to strangers online — no sign-up needed. Chat globally, do random 1-on-1 stranger chat, video call anonymously ...",
+        "position": 9
+      },
+      {
+        "title": "Chatspin: Free Random Video Chat with Strangers",
+        "link": "https://chatspin.com/",
+        "snippet": "Random video chat with people worldwide. Start your 1-on-1 video chat in seconds. Basic chat with strangers is free for adults 18+.",
+        "position": 10
+      }
+    ],
+    "relatedSearches": [
+      {
+        "query": "Random chat Omegle"
+      },
+      {
+        "query": "Random chat video call"
+      },
+      {
+        "query": "Text random chat"
+      },
+      {
+        "query": "Random chat with girls"
+      },
+      {
+        "query": "Random chat app"
+      },
+      {
+        "query": "Random Chat meaning"
+      },
+      {
+        "query": "Random chat free"
+      },
+      {
+        "query": "Random chat online"
+      }
+    ],
+    "credits": 1
+  }
+}
