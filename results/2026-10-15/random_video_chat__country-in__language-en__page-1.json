@@ -1,0 +1,88 @@
+{
+  "searchCondition": {
+    "keyword": "random video chat",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-10-14T21:31:15.736Z",
+  "data": {
+    "searchParameters": {
+      "q": "random video chat",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Random Video Chat – Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.friendchat.randomvideochatcall&hl=en_IN",
+        "snippet": "Random video call is a video chatting app for making new friends, finding instantly face to face random strangers from anywhere.",
+        "rating": 2.8,
+        "ratingCount": 6298,
+        "position": 1
+      },
+      {
+        "title": "Chatspin: Free Random Video Chat with Strangers",
+        "link": "https://chatspin.com/",
+        "snippet": "Random video chat with people worldwide. Start your 1-on-1 video chat in seconds. Basic chat with strangers is free for adults 18+.",
+        "position": 2
+      },
+      {
+        "title": "Chatroulette - Video Chat with the World",
+        "link": "https://chatroulette.com/",
+        "snippet": "Chatroulette is the original free random video chat. Meet new people worldwide in safe, AI moderated video chats. Trusted by millions; 190+ countries; 24/7 ...",
+        "position": 3
+      },
+      {
+        "title": "Random Video Chat with Strangers | Free Omegle Alternative",
+        "link": "https://chaturro.com/",
+        "snippet": "Chaturro is a free random video chat: press start, allow your camera, and a few seconds later you're face to face with a stranger from the US, India, the UK or ...",
+        "position": 4
+      },
+      {
+        "title": "Nightcap — Free Random Video Chat. No Signup.",
+        "link": "https://www.nightcap.chat/",
+        "snippet": "Free 1-to-1 random video and text chat in your browser. No account needed — match by interest and start talking. Adults 18+, AI-moderated.",
+        "position": 5
+      },
+      {
+        "title": "Random Video Chat With Strangers - Apps on Google ...",
+        "link": "https://fisheries.telangana.gov.in/aviator/how-to-use-random-video-chat-with-strangers-safely-on-mobile/",
+        "snippet": "Use random video chat with strangers safely by verifying app permissions, keeping location and identity hidden, using verified matching only,",
+        "rating": 3.5,
+        "ratingCount": 341733,
+        "position": 6
+      },
+      {
+        "title": "Hay - Talk to Strangers & Random Video Chat",
+        "link": "https://www.hay.fun/",
+        "snippet": "With Hay, you can instantly connect with people worldwide through random video chat, text chat, and real-time translation.",
+        "position": 7
+      },
+      {
+        "title": "Chatrandom: Free Random Video Chat - Stranger Cam Chat ...",
+        "link": "https://chatrandom.com/",
+        "snippet": "Join Chatrandom for free random video chat. Talk to strangers worldwide using live webcam chat. Click Start and connect instantly!",
+        "position": 8
+      },
+      {
+        "title": "Chatrandom: Random Video Chat Kaise chalaye ge #apps",
+        "link": "https://www.youtube.com/watch?v=uRbQEYzCdLs",
+        "snippet": "Random Video Chat Chatrandom: Random Video Chat app kaise chalaye Chatrandom: Random Video Chat app kya hai top 5 random video call apps ...",
+        "date": "1 year ago",
+        "position": 9
+      },
+      {
+        "title": "When you video call that one friend randomly and this ...",
+        "link": "https://www.tiktok.com/@lasizwe/video/7078938670417317125",
+        "snippet": "When you video call that one friend randomly and this randomly… #lasizwe · Random Video Call Free · Girls Video Call Random Video Chat.",
+        "date": "4 years ago",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}

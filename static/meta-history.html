@@ -196,7 +196,7 @@
 
   <script>
     (async () => {
-      const response = await fetch('data/meta-history.json?v=26df9a18a5b3');
+      const response = await fetch('data/meta-history.json?v=1519b882e685');
       if (!response.ok) throw new Error('文案历史数据请求失败：HTTP ' + response.status);
       const data = await response.json();
       const list = document.getElementById('meta-history-list');
