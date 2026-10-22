@@ -1,0 +1,86 @@
+{
+  "searchCondition": {
+    "keyword": "random video chat",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-10-22T21:25:46.596Z",
+  "data": {
+    "searchParameters": {
+      "q": "random video chat",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Azar: Video Chat with New People",
+        "link": "https://azarlive.com/",
+        "snippet": "Azar is a global video chat platform for meeting new people. ... Connect with interest-based matches around the world. Discover people who share your interests!",
+        "position": 1
+      },
+      {
+        "title": "Chatroulette - Video Chat with the World",
+        "link": "https://chatroulette.com/",
+        "snippet": "Chatroulette is the original free random video chat. Meet new people worldwide in safe, AI moderated video chats. Trusted by millions; 190+ countries; 24/7 ...",
+        "position": 2
+      },
+      {
+        "title": "Chatspin: Free Random Video Chat with Strangers",
+        "link": "https://chatspin.com/",
+        "snippet": "Random video chat with people worldwide. Start your 1-on-1 video chat in seconds. Basic chat with strangers is free for adults 18+.",
+        "position": 3
+      },
+      {
+        "title": "Monkey: Random Video Chat | Talk to Strangers Instantly",
+        "link": "https://www.monkey.app/",
+        "snippet": "Meet new people and talk to strangers worldwide on Monkey, the safest random video chat. Connect with real humans via live video and text.",
+        "position": 4
+      },
+      {
+        "title": "MeetNew – Random Video Chat",
+        "link": "https://play.google.com/store/apps/details?id=com.randomchat.videochat.livecall.freevideocall&hl=en_IN",
+        "snippet": "MeetNew – Random Video Chat Live Call is a free video chat app to meet new people online. Connect with strangers for live video calls and live chats every ...",
+        "rating": 4.4,
+        "ratingCount": 501,
+        "position": 5
+      },
+      {
+        "title": "Chatzyo: Free Random Video Call & Live Video Chat | No ...",
+        "link": "https://chatzyo.in/",
+        "snippet": "Free random video call and live video chat with strangers. Start a 1 on 1 video call, anonymous video chat, voice call or text chat instantly.",
+        "position": 6
+      },
+      {
+        "title": "Anonymous Video Chat with Strangers — Free, No Sign-Up",
+        "link": "https://funchat.in/video-chat",
+        "snippet": "Free anonymous video chat with strangers online. Instant camera-to-camera pairing, no download, no sign-up, and AI moderation to keep it safe.",
+        "position": 7
+      },
+      {
+        "title": "Random Video Chat — VROOM – Apps on ...",
+        "link": "https://play.google.com/store/apps/details?id=vr.video.chat&hl=en_IN",
+        "snippet": "Chat with random people and play interactive AR games together — all in real time during your live video chat. A fun alternative to omegle and ome tv with games ...",
+        "rating": 4.4,
+        "ratingCount": 3507,
+        "position": 8
+      },
+      {
+        "title": "Camgo: Talk to Strangers - Free Random Video Chat",
+        "link": "https://www.camgo.com/",
+        "snippet": "Meet new people instantly with Camgo's free random video chat app. Talk to strangers, make new friends or find a date using your webcam.",
+        "position": 9
+      },
+      {
+        "title": "CamSurf: Free Random Video Chat",
+        "link": "https://camsurf.com/",
+        "snippet": "Video chat with strangers instantly on CamSurf. Our random video chat site makes it easy to meet new people around the world!",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}

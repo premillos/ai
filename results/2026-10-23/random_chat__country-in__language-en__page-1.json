@@ -1,0 +1,86 @@
+{
+  "searchCondition": {
+    "keyword": "random chat",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-10-22T21:26:01.884Z",
+  "data": {
+    "searchParameters": {
+      "q": "random chat",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Generate pseudo-random numbers",
+        "link": "https://docs.python.org/3/library/random.html",
+        "snippet": "This module implements pseudo-random number generators for various distributions. For integers, there is uniform selection from a range. For sequences, there is ...",
+        "position": 1
+      },
+      {
+        "title": "Random (Java Platform SE 8 )",
+        "link": "https://docs.oracle.com/javase/8/docs/api/java/util/Random.html",
+        "snippet": "An instance of this class is used to generate a stream of pseudorandom numbers. The class uses a 48-bit seed, which is modified using a linear congruential ...",
+        "position": 2
+      },
+      {
+        "title": "A few random notes from claude coding quite a bit last ...",
+        "link": "https://x.com/karpathy/status/2015883857489522876",
+        "snippet": "A few random notes from claude coding quite a bit last few weeks ... See what's happening and join the conversation. Continue with phone.",
+        "date": "8 months ago",
+        "position": 3
+      },
+      {
+        "title": "Randomness",
+        "link": "https://en.wikipedia.org/wiki/Randomness",
+        "snippet": "In common usage, randomness is the apparent or actual lack of definite patterns or predictability in information. A random sequence of events, symbols or ...",
+        "position": 4
+      },
+      {
+        "title": "RANDOM.ORG - True Random Number Service",
+        "link": "https://www.random.org/",
+        "snippet": "RANDOM.ORG offers true random numbers to anyone on the Internet. The randomness comes from atmospheric noise, which for many purposes is better than the ...",
+        "position": 5
+      },
+      {
+        "title": "Random Provider - hashicorp - Terraform Registry",
+        "link": "https://registry.terraform.io/providers/hashicorp/random/latest/docs",
+        "snippet": "Supports the use of randomness within Terraform configurations. This is a logical provider, which means that it works entirely within Terraform ...",
+        "date": "11 Sept 2026",
+        "position": 6
+      },
+      {
+        "title": "RANDOM Definition & Meaning",
+        "link": "https://www.merriam-webster.com/dictionary/random",
+        "snippet": "The meaning of RANDOM is lacking a definite plan, purpose, or pattern. How to use random in a sentence. Synonym Discussion of Random.",
+        "position": 7
+      },
+      {
+        "title": "Stop Putting Your Passwords Into Random Websites (Yes, ...",
+        "link": "https://labs.watchtowr.com/stop-putting-your-passwords-into-random-websites-yes-seriously-you-are-the-problem/",
+        "snippet": "STOP PUBLISHING CREDENTIALS IN RANDOM ONLINE TOOLS. For Many Of You, It's Too Late. Iterating through JSONFormatter and CodeBeautify, we ...",
+        "date": "25 Nov 2025",
+        "position": 8
+      },
+      {
+        "title": "Random Acts of Crochet Kindness",
+        "link": "https://www.facebook.com/groups/906834113017980/",
+        "snippet": "This is a group for people to share small individual acts of crochet kindness which they have made (for a stranger to find and keep) or found (which have ...",
+        "position": 9
+      },
+      {
+        "title": "I keep finding random games downloaded onto my phone ...",
+        "link": "https://support.google.com/googleplay/thread/347301740/i-keep-finding-random-games-downloaded-onto-my-phone-without-my-knowledge?hl=en",
+        "snippet": "Turn off automatic downloads. This is the most likely cause of random games downloading. To turn off automatic downloads, open the Google Play ...",
+        "date": "28 May 2025",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}
