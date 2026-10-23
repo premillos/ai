@@ -1,0 +1,103 @@
+{
+  "searchCondition": {
+    "keyword": "video chat with strangers",
+    "country": "in",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-10-23T21:17:31.030Z",
+  "data": {
+    "searchParameters": {
+      "q": "video chat with strangers",
+      "gl": "in",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "ChatGPT: Chat, Work, Create & Code with AI",
+        "link": "https://chatgpt.com/",
+        "snippet": "Use ChatGPT to answer questions, write, create images, complete work, and code—all in one place. Get started for free or download the app.",
+        "position": 1
+      },
+      {
+        "title": "ChatGTP - ChatGPT - OpenAI",
+        "link": "https://chat.openai.com/chat",
+        "snippet": "No information is available for this page.",
+        "sitelinks": [
+          {
+            "title": "Learn why",
+            "link": "https://support.google.com/webmasters/answer/7489871?hl=en"
+          }
+        ],
+        "position": 2
+      },
+      {
+        "title": "Chatting in a Zoom meeting",
+        "link": "https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0064400",
+        "snippet": "While in a Zoom meeting, in the meeting controls toolbar, click the Chat icon . By default at the start of the meeting, you will only see the main meeting chat.",
+        "position": 3
+      },
+      {
+        "title": "Google Chat",
+        "link": "https://chat.google.com/app/home",
+        "snippet": "No information is available for this page.",
+        "sitelinks": [
+          {
+            "title": "Learn why",
+            "link": "https://support.google.com/webmasters/answer/7489871?hl=en"
+          }
+        ],
+        "position": 4
+      },
+      {
+        "title": "Google Chat with Gemini for Messaging and Team ...",
+        "link": "https://workspace.google.com/products/chat/",
+        "snippet": "With Gemini in Chat, you have an always-ready AI partner to catch you up on the conversation, share action items, translate in real-time, brainstorm ...",
+        "position": 5
+      },
+      {
+        "title": "Google Chat - Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.google.android.apps.dynamite&hl=en",
+        "snippet": "Google Chat is the best way for teams using Workspace to connect, collaborate and get things done. AI-first messaging & collaboration, transformed by Gemini",
+        "rating": 4.4,
+        "ratingCount": 371723,
+        "position": 6
+      },
+      {
+        "title": "Salomé Le Chat (@salomelechat)",
+        "link": "https://www.instagram.com/salomelechat/?hl=en",
+        "snippet": "44K followers · 2.2K+ following · 95 posts · @salomelechat: “Dj, Producer, Music Curator, Mother & Survivor. From Disco to Techno.",
+        "position": 7
+      },
+      {
+        "title": "Vianca Chat",
+        "link": "https://api.whatsapp.com/send/?phone=573114006797&text&type=phone_number&app_absent=0",
+        "snippet": "No information is available for this page.",
+        "sitelinks": [
+          {
+            "title": "Learn why",
+            "link": "https://support.google.com/webmasters/answer/7489871?hl=en"
+          }
+        ],
+        "position": 8
+      },
+      {
+        "title": "Realtime Chat App Tutorial - React.js & Socket.io 2026",
+        "link": "https://www.youtube.com/watch?v=7-aY-tS2LhE",
+        "snippet": "MERN Stack Project: Realtime Chat App Tutorial - React.js & Socket.io 2026. @codesistency1K likes43K views4 months ago",
+        "date": "4 months ago",
+        "position": 9
+      },
+      {
+        "title": "Google Chat - Sign In | Google Workspace",
+        "link": "https://chat.google.com/",
+        "snippet": "Sign in to Google Chat and access powerful group messaging for personal and professional collaboration from Google Workspace.",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}
