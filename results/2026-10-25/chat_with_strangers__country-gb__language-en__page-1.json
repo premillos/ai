@@ -1,0 +1,85 @@
+{
+  "searchCondition": {
+    "keyword": "chat with strangers",
+    "country": "gb",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-10-24T20:34:24.012Z",
+  "data": {
+    "searchParameters": {
+      "q": "chat with strangers",
+      "gl": "gb",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Talk to Strangers - Free Chat Rooms With ...",
+        "link": "https://talkwithstranger.com/free-chat-rooms/talk",
+        "snippet": "Talk to strangers & chat with strangers from all around the world in free chat rooms. No login, no sign up, free chat online anonymous with random people.",
+        "position": 1
+      },
+      {
+        "title": "Chats With Strangers - Free download and install on ...",
+        "link": "https://apps.microsoft.com/detail/9p23qp338lhq?hl=en-GB&gl=GB",
+        "snippet": "Chats With Strangers is a social communication platform designed to help people meet, chat and connect with others from around the world.",
+        "position": 2
+      },
+      {
+        "title": "Chat with Strangers Online",
+        "link": "https://strangermeetup.com/chat-with-strangers",
+        "snippet": "StrangerMeetup lets you chat with strangers online instantly. Our free anonymous chat rooms connect you with random people from around the world—no registration ...",
+        "position": 3
+      },
+      {
+        "title": "Talk to Strangers Online – Free Omegle Alternative",
+        "link": "https://www.chatblink.com/talk-to-strangers",
+        "snippet": "Chat with new people from anywhere in the world in this free, easy-to-use chatroom! · COMPLETELY PRIVATE – now you can chat with international strangers anytime ...",
+        "position": 4
+      },
+      {
+        "title": "Strangerline: Talk to Strangers – Free Random Chat with ...",
+        "link": "https://strangerline.io/",
+        "snippet": "StrangerLine is a free website to talk to strangers online by text, voice or video. You're matched one on one with a random person in seconds, with no account ...",
+        "position": 5
+      },
+      {
+        "title": "Stranger Chat - Random – Apps on Google Play",
+        "link": "https://play.google.com/store/apps/details?id=com.stranger.chat.random&hl=en_GB",
+        "snippet": "Here you can talk with strangers. Use this app to date random strangers. Get to know the stranger and then move to Instagram Facebook or WhatsApp. Connect on ...",
+        "rating": 2.6,
+        "ratingCount": 139,
+        "position": 6
+      },
+      {
+        "title": "Chatting With Strangers | Podcast on Spotify",
+        "link": "https://open.spotify.com/show/2ig9L0O12JjiNJNIBwO2st",
+        "snippet": "Chatting With Strangers is a walk in the shoes of random strangers around the world. A simple conversation or a deep dive into some really personal happenings ...",
+        "position": 7
+      },
+      {
+        "title": "Duetto Chat: Talk to strangers - anonymous 1-on-1 chat",
+        "link": "https://www.duetto.chat/",
+        "snippet": "Talk to strangers in anonymous 1-on-1 conversations by text or video. No sign-up needed: start chatting instantly and stay as anonymous as you like.",
+        "position": 8
+      },
+      {
+        "title": "How to Chat with Strangers Online",
+        "link": "https://www.youtube.com/watch?v=jfNnjOI33h8",
+        "snippet": "This tutorial will show you how to talk to strangers online. Don't forget to check out our site http://howtech.tv/ for more free how-to ...",
+        "date": "13 years ago",
+        "position": 9
+      },
+      {
+        "title": "Chat With Strangers Worldwide",
+        "link": "https://strangers-chat.com/",
+        "snippet": "Meet people from around the world in free, anonymous chat rooms. No sign-up, no downloads — pick a topic and start a real conversation in seconds.",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}
