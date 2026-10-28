@@ -1,0 +1,85 @@
+{
+  "searchCondition": {
+    "keyword": "chat with strangers",
+    "country": "gb",
+    "language": "en",
+    "page": 1
+  },
+  "searchedAt": "2026-10-28T22:27:34.900Z",
+  "data": {
+    "searchParameters": {
+      "q": "chat with strangers",
+      "gl": "gb",
+      "hl": "en",
+      "type": "search",
+      "page": 1,
+      "engine": "google"
+    },
+    "organic": [
+      {
+        "title": "Anonymous Chat with Strangers — Free, No Sign-Up ...",
+        "link": "https://www.chatalya.com/",
+        "snippet": "Anonymous chat with strangers, free and instant. No sign-up, no email, no phone — just pick a nickname. Text, GIFs and voice messages. Start chatting now.",
+        "position": 1
+      },
+      {
+        "title": "Ome.gg: Talk to Strangers Online - Free Anonymous Random ...",
+        "link": "https://ome.gg/",
+        "snippet": "Talk to strangers online for free on Ome.gg — the random chat site for anonymous text chat with strangers. No sign-up, no downloads, no video pressure.",
+        "position": 2
+      },
+      {
+        "title": "Random Text Chat with Strangers — Anonymous & Free",
+        "link": "https://omezy.io/text/",
+        "snippet": "Random text chat with strangers on Omezy. Anonymous and free in your browser, no camera or microphone, with interest matching and live moderation.",
+        "position": 3
+      },
+      {
+        "title": "Strangerline: Talk to Strangers – Free Random Chat with ...",
+        "link": "https://strangerline.io/",
+        "snippet": "StrangerLine is a free website to talk to strangers online by text, voice or video. You're matched one on one with a random person in seconds, with no account ...",
+        "position": 4
+      },
+      {
+        "title": "Yapping: Talk to Strangers Online — Free Random Text ...",
+        "link": "https://yapping.me/",
+        "snippet": "Talk to Strangers Online. Free anonymous chat with random people worldwide — text or video, your call. No signup, instant matching, moderated.",
+        "position": 5
+      },
+      {
+        "title": "Talk to Strangers Online Free — Random Video & Text Chat ...",
+        "link": "https://knot.chat/",
+        "snippet": "Talk to strangers online free on Knotchat. Start anonymous random text or video chat with real people worldwide in seconds. No app download, fast matching, ...",
+        "position": 6
+      },
+      {
+        "title": "Talk to Strangers Online | Whisperly Voice & Text Chat ...",
+        "link": "https://www.whisperly.live/",
+        "snippet": "Whisperly gives you a simple way to connect with random strangers online. Choose voice when you want a real conversation, or start with text when you prefer ...",
+        "position": 7
+      },
+      {
+        "title": "Talk to Strangers - Free Chat Rooms With ...",
+        "link": "https://talkwithstranger.com/free-chat-rooms/talk",
+        "snippet": "Talk to strangers & chat with strangers from all around the world in free chat rooms. No login, no sign up, free chat online anonymous with ...",
+        "date": "1 day ago",
+        "position": 8
+      },
+      {
+        "title": "Stranger Chat -Random Chat App",
+        "link": "https://play.google.com/store/apps/details?id=com.rsin.strangerchat&hl=en",
+        "snippet": "Looking for a free random chat app? Stranger Chat lets you talk to strangers instantly — anonymous, free, and safe. Meet random people",
+        "rating": 2.4,
+        "ratingCount": 74,
+        "position": 9
+      },
+      {
+        "title": "FunChat — Free Anonymous Chat with Strangers Online",
+        "link": "https://funchat.in/",
+        "snippet": "FunChat is a free anonymous chat platform to talk to strangers online — no sign-up needed. Chat globally, do random 1-on-1 stranger chat, video call anonymously ...",
+        "position": 10
+      }
+    ],
+    "credits": 1
+  }
+}
